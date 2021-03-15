@@ -22,4 +22,8 @@
             android:id="@+id/actionSettingsToMainContent"
             app:destination="@id/mainContent" />
     </fragment>
+    <fragment
+        android:id="@+id/newQuestion"
+        android:name="app.nush.thinkingcapp.fragments.NewQuestion"
+        android:label="NewQuestion" />
 </navigation>

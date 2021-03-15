@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1014212535283",
+    "project_id": "thinking-capp-3fae7",
+    "storage_bucket": "thinking-capp-3fae7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014212535283:android:81b0aa10e705cb78eba886",
+        "android_client_info": {
+          "package_name": "app.nush.thinkingcapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1014212535283-97jglvrg97m4vot4kc3t3espujlv5g8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.nush.thinkingcapp",
+            "certificate_hash": "9b84624ce0e933acf4322e649aecd58698b810b8"
+          }
+        },
+        {
+          "client_id": "1014212535283-m1rnqrd6lagmlhmcjhd30o7n5h5if3ke.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHSKyYL44G1QRk2QKHbYvZzMAqmQuSAbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014212535283-m1rnqrd6lagmlhmcjhd30o7n5h5if3ke.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

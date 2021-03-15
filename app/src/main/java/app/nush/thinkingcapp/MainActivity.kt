@@ -5,9 +5,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.nush.thinkingcapp.R
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
+import com.nush.thinkingcapp.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -30,10 +30,12 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
         navController = nav_host_fragment.findNavController()
 
-        Navigation.init(mapOf(
-            R.id.nav_settings to R.id.settings,
-            R.id.nav_main to R.id.mainContent
-        ), navController, nav_view, drawer_layout)
+        Navigation.init(
+            mapOf(
+                R.id.nav_settings to R.id.settings,
+                R.id.nav_main to R.id.mainContent
+            ), navController, nav_view, drawer_layout
+        )
     }
 
     fun toggleDarkMode(dark: Boolean) {

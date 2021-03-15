@@ -7,6 +7,7 @@ import com.google.android.material.navigation.NavigationView
 
 object Navigation {
     private lateinit var navMap: Map<Int, Int>
+     private lateinit var navController: NavController
 
     fun init(
         navMap: Map<Int, Int>,
@@ -15,11 +16,16 @@ object Navigation {
         drawerLayout: DrawerLayout
     ) {
         Navigation.navMap = navMap
+        Navigation.navController = navController
         nav_view.setNavigationItemSelectedListener {
             val destination = navMap[it.itemId] ?: return@setNavigationItemSelectedListener false
             navController.navigate(destination)
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+    }
+
+    fun navigate(id: Int) {
+        navController.navigate(id)
     }
 }

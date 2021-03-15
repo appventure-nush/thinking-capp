@@ -1,12 +1,20 @@
 package app.nush.thinkingcapp.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.adapters.QuestionsAdapter
+import app.nush.thinkingcapp.util.Navigation
+import app.nush.thinkingcapp.util.State
+import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import com.nush.thinkingcapp.R
+import kotlinx.android.synthetic.main.fragment_main_content.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,43 +27,32 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MainContent : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    val viewModel: QuestionsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_content, container, false)
+        val view = inflater.inflate(R.layout.fragment_main_content, container, false)
+        view.recycler_view.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        viewModel.questions.observe(this) {
+            if (it is State.Success) {
+                val adapter = QuestionsAdapter(it.data)
+                view.recycler_view.adapter = adapter
+            } else {
+                println("Failed loading data")
+            }
+        }
+        view.fab.setOnClickListener {
+            Navigation.navigate(R.id.newQuestion)
+        }
+        return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainContent.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MainContent().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = MainContent()
     }
 }
