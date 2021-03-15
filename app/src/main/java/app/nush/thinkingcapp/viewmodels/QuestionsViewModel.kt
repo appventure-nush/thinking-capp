@@ -7,7 +7,7 @@ import app.nush.thinkingcapp.util.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 
-class QuestionsViewModel() : ViewModel() {
+class QuestionsViewModel : ViewModel() {
     private val repo = QuestionsRepo()
     val questions = liveData(Dispatchers.IO) {
         emit(State.loading<List<Question>>())
@@ -20,4 +20,7 @@ class QuestionsViewModel() : ViewModel() {
             emit(State.failed(e.message.toString()))
         }
     }
+
+    fun addQuestion(question: Question) =
+        liveData(Dispatchers.IO) { repo.addQuestion(question).collect { emit(it) } }
 }

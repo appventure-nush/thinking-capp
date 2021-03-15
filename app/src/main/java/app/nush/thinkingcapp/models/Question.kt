@@ -1,8 +1,6 @@
 package app.nush.thinkingcapp.models
 
-import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.util.uuid
-import kotlinx.coroutines.flow.Flow
 
 data class Question(
     val id: String = uuid(),

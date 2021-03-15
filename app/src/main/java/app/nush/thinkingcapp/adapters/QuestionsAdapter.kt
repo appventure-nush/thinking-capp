@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.fragments.MainContentDirections
 import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
@@ -17,8 +19,11 @@ class QuestionsAdapter (val questions: List<Question>): RecyclerView.Adapter<Que
     inner class ViewHolder(private val binding: QuestionItemBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: Question){
-            println("Binding: $item")
             binding.question = item
+            binding.root.setOnClickListener {
+                val action = MainContentDirections.actionMainContentToQuestionDisplay(item.id)
+                binding.root.findNavController().navigate(action)
+            }
             binding.executePendingBindings()
         }
 

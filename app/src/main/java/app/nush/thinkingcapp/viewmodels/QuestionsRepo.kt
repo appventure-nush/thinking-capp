@@ -29,4 +29,15 @@ class QuestionsRepo {
     }.catch {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)
+
+    fun addQuestion(question: Question) = flow<State<Question>>{
+        emit(State.loading())
+        questionsCollection
+            .document(question.id)
+            .set(question)
+            .await()
+        emit(State.success(question))
+    }.catch {
+        emit(State.failed(it.message.toString()))
+    }.flowOn(Dispatchers.IO)
 }
