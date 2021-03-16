@@ -58,9 +58,9 @@
                 android:text="@{TextUtils.join(`, `,question.tags)}" />
 
             <TextView
+                android:textAlignment="textEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:text="@{`Asked by `+question.author}" />
         </LinearLayout>
     </LinearLayout>

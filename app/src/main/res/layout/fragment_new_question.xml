@@ -50,6 +50,12 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.hootsuite.nachos.NachoTextView
+                android:hint="Tags"
+                android:id="@+id/nacho_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
