@@ -1,6 +1,8 @@
 package app.nush.thinkingcapp.util
 
 import android.text.format.DateUtils
+import com.google.firebase.Timestamp
+import org.ocpsoft.prettytime.PrettyTime
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,3 +52,8 @@ fun String.formatDate(): String = SimpleDateFormat("dd MMM yyyy").format(toDate(
 infix fun Int.suffix(suffix: String) = if (this == 1) "1 $suffix" else "$this $suffix" + "s"
 
 fun uuid() = UUID.randomUUID().toString()
+
+fun prettyElapsedTime(time: Timestamp): String {
+    val date = time.toDate()
+    return PrettyTime().format(date)
+}

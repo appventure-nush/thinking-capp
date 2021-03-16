@@ -1,6 +1,7 @@
 package app.nush.thinkingcapp.models
 
 import app.nush.thinkingcapp.util.uuid
+import com.google.firebase.Timestamp
 
 data class Question(
     val id: String = uuid(),
@@ -11,5 +12,6 @@ data class Question(
     val answers: List<String> = emptyList(),
     val upvotes: Int = 0,
     val downvotes: Int = 0,
-    val hasAcceptedAnswer: Boolean = false
+    val hasAcceptedAnswer: Boolean = false,
+    val modifiedDate: Timestamp = Timestamp.now()
 )

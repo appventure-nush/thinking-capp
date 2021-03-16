@@ -2,13 +2,14 @@ package app.nush.thinkingcapp.viewmodels
 
 import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.util.State
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 
@@ -19,7 +20,7 @@ class QuestionsRepo {
         offer(State.loading())
         val questions = questionsCollection.get().await().toObjects(Question::class.java)
         offer(State.success(questions))
-        val sub=questionsCollection.addSnapshotListener { snapshot, exception ->
+        val sub = questionsCollection.addSnapshotListener { snapshot, exception ->
             if (snapshot == null) {
                 return@addSnapshotListener
             }
@@ -30,14 +31,15 @@ class QuestionsRepo {
         emit(State.failed(it.message.toString()))
     }.flowOn(Dispatchers.IO)
 
-    fun addQuestion(question: Question) = flow<State<Question>>{
-        emit(State.loading())
+    fun addQuestion(question: Question) {
         questionsCollection
             .document(question.id)
             .set(question)
-            .await()
-        emit(State.success(question))
-    }.catch {
-        emit(State.failed(it.message.toString()))
-    }.flowOn(Dispatchers.IO)
+    }
+
+    fun editQuestion(question: Question) {
+        questionsCollection
+            .document(question.id)
+            .set(question.copy(modifiedDate = Timestamp.now()), SetOptions.merge())
+    }
 }

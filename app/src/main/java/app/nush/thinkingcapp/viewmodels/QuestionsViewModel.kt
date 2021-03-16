@@ -21,6 +21,7 @@ class QuestionsViewModel : ViewModel() {
         }
     }
 
-    fun addQuestion(question: Question) =
-        liveData(Dispatchers.IO) { repo.addQuestion(question).collect { emit(it) } }
+    fun addQuestion(question: Question) =repo.addQuestion(question)
+
+    fun editQuestion(question: Question) =repo.editQuestion(question)
 }

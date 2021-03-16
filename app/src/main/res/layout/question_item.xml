@@ -4,6 +4,7 @@
     <data>
 
         <import type="android.text.TextUtils" />
+        <import type="app.nush.thinkingcapp.util.CoreutilsKt" />
 
         <variable
             name="question"
@@ -50,18 +51,18 @@
                 android:textAlignment="center"
                 android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tagsRecyclerView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:padding="8dp"
-                android:text="@{TextUtils.join(`, `,question.tags)}" />
+                android:padding="8dp"/>
 
             <TextView
                 android:textAlignment="textEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{`Asked by `+question.author}" />
+                android:text="@{`Asked by `+question.author + ` ` + CoreutilsKt.prettyElapsedTime(question.modifiedDate)}" />
         </LinearLayout>
     </LinearLayout>
 </layout>

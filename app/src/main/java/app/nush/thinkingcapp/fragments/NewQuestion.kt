@@ -41,12 +41,8 @@ class NewQuestion : Fragment() {
             val question = newQuestionViewModel.toQuestion().copy(
                 tags = binding.root.nacho_text_view.chipValues
             )
-            println(question)
-            val flow = questionsViewModel.addQuestion(question)
-            flow.observe(this) {
-                Navigation.navigate(R.id.mainContent)
-                flow.removeObservers(this)
-            }
+            questionsViewModel.addQuestion(question)
+            Navigation.navigate(R.id.mainContent)
         }
         metaDataViewModel.metadata.observe(this) {
             val data = (it as? State.Success)?.data ?: return@observe

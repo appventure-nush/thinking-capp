@@ -3,10 +3,12 @@ package app.nush.thinkingcapp.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.fragments.MainContentDirections
 import app.nush.thinkingcapp.models.Question
 import com.nush.thinkingcapp.databinding.QuestionItemBinding
+import kotlinx.android.synthetic.main.question_item.view.*
 
 class QuestionsAdapter(val questions: List<Question>) :
     RecyclerView.Adapter<QuestionsAdapter.ViewHolder>() {
@@ -21,6 +23,9 @@ class QuestionsAdapter(val questions: List<Question>) :
                 val action = MainContentDirections.actionMainContentToQuestionDisplay(item.id)
                 binding.root.findNavController().navigate(action)
             }
+            binding.root.tagsRecyclerView.adapter = TagsAdapter(item.tags)
+            binding.root.tagsRecyclerView.layoutManager =
+                LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)
             binding.executePendingBindings()
         }
 

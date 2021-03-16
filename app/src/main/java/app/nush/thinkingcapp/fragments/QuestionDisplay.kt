@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.adapters.TagsAdapter
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
-import com.nush.thinkingcapp.databinding.FragmentNewQuestionBinding
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
+import kotlinx.android.synthetic.main.fragment_question_display.view.*
 
 
 /**
@@ -37,6 +40,20 @@ class QuestionDisplay : Fragment() {
                         return@observe
                     }
                 binding.question = question
+                binding.root.tagsListView.adapter = TagsAdapter(question.tags)
+                binding.root.tagsListView.layoutManager =
+                    LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                binding.root.upvote.setOnClickListener {
+                    println("Clickedc")
+                    println(question.copy(upvotes = question.upvotes + 1))
+                    viewModel.editQuestion(question.copy(upvotes = question.upvotes + 1))
+                    println("Executed")
+                }
+                binding.root.downvote.setOnClickListener {
+                    println("Clickeddown")
+
+                    viewModel.editQuestion(question.copy(downvotes = question.downvotes + 1))
+                }
             } else {
                 println("Failed loading data.")
             }
