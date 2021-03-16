@@ -25,7 +25,7 @@
                 android:layout_width="56dp"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="@{Integer.toString(question.upvotes - question.downvotes)}"
+                android:text="@{Integer.toString(question.votes)}"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
@@ -39,6 +39,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -59,10 +60,11 @@
                 android:padding="8dp"/>
 
             <TextView
+                android:padding="8dp"
                 android:textAlignment="textEnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{`Asked by `+question.author + ` ` + CoreutilsKt.prettyElapsedTime(question.modifiedDate)}" />
+                android:text="@{`Asked by `+question.author + `\n` + CoreutilsKt.prettyElapsedTime(question.modifiedDate)}" />
         </LinearLayout>
     </LinearLayout>
 </layout>

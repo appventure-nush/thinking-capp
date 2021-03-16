@@ -1,5 +1,6 @@
 package app.nush.thinkingcapp.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,8 +31,8 @@ class QuestionDisplay : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val binding = FragmentQuestionDisplayBinding.inflate(inflater, container, false)
+        val originalColor = binding.root.questionNumVotes.currentTextColor
         viewModel.questions.observe(this) {
             if (it is State.Success) {
                 val question =
@@ -43,16 +44,49 @@ class QuestionDisplay : Fragment() {
                 binding.root.tagsListView.adapter = TagsAdapter(question.tags)
                 binding.root.tagsListView.layoutManager =
                     LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                // TODO: Change when authentication implemented
+                val name = "Adrian Ong"
                 binding.root.upvote.setOnClickListener {
-                    println("Clickedc")
-                    println(question.copy(upvotes = question.upvotes + 1))
-                    viewModel.editQuestion(question.copy(upvotes = question.upvotes + 1))
-                    println("Executed")
+                    val upvoters = if (name in question.upvoters) {
+                        question.upvoters - name
+                    } else {
+                        question.upvoters + name
+                    }
+                    val downvoters = question.downvoters - name
+                    viewModel.editQuestion(
+                        question.copy(
+                            upvoters = upvoters,
+                            downvoters = downvoters
+                        )
+                    )
                 }
                 binding.root.downvote.setOnClickListener {
-                    println("Clickeddown")
-
-                    viewModel.editQuestion(question.copy(downvotes = question.downvotes + 1))
+                    val downvoters = if (name in question.downvoters) {
+                        question.downvoters - name
+                    } else {
+                        question.downvoters + name
+                    }
+                    val upvoters = question.upvoters - name
+                    viewModel.editQuestion(
+                        question.copy(
+                            downvoters = downvoters,
+                            upvoters = upvoters
+                        )
+                    )
+                }
+                if (name in question.upvoters) {
+                    binding.root.upvote.setColorFilter(Color.rgb(255, 69, 0))
+                    binding.root.questionNumVotes.setTextColor(Color.rgb(255, 69, 0))
+                    binding.root.downvote.clearColorFilter()
+                } else {
+                    binding.root.upvote.clearColorFilter()
+                    if (name in question.downvoters) {
+                        binding.root.downvote.setColorFilter(Color.rgb(113, 147, 255))
+                        binding.root.questionNumVotes.setTextColor(Color.rgb(113, 147, 255))
+                    } else {
+                        binding.root.downvote.clearColorFilter()
+                        binding.root.questionNumVotes.setTextColor(originalColor)
+                    }
                 }
             } else {
                 println("Failed loading data.")

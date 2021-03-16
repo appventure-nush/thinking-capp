@@ -37,9 +37,13 @@ class QuestionsRepo {
             .set(question)
     }
 
-    fun editQuestion(question: Question) {
+    fun editQuestion(question: Question, updateTime: Boolean = false) {
         questionsCollection
             .document(question.id)
-            .set(question.copy(modifiedDate = Timestamp.now()), SetOptions.merge())
+            .set(
+                if (updateTime)
+                    question.copy(modifiedDate = Timestamp.now(), modified = true)
+                else question, SetOptions.merge()
+            )
     }
 }

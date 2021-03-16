@@ -21,7 +21,8 @@ class QuestionsViewModel : ViewModel() {
         }
     }
 
-    fun addQuestion(question: Question) =repo.addQuestion(question)
+    fun addQuestion(question: Question) = repo.addQuestion(question)
 
-    fun editQuestion(question: Question) =repo.editQuestion(question)
+    fun editQuestion(question: Question, updateTime: Boolean = false) =
+        repo.editQuestion(question, updateTime)
 }

@@ -10,8 +10,11 @@ data class Question(
     val author: String = "",
     val tags: List<String> = emptyList(),
     val answers: List<String> = emptyList(),
-    val upvotes: Int = 0,
-    val downvotes: Int = 0,
+    val upvoters: List<String> = emptyList(),
+    val downvoters: List<String> = emptyList(),
     val hasAcceptedAnswer: Boolean = false,
-    val modifiedDate: Timestamp = Timestamp.now()
-)
+    val modifiedDate: Timestamp = Timestamp.now(),
+    val modified: Boolean = false
+){
+    val votes = upvoters.size - downvoters.size
+}
