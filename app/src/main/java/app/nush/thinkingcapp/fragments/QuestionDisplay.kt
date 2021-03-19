@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.TagsAdapter
+import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
-import kotlinx.android.synthetic.main.fragment_question_display.view.*
 
 
 /**
@@ -24,29 +24,30 @@ import kotlinx.android.synthetic.main.fragment_question_display.view.*
  * create an instance of this fragment.
  */
 class QuestionDisplay : Fragment() {
-    val viewModel: QuestionsViewModel by activityViewModels()
-    val args: QuestionDisplayArgs by navArgs()
+    private val viewModel: QuestionsViewModel by activityViewModels()
+    private val args: QuestionDisplayArgs by navArgs()
+    var binding: FragmentQuestionDisplayBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentQuestionDisplayBinding.inflate(inflater, container, false)
-        val originalColor = binding.root.questionNumVotes.currentTextColor
-        viewModel.questions.observe(this) {
+        val originalColor = binding.questionNumVotes.currentTextColor
+        viewModel.questions.observe(viewLifecycleOwner, Observer {
             if (it is State.Success) {
                 val question =
                     it.data.firstOrNull { question -> question.id == args.questionId } ?: run {
                         println("Question not found.")
-                        return@observe
+                        return@Observer
                     }
                 binding.question = question
-                binding.root.tagsListView.adapter = TagsAdapter(question.tags)
-                binding.root.tagsListView.layoutManager =
+                binding.tagsListView.adapter = TagsAdapter(question.tags)
+                binding.tagsListView.layoutManager =
                     LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 // TODO: Change when authentication implemented
                 val name = "Adrian Ong"
-                binding.root.upvote.setOnClickListener {
+                binding.upvote.setOnClickListener {
                     val upvoters = if (name in question.upvoters) {
                         question.upvoters - name
                     } else {
@@ -60,7 +61,7 @@ class QuestionDisplay : Fragment() {
                         )
                     )
                 }
-                binding.root.downvote.setOnClickListener {
+                binding.downvote.setOnClickListener {
                     val downvoters = if (name in question.downvoters) {
                         question.downvoters - name
                     } else {
@@ -75,24 +76,30 @@ class QuestionDisplay : Fragment() {
                     )
                 }
                 if (name in question.upvoters) {
-                    binding.root.upvote.setColorFilter(Color.rgb(255, 69, 0))
-                    binding.root.questionNumVotes.setTextColor(Color.rgb(255, 69, 0))
-                    binding.root.downvote.clearColorFilter()
+                    binding.upvote.setColorFilter(Color.rgb(255, 69, 0))
+                    binding.questionNumVotes.setTextColor(Color.rgb(255, 69, 0))
+                    binding.downvote.clearColorFilter()
                 } else {
-                    binding.root.upvote.clearColorFilter()
+                    binding.upvote.clearColorFilter()
                     if (name in question.downvoters) {
-                        binding.root.downvote.setColorFilter(Color.rgb(113, 147, 255))
-                        binding.root.questionNumVotes.setTextColor(Color.rgb(113, 147, 255))
+                        binding.downvote.setColorFilter(Color.rgb(113, 147, 255))
+                        binding.questionNumVotes.setTextColor(Color.rgb(113, 147, 255))
                     } else {
-                        binding.root.downvote.clearColorFilter()
-                        binding.root.questionNumVotes.setTextColor(originalColor)
+                        binding.downvote.clearColorFilter()
+                        binding.questionNumVotes.setTextColor(originalColor)
                     }
                 }
             } else {
                 println("Failed loading data.")
             }
-        }
+        })
+        this.binding = binding
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     companion object {

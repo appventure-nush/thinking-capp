@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.collect
 
 class QuestionsViewModel : ViewModel() {
     private val repo = QuestionsRepo()
-    val questions = liveData(Dispatchers.IO) {
-        emit(State.loading<List<Question>>())
+    val questions = liveData<State<List<Question>>>(Dispatchers.IO) {
+        emit(State.loading())
         try {
             repo.getAllQuestions().collect {
                 emit(it)

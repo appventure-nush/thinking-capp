@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
 import com.nush.thinkingcapp.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.nush.thinkingcapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
@@ -20,22 +20,24 @@ class MainActivity : AppCompatActivity() {
             else R.style.AppTheme_Light
         )
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        with(binding) {
+            setSupportActionBar(toolbar)
+            val toggle = ActionBarDrawerToggle(this@MainActivity, drawerLayout, toolbar, 0, 0)
+            actionBar?.setDisplayHomeAsUpEnabled(true)
+            drawerLayout.addDrawerListener(toggle)
+            toggle.isDrawerIndicatorEnabled = true
+            toggle.syncState()
+            navController = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!.findNavController()
 
-        setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, 0, 0)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.isDrawerIndicatorEnabled = true
-        toggle.syncState()
-        navController = nav_host_fragment.findNavController()
-
-        Navigation.init(
-            mapOf(
-                R.id.nav_settings to R.id.settings,
-                R.id.nav_main to R.id.mainContent
-            ), navController, nav_view, drawer_layout
-        )
+            Navigation.init(
+                mapOf(
+                    R.id.nav_settings to R.id.settings,
+                    R.id.nav_main to R.id.mainContent
+                ), navController, navView, drawerLayout
+            )
+        }
     }
 
     fun toggleDarkMode(dark: Boolean) {

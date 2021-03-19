@@ -36,8 +36,8 @@ class MetaDataViewModel : ViewModel() {
     }.flowOn(Dispatchers.IO)
 
 
-    val metadata = liveData(Dispatchers.IO) {
-        emit(State.loading<MetaData>())
+    val metadata = liveData<State<MetaData>>(Dispatchers.IO) {
+        emit(State.loading())
         try {
             flow.collect {
                 emit(it)
