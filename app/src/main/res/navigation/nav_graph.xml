@@ -1,44 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/mainContent">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav_graph"
+        app:startDestination="@id/mainContent">
     <fragment
-        android:id="@+id/mainContent"
-        android:name="app.nush.thinkingcapp.fragments.MainContent"
-        android:label="fragment_main_content"
-        tools:layout="@layout/fragment_main_content" >
+            android:id="@+id/mainContent"
+            android:name="app.nush.thinkingcapp.fragments.MainContent"
+            android:label="fragment_main_content"
+            tools:layout="@layout/fragment_main_content">
         <action
-            android:id="@+id/actionMainContentToSettings"
-            app:destination="@id/settings" />
+                android:id="@+id/actionMainContentToSettings"
+                app:destination="@id/settings" />
         <action
-            android:id="@+id/action_mainContent_to_questionDisplay"
-            app:destination="@id/questionDisplay" />
+                android:id="@+id/action_mainContent_to_questionDisplay"
+                app:destination="@id/questionDisplay" />
         <action
-            android:id="@+id/action_mainContent_to_newQuestion"
-            app:destination="@id/newQuestion" />
+                android:id="@+id/action_mainContent_to_newQuestion"
+                app:destination="@id/newQuestion" />
     </fragment>
     <fragment
-        android:id="@+id/settings"
-        android:name="app.nush.thinkingcapp.fragments.Settings"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+            android:id="@+id/settings"
+            android:name="app.nush.thinkingcapp.fragments.Settings"
+            android:label="fragment_settings"
+            tools:layout="@layout/fragment_settings">
         <action
-            android:id="@+id/actionSettingsToMainContent"
-            app:destination="@id/mainContent" />
+                android:id="@+id/actionSettingsToMainContent"
+                app:destination="@id/mainContent" />
     </fragment>
     <fragment
-        android:id="@+id/newQuestion"
-        android:name="app.nush.thinkingcapp.fragments.NewQuestion"
-        android:label="NewQuestion" >
-    </fragment>
+            android:id="@+id/newQuestion"
+            android:name="app.nush.thinkingcapp.fragments.NewQuestion"
+            android:label="NewQuestion" />
     <fragment
-        android:id="@+id/questionDisplay"
-        android:name="app.nush.thinkingcapp.fragments.QuestionDisplay"
-        android:label="QuestionDisplay" >
+            android:id="@+id/questionDisplay"
+            android:name="app.nush.thinkingcapp.fragments.QuestionDisplay"
+            android:label="QuestionDisplay">
         <argument
-            android:name="questionId"
-            app:argType="string"/>
+                android:name="questionId"
+                app:argType="string" />
+        <action
+                android:id="@+id/action_questionDisplay_to_newAnswer"
+                app:destination="@id/newAnswer" />
+    </fragment>
+    <fragment
+            android:id="@+id/newAnswer"
+            android:name="app.nush.thinkingcapp.fragments.NewAnswer"
+            android:label="NewAnswer">
+        <argument
+                android:name="questionId"
+                app:argType="string" />
     </fragment>
 </navigation>

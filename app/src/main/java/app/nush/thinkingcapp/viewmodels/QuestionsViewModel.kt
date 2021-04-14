@@ -4,15 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.util.State
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 
 class QuestionsViewModel : ViewModel() {
-    private val repo = QuestionsRepo()
+    private val repo = Repo<Question>(Firebase.firestore.collection("questions"))
     val questions = liveData<State<List<Question>>>(Dispatchers.IO) {
         emit(State.loading())
         try {
-            repo.getAllQuestions().collect {
+            repo.getAllItems<Question>().collect {
                 emit(it)
             }
         } catch (e: Exception) {
@@ -21,8 +24,12 @@ class QuestionsViewModel : ViewModel() {
         }
     }
 
-    fun addQuestion(question: Question) = repo.addQuestion(question)
+    fun addQuestion(question: Question) = repo.addItem(question)
 
-    fun editQuestion(question: Question, updateTime: Boolean = false) =
-        repo.editQuestion(question, updateTime)
+    fun editQuestion(question: Question, updateTime: Boolean = false) {
+        val newQuestion = if (updateTime)
+            question.copy(modifiedDate = Timestamp.now(), modified = true)
+        else question
+        repo.editItem(newQuestion)
+    }
 }

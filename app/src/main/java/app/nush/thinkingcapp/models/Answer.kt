@@ -3,18 +3,16 @@ package app.nush.thinkingcapp.models
 import app.nush.thinkingcapp.util.uuid
 import com.google.firebase.Timestamp
 
-data class Question(
+data class Answer(
     override val id: String = uuid(),
-    val title: String = "",
+    val questionId: String = uuid(),
     val body: String = "",
     val author: String = "",
-    val tags: List<String> = emptyList(),
     val answers: List<String> = emptyList(),
     val upvoters: List<String> = emptyList(),
     val downvoters: List<String> = emptyList(),
-    val hasAcceptedAnswer: Boolean = false,
-    val modifiedDate: Timestamp = Timestamp.now(),
-    val modified: Boolean = false,
-) : Storable {
+    val acceptedAnswer: Boolean = false,
+    val answeredDate: Timestamp = Timestamp.now(),
+): Storable{
     val votes = upvoters.size - downvoters.size
 }

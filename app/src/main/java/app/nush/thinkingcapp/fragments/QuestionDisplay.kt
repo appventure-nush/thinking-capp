@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.TagsAdapter
-import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.util.State
+import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
 
@@ -25,6 +26,7 @@ import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
  */
 class QuestionDisplay : Fragment() {
     private val viewModel: QuestionsViewModel by activityViewModels()
+    private val answersViewModel: AnswersViewModel by viewModels()
     private val args: QuestionDisplayArgs by navArgs()
     var binding: FragmentQuestionDisplayBinding? = null
 
@@ -93,6 +95,19 @@ class QuestionDisplay : Fragment() {
                 println("Failed loading data.")
             }
         })
+        answersViewModel.questionId = args.questionId
+        answersViewModel.answers.observe(viewLifecycleOwner){
+            // Check State.Success
+            if (it !is State.Success) return@observe
+            val data = it.data
+            // Render answers here
+            println(data)
+        }
+//        Navigate to new answer fragment
+//         button.setOnClickListener {
+//             val action = QuestionDisplayDirections.actionQuestionDisplayToNewAnswer(args.questionId)
+//             binding.root.findNavController().navigate(action)
+//         }
         this.binding = binding
         return binding.root
     }
