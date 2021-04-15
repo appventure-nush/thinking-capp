@@ -2,11 +2,7 @@ package app.nush.thinkingcapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import app.nush.thinkingcapp.fragments.MainContentDirections
-import app.nush.thinkingcapp.models.Question
-import com.nush.thinkingcapp.databinding.QuestionItemBinding
 import com.nush.thinkingcapp.databinding.TagChipBinding
 
 class TagsAdapter(private val tags: List<String>) :

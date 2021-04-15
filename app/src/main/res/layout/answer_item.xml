@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="app.nush.thinkingcapp.util.CoreutilsKt"/>
+        <variable
+            name="answer"
+            type="app.nush.thinkingcapp.models.Answer" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/upvote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_upward_24"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ansNumVotes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@{Integer.toString(answer.votes)}"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/upvote"
+            app:layout_constraintStart_toStartOf="@+id/upvote"
+            app:layout_constraintTop_toBottomOf="@+id/upvote"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <ImageView
+            android:id="@+id/downvote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_downward_24"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/upvote"
+            app:layout_constraintStart_toStartOf="@+id/upvote"
+            app:layout_constraintTop_toBottomOf="@+id/ansNumVotes" />
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{answer.body}"
+            android:textSize="18dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/upvote"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{`Asked`+CoreutilsKt.prettyElapsedTime(answer.answeredDate) + ` by ` + answer.author}"
+            android:textAlignment="textEnd"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/upvote"
+            app:layout_constraintTop_toBottomOf="@id/tv1"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
