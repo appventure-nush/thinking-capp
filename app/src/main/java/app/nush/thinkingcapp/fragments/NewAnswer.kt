@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
+import app.nush.thinkingcapp.viewmodels.NewAnswerViewModel
+import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentNewAnswerBinding
 
 
@@ -22,9 +25,13 @@ class NewAnswer : Fragment() {
         answersViewModel.questionId = args.questionId
         val binding =
             FragmentNewAnswerBinding.inflate(inflater, container, false)
-//        button.setOnClickListener {
-//            answersViewModel.addAnswer(...)
-//        }
+        val newAnswerViewModel = NewAnswerViewModel()
+        binding.answer = newAnswerViewModel
+        binding.addAnswerFab.setOnClickListener {
+            val answer = newAnswerViewModel.toAnswer().copy()
+            answersViewModel.addAnswer(answer)
+            Navigation.navigate(R.id.mainContent)
+        }
         this.binding = binding
         return binding.root
     }
@@ -32,5 +39,10 @@ class NewAnswer : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object{
+        @JvmStatic
+        fun newInstance() = NewAnswer()
     }
 }
