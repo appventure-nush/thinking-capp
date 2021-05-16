@@ -12,7 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.adapters.AnswersAdapter
 import app.nush.thinkingcapp.adapters.TagsAdapter
+import app.nush.thinkingcapp.models.Answer
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
@@ -101,6 +103,9 @@ class QuestionDisplay : Fragment() {
             if (it !is State.Success) return@observe
             val data = it.data
             // Render answers here
+            binding.ansListView.adapter = AnswersAdapter(data)
+            binding.ansListView.layoutManager =
+                LinearLayoutManager(context,RecyclerView.VERTICAL,false)
             println(data)
         }
 //        Navigate to new answer fragment

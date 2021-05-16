@@ -9,6 +9,10 @@
         <variable
                 name="question"
                 type="app.nush.thinkingcapp.models.Question" />
+
+        <variable
+            name="answer"
+            type="app.nush.thinkingcapp.models.Answer" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -102,9 +106,18 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tagsListView"
                     app:layout_constraintTop_toBottomOf="@+id/tagsListView" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ansListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toStartOf="@id/textView4"
+                app:layout_constraintTop_toBottomOf="@id/textView4"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </layout>
