@@ -2,11 +2,10 @@ package app.nush.thinkingcapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.nush.thinkingcapp.fragments.MainContentDirections
 import app.nush.thinkingcapp.models.Answer
 import com.nush.thinkingcapp.databinding.AnswerItemBinding
+import io.noties.markwon.Markwon
 
 class AnswersAdapter (val answers: List<Answer>):
     RecyclerView.Adapter<AnswersAdapter.ViewHolder>(){
@@ -14,8 +13,10 @@ class AnswersAdapter (val answers: List<Answer>):
     inner class ViewHolder(private val binding: AnswerItemBinding) :
         RecyclerView.ViewHolder(binding.root){
             fun bind(item: Answer){
+                val markwon = Markwon.create(binding.root.context)
                 binding.answer = item
                 binding.executePendingBindings()
+                markwon.setMarkdown(binding.textViewBody, item.body)
             }
     }
 

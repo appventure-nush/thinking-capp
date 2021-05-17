@@ -45,10 +45,9 @@
             app:layout_constraintStart_toStartOf="@+id/upvote"
             app:layout_constraintTop_toBottomOf="@+id/ansNumVotes" />
         <TextView
-            android:id="@+id/tv1"
+            android:id="@+id/text_view_body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{answer.body}"
             android:textSize="18dp"
             android:layout_marginTop="16dp"
             android:layout_marginStart="4dp"
@@ -67,7 +66,7 @@
             android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/upvote"
-            app:layout_constraintTop_toBottomOf="@id/tv1"
+            app:layout_constraintTop_toBottomOf="@id/text_view_body"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
