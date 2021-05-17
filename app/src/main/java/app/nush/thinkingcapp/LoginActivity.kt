@@ -1,27 +1,29 @@
 package app.nush.thinkingcapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
+import app.nush.thinkingcapp.fragments.Login
+import app.nush.thinkingcapp.fragments.Register
 import app.nush.thinkingcapp.util.Preferences
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
+
 
 class LoginActivity : AppCompatActivity() {
 
-    var register: Boolean = false
-
-    lateinit var textInputUsername: TextInputLayout
-    lateinit var textInputPassword: TextInputLayout
-    lateinit var textInputConfirm: TextInputLayout
-    lateinit var editTextUsername: TextInputEditText
-    lateinit var editTextPassword: TextInputEditText
-    lateinit var editTextConfirm: TextInputEditText
-
-    lateinit var buttonLogin: Button
-    lateinit var buttonRegister: Button
+    private val firebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
+    var login: Boolean = true
+    lateinit var modeButton: Button
+    lateinit var fragmentLogin: Login
+    lateinit var fragmentRegister: Register
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Preferences.init(this)
@@ -32,53 +34,43 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        initialize()
-        toggleRegisterMode()
-    }
-
-    private fun initialize() {
-        textInputUsername = findViewById(R.id.text_input_username)
-        textInputPassword = findViewById(R.id.text_input_password)
-        textInputConfirm = findViewById(R.id.text_input_confirm)
-        editTextUsername = findViewById(R.id.edit_text_username)
-        editTextPassword = findViewById(R.id.edit_text_password)
-        editTextConfirm = findViewById(R.id.edit_text_confirm)
-        buttonLogin = findViewById(R.id.button_login)
-        buttonRegister = findViewById(R.id.button_register)
-
-        editTextUsername.setOnFocusChangeListener { view, hasFocus -> if (hasFocus) textInputUsername.error = "" }
-        editTextPassword.setOnFocusChangeListener { view, hasFocus -> if (hasFocus) textInputPassword.error = "" }
-        editTextConfirm.setOnFocusChangeListener { view, hasFocus -> if (hasFocus) textInputConfirm.error = "" }
-    }
-
-    fun onClick(view: View) {
-        when (view.id) {
-            R.id.button_login -> if (register) register() else login()
-            R.id.button_register -> {
-                register = !register
-                toggleRegisterMode()
-            }
+        if (firebaseAuth.getCurrentUser() != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
+
+        fragmentLogin = Login()
+        fragmentRegister = Register()
+
+        modeButton = findViewById(R.id.login_button_mode)
+        toggleLoginMode()
     }
 
-    private fun toggleRegisterMode() {
-        if (register) {
-            textInputConfirm.visibility = View.VISIBLE
-            buttonLogin.text = getString(R.string.login_register)
-            buttonRegister.text = getString(R.string.login_to_login)
+    fun changeLoginMode(view: View) {
+        login = !login
+        toggleLoginMode()
+    }
+
+    private fun toggleLoginMode() {
+        if (login) {
+            changeFragment(fragmentLogin)
+            modeButton.text = getText(R.string.login_to_register)
         } else {
-            textInputConfirm.visibility = View.INVISIBLE
-            buttonLogin.text = getString(R.string.login_login)
-            buttonRegister.text = getString(R.string.login_to_register)
+            changeFragment(fragmentRegister)
+            modeButton.text = getText(R.string.login_to_login)
         }
     }
 
-    private fun login() {
-        textInputConfirm.error = "Invalid username or password"
+    private fun changeFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.login_fragment, fragment)
+            commit()
+        }
     }
 
-    private fun register() {
+}
 
-    }
-
+@BindingAdapter("app:errorText")
+fun setErrorMessage(view: TextInputLayout, errorMessage: String?) {
+    view.error = errorMessage
 }
