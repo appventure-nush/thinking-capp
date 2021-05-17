@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.AnswersAdapter
 import app.nush.thinkingcapp.adapters.TagsAdapter
-import app.nush.thinkingcapp.models.Answer
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
@@ -98,21 +98,21 @@ class QuestionDisplay : Fragment() {
             }
         })
         answersViewModel.questionId = args.questionId
-        answersViewModel.answers.observe(viewLifecycleOwner){
+        answersViewModel.answers.observe(viewLifecycleOwner) {
             // Check State.Success
             if (it !is State.Success) return@observe
             val data = it.data
             // Render answers here
             binding.ansListView.adapter = AnswersAdapter(data)
             binding.ansListView.layoutManager =
-                LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             println(data)
         }
-//        Navigate to new answer fragment
-//         button.setOnClickListener {
-//             val action = QuestionDisplayDirections.actionQuestionDisplayToNewAnswer(args.questionId)
-//             binding.root.findNavController().navigate(action)
-//         }
+        binding.fab.setOnClickListener {
+            val action =
+                QuestionDisplayDirections.actionQuestionDisplayToNewAnswer(args.questionId)
+            binding.root.findNavController().navigate(action)
+        }
         this.binding = binding
         return binding.root
     }
