@@ -2,6 +2,7 @@ package app.nush.thinkingcapp.viewmodels
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
+import app.nush.thinkingcapp.fragments.Register.Companion.checkLength
 
 class RegisterViewModel : BaseObservable() {
 
@@ -63,5 +64,6 @@ class RegisterViewModel : BaseObservable() {
 
     val valid: Boolean
         get() = email.isNotBlank() && username.isNotBlank() && password.isNotBlank() && confirm.isNotBlank()
+            && checkLength(this)
 
 }

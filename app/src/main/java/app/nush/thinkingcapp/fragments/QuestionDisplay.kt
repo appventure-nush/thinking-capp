@@ -15,9 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.AnswersAdapter
 import app.nush.thinkingcapp.adapters.TagsAdapter
+import app.nush.thinkingcapp.models.Question
+import app.nush.thinkingcapp.models.findByEmail
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
+import app.nush.thinkingcapp.viewmodels.UsersViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
 
 
@@ -29,84 +33,59 @@ import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
 class QuestionDisplay : Fragment() {
     private val viewModel: QuestionsViewModel by activityViewModels()
     private val answersViewModel: AnswersViewModel by viewModels()
+    private val usersViewModel: UsersViewModel by activityViewModels()
     private val args: QuestionDisplayArgs by navArgs()
     var binding: FragmentQuestionDisplayBinding? = null
+    private var originalColor = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentQuestionDisplayBinding.inflate(inflater, container, false)
-        val originalColor = binding.questionNumVotes.currentTextColor
-        viewModel.questions.observe(viewLifecycleOwner, Observer {
-            if (it is State.Success) {
-                val question =
-                    it.data.firstOrNull { question -> question.id == args.questionId } ?: run {
-                        println("Question not found.")
-                        return@Observer
-                    }
-                binding.question = question
-                binding.tagsListView.adapter = TagsAdapter(question.tags)
-                binding.tagsListView.layoutManager =
-                    LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                // TODO: Change when authentication implemented
-                val name = "Adrian Ong"
-                binding.upvote.setOnClickListener {
-                    val upvoters = if (name in question.upvoters) {
-                        question.upvoters - name
-                    } else {
-                        question.upvoters + name
-                    }
-                    val downvoters = question.downvoters - name
-                    viewModel.editQuestion(
-                        question.copy(
-                            upvoters = upvoters,
-                            downvoters = downvoters
-                        )
-                    )
-                }
-                binding.downvote.setOnClickListener {
-                    val downvoters = if (name in question.downvoters) {
-                        question.downvoters - name
-                    } else {
-                        question.downvoters + name
-                    }
-                    val upvoters = question.upvoters - name
-                    viewModel.editQuestion(
-                        question.copy(
-                            downvoters = downvoters,
-                            upvoters = upvoters
-                        )
-                    )
-                }
-                if (name in question.upvoters) {
-                    binding.upvote.setColorFilter(Color.rgb(255, 69, 0))
-                    binding.questionNumVotes.setTextColor(Color.rgb(255, 69, 0))
-                    binding.downvote.clearColorFilter()
-                } else {
-                    binding.upvote.clearColorFilter()
-                    if (name in question.downvoters) {
-                        binding.downvote.setColorFilter(Color.rgb(113, 147, 255))
-                        binding.questionNumVotes.setTextColor(Color.rgb(113, 147, 255))
-                    } else {
-                        binding.downvote.clearColorFilter()
-                        binding.questionNumVotes.setTextColor(originalColor)
-                    }
-                }
-            } else {
-                println("Failed loading data.")
+        val binding =
+            FragmentQuestionDisplayBinding.inflate(inflater, container, false)
+        originalColor = binding.questionNumVotes.currentTextColor
+
+        usersViewModel.users.observe(viewLifecycleOwner, Observer { users ->
+            if (users !is State.Success) {
+                println("Failed loading user data")
+                return@Observer
             }
+            viewModel.questions.observe(viewLifecycleOwner, Observer {
+                if (it is State.Success) {
+                    val question =
+                        it.data.firstOrNull { question -> question.id == args.questionId }
+                            ?: run {
+                                println("Question not found.")
+                                return@Observer
+                            }
+                    renderQuestion(question.copy(author = users.data.findByEmail(
+                        question.author).username), binding)
+                } else {
+                    println("Failed loading data.")
+                }
+            })
         })
+
         answersViewModel.questionId = args.questionId
-        answersViewModel.answers.observe(viewLifecycleOwner) {
-            // Check State.Success
-            if (it !is State.Success) return@observe
-            val data = it.data
-            // Render answers here
-            binding.ansListView.adapter = AnswersAdapter(data)
-            binding.ansListView.layoutManager =
-                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            println(data)
+        usersViewModel.users.observe(viewLifecycleOwner) { users ->
+            if (users !is State.Success) {
+                println("Failed user loading data")
+                return@observe
+            }
+            answersViewModel.answers.observe(viewLifecycleOwner) {
+                // Check State.Success
+                if (it !is State.Success) return@observe
+                val data = it.data.map { answer ->
+                    answer.copy(author = users.data.findByEmail(answer.author).username)
+                }
+                // Render answers here
+                binding.ansListView.adapter = AnswersAdapter(data, answersViewModel)
+                binding.ansListView.layoutManager =
+                    LinearLayoutManager(context,
+                        RecyclerView.VERTICAL,
+                        false)
+            }
         }
         binding.fab.setOnClickListener {
             val action =
@@ -115,6 +94,60 @@ class QuestionDisplay : Fragment() {
         }
         this.binding = binding
         return binding.root
+    }
+
+
+    private fun renderQuestion(
+        question: Question,
+        binding: FragmentQuestionDisplayBinding,
+    ) {
+        binding.question = question
+        binding.tagsListView.adapter = TagsAdapter(question.tags)
+        binding.tagsListView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        val email = FirebaseAuth.getInstance().currentUser?.email!!
+        binding.upvote.setOnClickListener {
+            val upvoters = if (email in question.upvoters) {
+                question.upvoters - email
+            } else {
+                question.upvoters + email
+            }
+            val downvoters = question.downvoters - email
+            viewModel.editQuestion(
+                question.copy(
+                    upvoters = upvoters,
+                    downvoters = downvoters
+                )
+            )
+        }
+        binding.downvote.setOnClickListener {
+            val downvoters = if (email in question.downvoters) {
+                question.downvoters - email
+            } else {
+                question.downvoters + email
+            }
+            val upvoters = question.upvoters - email
+            viewModel.editQuestion(
+                question.copy(
+                    downvoters = downvoters,
+                    upvoters = upvoters
+                )
+            )
+        }
+        if (email in question.upvoters) {
+            binding.upvote.setColorFilter(Color.rgb(255, 69, 0))
+            binding.questionNumVotes.setTextColor(Color.rgb(255, 69, 0))
+            binding.downvote.clearColorFilter()
+        } else {
+            binding.upvote.clearColorFilter()
+            if (email in question.downvoters) {
+                binding.downvote.setColorFilter(Color.rgb(113, 147, 255))
+                binding.questionNumVotes.setTextColor(Color.rgb(113, 147, 255))
+            } else {
+                binding.downvote.clearColorFilter()
+                binding.questionNumVotes.setTextColor(originalColor)
+            }
+        }
     }
 
     override fun onDestroyView() {
