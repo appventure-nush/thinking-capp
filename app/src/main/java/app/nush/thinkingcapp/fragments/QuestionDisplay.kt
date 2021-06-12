@@ -78,6 +78,8 @@ class QuestionDisplay : Fragment() {
                 if (it !is State.Success) return@observe
                 val data = it.data.map { answer ->
                     answer.copy(author = users.data.findByEmail(answer.author).username)
+                }.sortedBy { answer ->
+                    -answer.votes
                 }
                 // Render answers here
                 binding.ansListView.adapter = AnswersAdapter(data, answersViewModel)

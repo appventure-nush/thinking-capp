@@ -49,6 +49,9 @@ class MainContent : Fragment() {
                         it.data.map { question ->
                             question.copy(author = users.data.findByEmail(
                                 question.author).username)
+                        }.sortedBy { question ->
+                            // Descending
+                            -question.votes
                         }
                     )
                     binding.recyclerView.adapter = adapter
