@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        firebaseAuth.signOut()
 
         if (firebaseAuth.getCurrentUser() != null) {
             startActivity(Intent(this, MainActivity::class.java))

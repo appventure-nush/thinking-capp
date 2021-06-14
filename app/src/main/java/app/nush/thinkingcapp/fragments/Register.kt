@@ -42,7 +42,8 @@ class Register : Fragment(R.layout.fragment_register) {
         binding.register = registerViewModel
 
         binding.registerButtonRegister.setOnClickListener {
-            if (checkLength(registerViewModel)) checkRegister(registerViewModel)
+            if (validateRegistration(registerViewModel)) checkRegister(
+                registerViewModel)
         }
 
         this.binding = binding
@@ -116,25 +117,48 @@ class Register : Fragment(R.layout.fragment_register) {
     companion object {
         private const val REGEX = "\\w+@\\w+\\.\\w+"
 
-        fun checkLength(model: RegisterViewModel): Boolean {
-            var valid = true
+        fun validateRegistration(model: RegisterViewModel): Boolean {
+            model.emailError = ""
+            model.usernameError = ""
+            model.passwordError = ""
+            model.confirmError = ""
+            // Initially there are no errors
+            if (model.email.isBlank() && model.username.isBlank() && model.password.isBlank()) {
+                return true
+            }
             if (!model.email.trim().matches(REGEX.toRegex())) {
-                model.emailError = "Invaid email format"
-                valid = false
+                model.emailError = "Invalid email format"
+                return false
             }
             if (model.username.trim().length < 5) {
                 model.usernameError = "Must be at least 5 characters long"
-                valid = false
+                return false
+
             }
             if (model.password.trim().length < 8) {
                 model.passwordError = "Must be at least 8 characters long"
-                valid = false
+                return false
             }
             if (model.password.trim() != model.confirm.trim()) {
+                println("CHeck:")
+                println(model.password.trim())
+                println(model.confirm.trim())
                 model.confirmError = "Passwords do not match"
-                valid = false
+                return false
             }
-            return valid
+            if (model.email.isBlank()) {
+                model.emailError = "Email cannot be blank"
+                return false
+            }
+            if (model.username.isBlank()) {
+                model.usernameError = "Username cannot be blank"
+                return false
+            }
+            if (model.password.isBlank()) {
+                model.passwordError = "Password cannot be blank"
+                return false
+            }
+            return true
         }
     }
 
