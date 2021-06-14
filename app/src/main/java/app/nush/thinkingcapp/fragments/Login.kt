@@ -22,7 +22,7 @@ import com.nush.thinkingcapp.databinding.FragmentLoginBinding
 class Login : Fragment(R.layout.fragment_login) {
 
     val REGEX = "\\w+@\\w+\\.\\w+"
-    private val firebaseAuth by lazy { // TODO migrate firebase stuff to some other class if needed
+    private val firebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
     private var binding: FragmentLoginBinding? = null
@@ -56,18 +56,18 @@ class Login : Fragment(R.layout.fragment_login) {
             Firebase.firestore.collection("usernames")
                 .document(username).get().addOnSuccessListener { documentSnapshot ->
                     if (!documentSnapshot.exists())
-                        model.usernameError = "Invalid username or password"
+                        model.usernameError = getString(R.string.login_invalid)
                     else {
                         val email = documentSnapshot.getString("email")
                         if (email == null) {
-                            model.usernameError = "Invalid username or password"
+                            model.usernameError = getString(R.string.login_invalid)
                         } else
                             login(email, model)
                     }
 
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.login_error), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -80,12 +80,12 @@ class Login : Fragment(R.layout.fragment_login) {
                         if (task.isSuccessful) {
                             startActivity(Intent(context, MainActivity::class.java))
                             requireActivity().finish()
-                            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
                         } else
-                            model.usernameError = "Invalid username or password"
+                            model.usernameError = getString(R.string.login_invalid)
                     })
         } catch (e: Exception) {
-            Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.login_error), Toast.LENGTH_SHORT).show()
         }
     }
 

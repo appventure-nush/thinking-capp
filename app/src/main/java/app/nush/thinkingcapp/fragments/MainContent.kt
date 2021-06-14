@@ -4,17 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.nush.thinkingcapp.adapters.QuestionsAdapter
-import app.nush.thinkingcapp.models.findByEmail
 import app.nush.thinkingcapp.util.Navigation
-import app.nush.thinkingcapp.util.State
-import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
-import app.nush.thinkingcapp.viewmodels.UsersViewModel
+import app.nush.thinkingcapp.util.Preferences
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
 
@@ -23,9 +19,7 @@ import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
  * Use the [MainContent.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainContent : Fragment() {
-    private val viewModel: QuestionsViewModel by activityViewModels()
-    private val usersViewModel: UsersViewModel by activityViewModels()
+class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
     var binding: FragmentMainContentBinding? = null
 
     override fun onCreateView(
@@ -35,44 +29,38 @@ class MainContent : Fragment() {
         // Inflate the layout for this fragment
         val binding =
             FragmentMainContentBinding.inflate(inflater, container, false)
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        usersViewModel.users.observe(viewLifecycleOwner) { users ->
-            if (users !is State.Success) {
-                println("Failed loading user data in main")
-                println(users)
-                return@observe
-            }
-            viewModel.questions.observe(viewLifecycleOwner, {
-                if (it is State.Success) {
-                    val adapter = QuestionsAdapter(
-                        it.data.map { question ->
-                            question.copy(author = users.data.findByEmail(
-                                question.author).username)
-                        }.sortedBy { question ->
-                            // Descending
-                            -question.votes
-                        }
-                    )
-                    binding.recyclerView.adapter = adapter
-                } else {
-                    println("Failed loading data")
-                }
-            })
-        }
 
-        binding.recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                this.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.sort_modes,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinner.adapter = adapter
+        }
+        binding.spinner.setSelection(Preferences.getSortMode())
+        binding.spinner.onItemSelectedListener = this
         binding.fab.setOnClickListener {
             Navigation.navigate(R.id.newQuestion)
         }
+
         this.binding = binding
         return binding.root
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        mode = when (position) {
+            0 -> SortMode.TOP
+            1 -> SortMode.NEW
+            else -> mode
+        }
+        Preferences.setSortMode(position)
+        childFragmentManager.beginTransaction().apply {
+            replace(R.id.questions_frame, MainQuestions())
+            commit()
+        }
+    }
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -80,6 +68,11 @@ class MainContent : Fragment() {
     }
 
     companion object {
+        enum class SortMode {
+            TOP, NEW
+        }
+        @JvmStatic
+        var mode = SortMode.TOP
         @JvmStatic
         fun newInstance() = MainContent()
     }

@@ -20,12 +20,6 @@ import com.nush.thinkingcapp.databinding.FragmentRegisterBinding
 
 class Register : Fragment(R.layout.fragment_register) {
 
-    // TODO some way to clear error messages
-    // TODO move firebase code to some other class?? if needed
-    // TODO update email requirements to better fit firebase requirement
-    // TODO strings.xml
-    // TODO logout function in MainActivity
-
     private val firebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
@@ -55,20 +49,19 @@ class Register : Fragment(R.layout.fragment_register) {
         binding = null
     }
 
-
     private fun checkRegister(model: RegisterViewModel) {
         try {
             Firebase.firestore.collection("emails")
                 .document(model.email.trim()).get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists())
-                        model.emailError = "Email taken"
+                        model.emailError = getString(R.string.register_error_email)
                     else {
                         Firebase.firestore.collection("usernames")
                             .document(model.username.trim()).get()
                             .addOnSuccessListener { documentSnapshot2 ->
                                 if (documentSnapshot2.exists())
-                                    model.usernameError = "Username taken"
+                                    model.usernameError = getString(R.string.register_error_username)
                                 else
                                     register(model)
                             }
@@ -76,7 +69,7 @@ class Register : Fragment(R.layout.fragment_register) {
 
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT)
+            Toast.makeText(context, getString(R.string.register_error), Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -99,17 +92,17 @@ class Register : Fragment(R.layout.fragment_register) {
                             MainActivity::class.java))
                         requireActivity().finish()
                         Toast.makeText(context,
-                            "Registration successful",
+                            getString(R.string.register_success),
                             Toast.LENGTH_SHORT)
                             .show()
                     } else
                         Toast.makeText(context,
-                            "Registration failed",
+                            getString(R.string.register_error),
                             Toast.LENGTH_SHORT)
                             .show()
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT)
+            Toast.makeText(context, getString(R.string.register_error), Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -140,9 +133,6 @@ class Register : Fragment(R.layout.fragment_register) {
                 return false
             }
             if (model.password.trim() != model.confirm.trim()) {
-                println("CHeck:")
-                println(model.password.trim())
-                println(model.confirm.trim())
                 model.confirmError = "Passwords do not match"
                 return false
             }

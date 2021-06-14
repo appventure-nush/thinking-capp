@@ -14,4 +14,7 @@ object Preferences {
 
     fun isDarkMode() = preferences.getBoolean("darkMode?", false)
     fun setDarkMode(darkMode: Boolean) = preferences.edit().putBoolean("darkMode?", darkMode).commit()
+
+    fun getSortMode() = preferences.getInt("sortMode?", 0)
+    fun setSortMode(sortMode: Int) = preferences.edit().putInt("sortMode?", sortMode).commit()
 }

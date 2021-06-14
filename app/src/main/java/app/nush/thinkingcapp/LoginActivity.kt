@@ -14,7 +14,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 
-
 class LoginActivity : AppCompatActivity() {
 
     private val firebaseAuth by lazy {
@@ -33,9 +32,9 @@ class LoginActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        firebaseAuth.signOut()
+        firebaseAuth.signOut() // TODO remove after login done
 
-        if (firebaseAuth.getCurrentUser() != null) {
+        if (firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
