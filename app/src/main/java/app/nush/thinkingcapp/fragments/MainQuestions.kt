@@ -51,6 +51,9 @@ class MainQuestions : Fragment() {
                             ).username
                         )
                     }
+                    if (!MainContent.showAnswered) {
+                        mappedData = mappedData.filter { question -> !question.hasAcceptedAnswer }
+                    }
                     mappedData = when (MainContent.mode) {
                         MainContent.Companion.SortMode.TOP -> mappedData.sortedBy { question -> -question.votes }
                         MainContent.Companion.SortMode.NEW -> mappedData.sortedBy { question -> question.modifiedDate }

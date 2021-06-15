@@ -17,4 +17,7 @@ object Preferences {
 
     fun getSortMode() = preferences.getInt("sortMode?", 0)
     fun setSortMode(sortMode: Int) = preferences.edit().putInt("sortMode?", sortMode).commit()
+
+    fun getShowAnswered() = preferences.getBoolean("showAnswered?", true)
+    fun setShowAnswered(showAnswered: Boolean) = preferences.edit().putBoolean("showAnswered?", showAnswered).commit()
 }

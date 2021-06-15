@@ -1,5 +1,6 @@
 package app.nush.thinkingcapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,10 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
+import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
 
@@ -20,6 +23,10 @@ import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
  * create an instance of this fragment.
  */
 class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
+
+    private val firebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
     var binding: FragmentMainContentBinding? = null
 
     override fun onCreateView(
@@ -40,12 +47,34 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         }
         binding.spinner.setSelection(Preferences.getSortMode())
         binding.spinner.onItemSelectedListener = this
+
+        binding.checkbox.isChecked = Preferences.getShowAnswered()
+        binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+            showAnswered = isChecked
+            Preferences.setShowAnswered(isChecked)
+            refreshQuestions()
+        }
+
+        binding.logout.setOnClickListener {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            firebaseAuth.signOut()
+            activity?.finish()
+        }
         binding.fab.setOnClickListener {
             Navigation.navigate(R.id.newQuestion)
         }
 
         this.binding = binding
         return binding.root
+    }
+
+    private fun refreshQuestions() {
+        childFragmentManager.beginTransaction().apply {
+            replace(R.id.questions_frame, MainQuestions())
+            commit()
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -55,10 +84,7 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
             else -> mode
         }
         Preferences.setSortMode(position)
-        childFragmentManager.beginTransaction().apply {
-            replace(R.id.questions_frame, MainQuestions())
-            commit()
-        }
+        refreshQuestions()
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -73,6 +99,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         }
         @JvmStatic
         var mode = SortMode.TOP
+        @JvmStatic
+        var showAnswered = true
         @JvmStatic
         fun newInstance() = MainContent()
     }

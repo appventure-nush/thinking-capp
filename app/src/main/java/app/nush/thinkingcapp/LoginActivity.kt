@@ -32,7 +32,6 @@ class LoginActivity : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        firebaseAuth.signOut() // TODO remove after login done
 
         if (firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))

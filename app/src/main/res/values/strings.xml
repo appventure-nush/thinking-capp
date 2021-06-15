@@ -19,8 +19,11 @@
     <string name="register_error">Registration failed</string>
     <string name="register_success">Registration successful</string>
 
+    <string name="sort_text">Sort:</string>
     <string-array name="sort_modes">
         <item>Top</item>
         <item>New</item>
     </string-array>
+    <string name="show_answered">Answered</string>
+    <string name="logout">Logout</string>
 </resources>
