@@ -13,48 +13,54 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
+                android:id="@+id/linearLayout"
 
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:orientation="vertical">
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Question title">
-
-                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:text="@={question.title}" />
+                    android:hint="Question title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@={question.title}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:hint="Describe your question in more detail here">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:hint="Describe your question in more detail here">
 
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="start"
-                    android:inputType="textMultiLine"
-                    android:scrollbars="vertical"
-                    android:text="@={question.body}" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start"
+                        android:inputType="textMultiLine"
+                        android:scrollbars="vertical"
+                        android:text="@={question.body}" />
 
             </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/upload"
+                    android:text="Upload file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             <com.hootsuite.nachos.NachoTextView
-                android:hint="Tags"
-                android:id="@+id/nacho_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    android:id="@+id/nacho_text_view"
+                    android:hint="Tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
         </LinearLayout>
 

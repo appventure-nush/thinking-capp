@@ -1,22 +1,27 @@
 package app.nush.thinkingcapp.fragments
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import app.nush.thinkingcapp.models.MetaData
-import app.nush.thinkingcapp.models.Question
-import app.nush.thinkingcapp.util.Navigation
-import app.nush.thinkingcapp.util.State
+import app.nush.thinkingcapp.util.*
 import app.nush.thinkingcapp.viewmodels.MetaDataViewModel
 import app.nush.thinkingcapp.viewmodels.NewQuestionViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentNewQuestionBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -29,21 +34,52 @@ class NewQuestion : Fragment() {
     private val questionsViewModel: QuestionsViewModel by activityViewModels()
     private val metaDataViewModel: MetaDataViewModel by activityViewModels()
     private var binding: FragmentNewQuestionBinding? = null
+    private val newQuestionViewModel = NewQuestionViewModel()
+    private val imageResultHandler =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val fileUri = data?.data!!
+                    newQuestionViewModel.files += fileUri
+                }
+                ImagePicker.RESULT_ERROR -> {
+                    Toast.makeText(this.requireContext(),
+                        ImagePicker.getError(data),
+                        Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this.requireContext(),
+                        "Task Cancelled",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
-        val binding = FragmentNewQuestionBinding.inflate(inflater, container, false)
-        val newQuestionViewModel = NewQuestionViewModel()
+        val binding =
+            FragmentNewQuestionBinding.inflate(inflater, container, false)
         binding.question = newQuestionViewModel
 
         binding.addQuestionFab.setOnClickListener {
-            val question = newQuestionViewModel.toQuestion().copy(
-                tags = binding.nachoTextView.chipValues
-            )
-            questionsViewModel.addQuestion(question)
+            GlobalScope.launch(Dispatchers.IO) {
+                val urls = newQuestionViewModel.files.pmap {
+                    val stream =
+                        requireContext().contentResolver.openInputStream(it)!!
+                    CloudStorage.addObject(stream, getFileExtension(it, requireContext()))
+                }
+                val question = newQuestionViewModel.toQuestion().copy(
+                    tags = binding.nachoTextView.chipValues,
+                    files = urls
+                )
+                questionsViewModel.addQuestion(question)
+            }
             Navigation.navigate(R.id.mainContent)
         }
         metaDataViewModel.metadata.observe(viewLifecycleOwner, Observer {
@@ -56,6 +92,11 @@ class NewQuestion : Fragment() {
                 )
             )
         })
+        binding.upload.setOnClickListener {
+            ImagePicker.with(this).createIntent { intent ->
+                imageResultHandler.launch(intent)
+            }
+        }
         this.binding = binding
         return binding.root
     }

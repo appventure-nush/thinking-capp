@@ -15,6 +15,7 @@ data class Question(
     val hasAcceptedAnswer: Boolean = false,
     val modifiedDate: Timestamp = Timestamp.now(),
     val modified: Boolean = false,
+    val files: List<String> = emptyList()
 ) : Storable {
     val votes = upvoters.size - downvoters.size
 }

@@ -1,5 +1,6 @@
 package app.nush.thinkingcapp.viewmodels
 
+import android.net.Uri
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import app.nush.thinkingcapp.models.Question
@@ -28,6 +29,9 @@ class NewQuestionViewModel : BaseObservable() {
     @get:Bindable
     val valid: Boolean
         get() = title.isNotBlank() && body.isNotBlank()
+    
+    @get:Bindable
+    val files = mutableListOf<Uri>()
 
     fun toQuestion(): Question {
         if (!valid) {
