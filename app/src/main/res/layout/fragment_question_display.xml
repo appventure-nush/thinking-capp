@@ -58,7 +58,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/questionNumVotes" />
 
             <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/questionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{question.title}"
@@ -72,15 +72,15 @@
 
 
             <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/body"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{question.body}"
                     android:textSize="24sp"
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                    app:layout_constraintStart_toStartOf="@+id/questionTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/questionTitle" />
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -91,10 +91,23 @@
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/upvote"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                    app:layout_constraintTop_toBottomOf="@+id/body" >
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagesView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/upvote"
+                    app:layout_constraintTop_toBottomOf="@+id/tagsListView" />
 
             <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/questionFooter"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -102,10 +115,9 @@
                     android:text="@{(question.modified ? `Modified ` : `Asked `)+CoreutilsKt.prettyElapsedTime(question.modifiedDate) + ` by ` + question.author}"
                     android:textAlignment="textEnd"
                     android:textSize="14sp"
-                    android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tagsListView"
-                    app:layout_constraintTop_toBottomOf="@+id/tagsListView" />
+                    app:layout_constraintTop_toBottomOf="@+id/imagesView" />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/ansListView"
@@ -118,8 +130,8 @@
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/textView4"
-                    app:layout_constraintTop_toBottomOf="@id/textView4" />
+                    app:layout_constraintStart_toStartOf="@id/questionFooter"
+                    app:layout_constraintTop_toBottomOf="@id/questionFooter" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

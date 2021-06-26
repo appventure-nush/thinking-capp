@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.AnswersAdapter
+import app.nush.thinkingcapp.adapters.ImagesAdapter
 import app.nush.thinkingcapp.adapters.TagsAdapter
 import app.nush.thinkingcapp.models.Question
 import app.nush.thinkingcapp.models.findByEmail
@@ -82,7 +83,8 @@ class QuestionDisplay : Fragment() {
                     -answer.votes
                 }
                 // Render answers here
-                binding.ansListView.adapter = AnswersAdapter(data, answersViewModel)
+                binding.ansListView.adapter =
+                    AnswersAdapter(data, answersViewModel)
                 binding.ansListView.layoutManager =
                     LinearLayoutManager(context,
                         RecyclerView.VERTICAL,
@@ -106,6 +108,9 @@ class QuestionDisplay : Fragment() {
         binding.question = question
         binding.tagsListView.adapter = TagsAdapter(question.tags)
         binding.tagsListView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.imagesView.adapter = ImagesAdapter(question.files)
+        binding.imagesView.layoutManager =
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         val email = FirebaseAuth.getInstance().currentUser?.email!!
         binding.upvote.setOnClickListener {
