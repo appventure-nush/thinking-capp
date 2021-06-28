@@ -24,6 +24,17 @@
         <item>Top</item>
         <item>New</item>
     </string-array>
-    <string name="show_answered">Answered</string>
+    <string name="filter">Filter…</string>
     <string name="logout">Logout</string>
+
+    <string name="filter_answered">Show Answered</string>
+    <string-array name="filter_tags">
+        <item>meta</item>
+        <item>math</item>
+        <item>science</item>
+        <item>english</item>
+        <item>computing</item>
+        <item>chinese</item>
+    </string-array>
+
 </resources>

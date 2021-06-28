@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
+
 
 /**
  * A simple [Fragment] subclass.
@@ -30,17 +30,17 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
     var binding: FragmentMainContentBinding? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         val binding =
             FragmentMainContentBinding.inflate(inflater, container, false)
 
         ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.sort_modes,
-            android.R.layout.simple_spinner_item
+                requireContext(),
+                R.array.sort_modes,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinner.adapter = adapter
@@ -48,13 +48,10 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         binding.spinner.setSelection(Preferences.getSortMode())
         binding.spinner.onItemSelectedListener = this
 
-        binding.checkbox.isChecked = Preferences.getShowAnswered()
-        binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-            showAnswered = isChecked
-            Preferences.setShowAnswered(isChecked)
-            refreshQuestions()
+        binding.filter.setOnClickListener {
+            val filterDialog = FilterDialog()
+            filterDialog.show(childFragmentManager, "dialog")
         }
-
         binding.logout.setOnClickListener {
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -69,6 +66,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         this.binding = binding
         return binding.root
     }
+
+    fun sendResult() { refreshQuestions() }
 
     private fun refreshQuestions() {
         childFragmentManager.beginTransaction().apply {
@@ -101,6 +100,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         var mode = SortMode.TOP
         @JvmStatic
         var showAnswered = true
+        @JvmStatic
+        var tagFilters = mutableListOf<String>()
         @JvmStatic
         fun newInstance() = MainContent()
     }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -53,6 +54,12 @@ class MainQuestions : Fragment() {
                     }
                     if (!MainContent.showAnswered) {
                         mappedData = mappedData.filter { question -> !question.hasAcceptedAnswer }
+                    }
+                    val tagFilters = MainContent.tagFilters
+                    if (tagFilters.isNotEmpty()) {
+                        mappedData = mappedData.filter { question ->
+                            question.tags.any { tag -> tag in tagFilters }
+                        }
                     }
                     mappedData = when (MainContent.mode) {
                         MainContent.Companion.SortMode.TOP -> mappedData.sortedBy { question -> -question.votes }
