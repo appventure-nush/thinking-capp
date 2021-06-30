@@ -76,7 +76,8 @@ class Register : Fragment(R.layout.fragment_register) {
 
     private fun register(model: RegisterViewModel) {
         val userMap = hashMapOf("username" to model.username.trim(),
-            "email" to model.email.trim())
+            "email" to model.email.trim(),
+            "admin" to false)
 
         try {
             firebaseAuth.createUserWithEmailAndPassword(model.email.trim(),

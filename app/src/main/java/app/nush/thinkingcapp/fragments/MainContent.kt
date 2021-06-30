@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
@@ -15,7 +14,6 @@ import app.nush.thinkingcapp.util.Preferences
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
-
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +35,10 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         val binding =
             FragmentMainContentBinding.inflate(inflater, container, false)
 
+        showAnswered = Preferences.getShowAnswered()
+        tagFilters = Preferences.getTagFilters()
+        binding.spinner.setSelection(Preferences.getSortMode())
+
         ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.sort_modes,
@@ -45,7 +47,6 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinner.adapter = adapter
         }
-        binding.spinner.setSelection(Preferences.getSortMode())
         binding.spinner.onItemSelectedListener = this
 
         binding.filter.setOnClickListener {
@@ -101,7 +102,7 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         @JvmStatic
         var showAnswered = true
         @JvmStatic
-        var tagFilters = mutableListOf<String>()
+        var tagFilters = emptyList<String>()
         @JvmStatic
         fun newInstance() = MainContent()
     }

@@ -38,6 +38,9 @@ class QuestionDisplay : Fragment() {
     private val args: QuestionDisplayArgs by navArgs()
     var binding: FragmentQuestionDisplayBinding? = null
     private var originalColor = 0
+    private val firebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +55,8 @@ class QuestionDisplay : Fragment() {
                 println("Failed loading user data")
                 return@Observer
             }
+            if (users.data.findByEmail(firebaseAuth.currentUser?.email!!).admin)
+                binding.fab.visibility = View.VISIBLE
             viewModel.questions.observe(viewLifecycleOwner, Observer {
                 if (it is State.Success) {
                     val question =

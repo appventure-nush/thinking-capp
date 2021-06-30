@@ -21,7 +21,8 @@ object Preferences {
     fun getShowAnswered() = preferences.getBoolean("showAnswered?", true)
     fun setShowAnswered(showAnswered: Boolean) = preferences.edit().putBoolean("showAnswered?", showAnswered).commit()
 
-    fun getTagFilters() = preferences.getString("tagFilters?", "")!!.split(",")
+    fun getTagFilters() = preferences.getString("tagFilters?", "")!!
+        .split(",").filter { it.isNotEmpty() }
     fun setTagFilters(tagFilters: List<String>) = preferences.edit().putString(
         "tagFilters?", tagFilters.joinToString(",")).commit()
 }

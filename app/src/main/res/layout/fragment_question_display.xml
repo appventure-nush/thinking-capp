@@ -141,6 +141,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
                 android:background="?attr/colorPrimary"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_baseline_add_24" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

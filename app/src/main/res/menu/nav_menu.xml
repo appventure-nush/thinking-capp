@@ -4,6 +4,7 @@
     <group>
         <item
             android:id="@+id/nav_main"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="Main Screen"/>
         <item
             android:id="@+id/nav_settings"
