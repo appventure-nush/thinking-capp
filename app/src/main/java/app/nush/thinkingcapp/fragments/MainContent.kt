@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
+import app.nush.thinkingcapp.util.notifications.NotificationServer
+import app.nush.thinkingcapp.util.notifications.Notifications.createNotificationChannel
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
@@ -28,8 +30,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
     var binding: FragmentMainContentBinding? = null
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         val binding =
@@ -40,9 +42,9 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         binding.spinner.setSelection(Preferences.getSortMode())
 
         ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.sort_modes,
-                android.R.layout.simple_spinner_item
+            requireContext(),
+            R.array.sort_modes,
+            android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinner.adapter = adapter
@@ -55,7 +57,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         }
         binding.logout.setOnClickListener {
             val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
             firebaseAuth.signOut()
             activity?.finish()
@@ -64,11 +67,18 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
             Navigation.navigate(R.id.newQuestion)
         }
 
+        // TODO: Add opt in to notifications
+        NotificationServer.init()
+        createNotificationChannel(this.requireContext(),
+            "Thinking cAPP",
+            "Thinking cAPP")
         this.binding = binding
         return binding.root
     }
 
-    fun sendResult() { refreshQuestions() }
+    fun sendResult() {
+        refreshQuestions()
+    }
 
     private fun refreshQuestions() {
         childFragmentManager.beginTransaction().apply {
@@ -77,7 +87,12 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+    override fun onItemSelected(
+        parent: AdapterView<*>?,
+        view: View?,
+        position: Int,
+        id: Long,
+    ) {
         mode = when (position) {
             0 -> SortMode.TOP
             1 -> SortMode.NEW
@@ -86,6 +101,7 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         Preferences.setSortMode(position)
         refreshQuestions()
     }
+
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun onDestroyView() {
@@ -97,12 +113,16 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         enum class SortMode {
             TOP, NEW
         }
+
         @JvmStatic
         var mode = SortMode.TOP
+
         @JvmStatic
         var showAnswered = true
+
         @JvmStatic
         var tagFilters = emptyList<String>()
+
         @JvmStatic
         fun newInstance() = MainContent()
     }

@@ -13,16 +13,25 @@ object Preferences {
     }
 
     fun isDarkMode() = preferences.getBoolean("darkMode?", false)
-    fun setDarkMode(darkMode: Boolean) = preferences.edit().putBoolean("darkMode?", darkMode).commit()
+    fun setDarkMode(darkMode: Boolean) =
+        preferences.edit().putBoolean("darkMode?", darkMode).commit()
 
     fun getSortMode() = preferences.getInt("sortMode?", 0)
-    fun setSortMode(sortMode: Int) = preferences.edit().putInt("sortMode?", sortMode).commit()
+    fun setSortMode(sortMode: Int) =
+        preferences.edit().putInt("sortMode?", sortMode).commit()
 
     fun getShowAnswered() = preferences.getBoolean("showAnswered?", true)
-    fun setShowAnswered(showAnswered: Boolean) = preferences.edit().putBoolean("showAnswered?", showAnswered).commit()
+    fun setShowAnswered(showAnswered: Boolean) =
+        preferences.edit().putBoolean("showAnswered?", showAnswered).commit()
 
     fun getTagFilters() = preferences.getString("tagFilters?", "")!!
         .split(",").filter { it.isNotEmpty() }
+
     fun setTagFilters(tagFilters: List<String>) = preferences.edit().putString(
         "tagFilters?", tagFilters.joinToString(",")).commit()
+
+    fun notificationsEnabled() = preferences.getBoolean("notifications?", false)
+    fun setNotificationsEnabled(notificationsEnabled: Boolean) =
+        preferences.edit().putBoolean("notifications?", notificationsEnabled)
+            .commit()
 }

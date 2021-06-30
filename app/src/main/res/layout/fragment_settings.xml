@@ -2,30 +2,45 @@
 <layout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        tools:context="app.nush.thinkingcapp.fragments.Settings">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            tools:context="app.nush.thinkingcapp.fragments.Settings">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:text="Settings"
-            android:textSize="30sp" />
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Settings"
+                android:textSize="30sp" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/darkModeSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:checked="true"
-            android:text="Dark mode" />
+                android:id="@+id/darkModeSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:checked="true"
+                android:text="Dark mode" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:checked="false"
+                android:text="Notifications" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/testNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Send test notification" />
     </LinearLayout>
 </layout>
