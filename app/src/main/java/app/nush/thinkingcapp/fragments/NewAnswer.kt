@@ -10,10 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import app.nush.thinkingcapp.util.State
+import app.nush.thinkingcapp.util.notifications.NotificationServer
+import app.nush.thinkingcapp.util.notifications.models.NewAnswerNotification
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.NewAnswerViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import com.nush.thinkingcapp.databinding.FragmentNewAnswerBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class NewAnswer : Fragment() {
@@ -44,7 +48,15 @@ class NewAnswer : Fragment() {
         binding.addAnswerFab.setOnClickListener {
             val answer = newAnswerViewModel.toAnswer().copy()
             answersViewModel.addAnswer(answer)
-            val action = NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
+            GlobalScope.launch {
+                val notification = NewAnswerNotification.fromQuestionAndAnswer(
+                    binding.question!!,
+                    answer)
+                NotificationServer.sendNotification(notification)
+            }
+
+            val action =
+                NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
             binding.root.findNavController().navigate(action)
         }
         this.binding = binding

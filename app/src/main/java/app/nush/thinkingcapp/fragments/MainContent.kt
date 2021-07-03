@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
-import app.nush.thinkingcapp.util.notifications.NotificationServer
 import app.nush.thinkingcapp.util.notifications.Notifications.createNotificationChannel
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
@@ -66,9 +65,7 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         binding.fab.setOnClickListener {
             Navigation.navigate(R.id.newQuestion)
         }
-
-        // TODO: Add opt in to notifications
-        NotificationServer.init()
+        
         createNotificationChannel(this.requireContext(),
             "Thinking cAPP",
             "Thinking cAPP")

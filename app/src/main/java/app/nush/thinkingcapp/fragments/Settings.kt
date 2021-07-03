@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import app.nush.thinkingcapp.MainActivity
+import app.nush.thinkingcapp.models.getUser
+import app.nush.thinkingcapp.models.updateUser
 import app.nush.thinkingcapp.util.Preferences
-import app.nush.thinkingcapp.util.notifications.Notifications
-import com.nush.thinkingcapp.R
+import app.nush.thinkingcapp.util.notifications.NotificationServer
+import app.nush.thinkingcapp.util.notifications.models.NewQuestionNotification
+import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.databinding.FragmentSettingsBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -38,22 +42,34 @@ class Settings : Fragment() {
             if (notificationsEnabled != isChecked) {
                 Preferences.setNotificationsEnabled(isChecked)
                 binding.testNotification.isEnabled = isChecked
+                GlobalScope.launch {
+                    if (isChecked) {
+                        NotificationServer.updateFCMToken()
+                    } else {
+                        removeFCMToken()
+                    }
+                }
             }
             notificationsEnabled = isChecked
         }
         binding.testNotification.setOnClickListener {
-            val notification =
-                Notifications.getBuilder(requireContext()).apply {
-                    setContentTitle("Test notification")
-                    setContentText("Test completed successfully")
-                    setSmallIcon(R.drawable.ic_baseline_done_24)
-                    setVibrate(longArrayOf(0, 250))
-                    priority = NotificationCompat.PRIORITY_HIGH
-                }.build()
-            Notifications.notify(requireContext(), notification)
+            GlobalScope.launch {
+                NotificationServer.sendNotification(NewQuestionNotification(
+                    "test@aahjhshjj.com",
+                    "Testing",
+                    "Test question"
+                ))
+            }
         }
         this.binding = binding
         return binding.root
+    }
+
+
+    private suspend fun removeFCMToken() {
+        val email = FirebaseAuth.getInstance().currentUser?.email!!
+        val user = getUser(email) ?: return
+        updateUser(user.copy(fcmTokens = emptyList()))
     }
 
 

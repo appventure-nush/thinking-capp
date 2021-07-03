@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import app.nush.thinkingcapp.util.*
+import app.nush.thinkingcapp.util.notifications.NotificationServer
+import app.nush.thinkingcapp.util.notifications.models.NewQuestionNotification
 import app.nush.thinkingcapp.viewmodels.MetaDataViewModel
 import app.nush.thinkingcapp.viewmodels.NewQuestionViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
@@ -79,6 +81,8 @@ class NewQuestion : Fragment() {
                     files = urls
                 )
                 questionsViewModel.addQuestion(question)
+                val notification = NewQuestionNotification.fromQuestion(question)
+                NotificationServer.sendNotification(notification)
             }
             Navigation.navigate(R.id.mainContent)
         }

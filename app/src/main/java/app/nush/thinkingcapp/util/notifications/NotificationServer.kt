@@ -1,44 +1,43 @@
 package app.nush.thinkingcapp.util.notifications
 
+import app.nush.thinkingcapp.models.getUser
+import app.nush.thinkingcapp.models.updateUser
+import app.nush.thinkingcapp.util.notifications.models.NotificationRequest
+import app.nush.thinkingcapp.util.notifications.models.toMap
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.functions.ktx.functions
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 object NotificationServer {
 
-    fun init() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    println("Failed")
-                    return@addOnCompleteListener
-                }
+    private suspend fun getFCMToken() = suspendCoroutine<String> { cont ->
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            cont.resume(it)
+        }.addOnFailureListener {
+            cont.resumeWithException(it)
+        }
+    }
 
-                // Get new Instance ID token
-                val token = task.result ?: return@addOnCompleteListener
-                GlobalScope.launch {
-                    addToken(token)
-                }
+    suspend fun updateFCMToken() {
+        val token = getFCMToken()
+        val email = FirebaseAuth.getInstance().currentUser?.email!!
+        val user = getUser(email) ?: return
+        updateUser(user.copy(fcmTokens = user.fcmTokens + token))
+    }
+
+    fun sendNotification(notificationRequest: NotificationRequest) {
+        Firebase.functions.getHttpsCallable("sendNotification")
+            .call(notificationRequest.toMap())
+            .addOnSuccessListener { 
+                println("Request sent")
+                println("Response ${it.data}")
             }
-
+            .addOnFailureListener { 
+                println(it)
+            }
     }
-
-    suspend fun addToken(token: String) {
-        println("Token $token")
-//        val request = AddTokenRequest(token, getMsToken())
-//        queue.postJson(
-//            "https://pyrostore.nushhwboard.ml/notifications/addToken",
-//            request,
-//            AddTokenRequest.serializer()
-//        )
-    }
-
-//    suspend fun sendNotification(sendNotificationRequest: SendNotificationRequest) {
-//        if (!userExists()) return
-//        queue.postJson(
-//            "https://pyrostore.nushhwboard.ml/notifications/sendNotification",
-//            sendNotificationRequest.copy(auth = getMsToken()),
-//            SendNotificationRequest.serializer()
-//        )
-//    }
 }

@@ -2,7 +2,6 @@ package app.nush.thinkingcapp.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import app.nush.thinkingcapp.models.Answer
 import app.nush.thinkingcapp.models.User
 import app.nush.thinkingcapp.util.State
 import com.google.firebase.firestore.ktx.firestore
@@ -11,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 
 class UsersViewModel : ViewModel() {
-    private val repo = Repo<Answer>(Firebase.firestore.collection("emails"))
+    private val repo = Repo<User>(Firebase.firestore.collection("emails"))
     val users = liveData<State<List<User>>>(Dispatchers.IO) {
         emit(State.loading())
         try {
