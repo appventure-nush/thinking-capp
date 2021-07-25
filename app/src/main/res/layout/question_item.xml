@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,60 +12,89 @@
             type="app.nush.thinkingcapp.models.Question" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/vert_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="56dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/hort_guideline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="56dp"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@{Integer.toString(question.votes)}"
-                android:textAlignment="center"
-                android:textSize="24sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@{question.title}"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:layout_constraintGuide_percent="0.5" />
 
-            <TextView
-                android:layout_width="56dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="Votes"
-                android:textAlignment="center"
-                android:textSize="14sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="@{Integer.toString(question.votes)}"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@id/hort_guideline"
+            app:layout_constraintEnd_toStartOf="@id/vert_guideline"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tagsRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:padding="8dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/votes"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/vert_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hort_guideline" />
 
-            <TextView
-                android:padding="8dp"
-                android:textAlignment="textEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{`Asked by `+question.author + `\n` + CoreutilsKt.prettyElapsedTime(question.modifiedDate)}" />
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:paddingBottom="6dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="10dp"
+            android:text="@{question.title}"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@id/asked_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vert_guideline" />
+
+        <TextView
+            android:id="@+id/asked_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:textAlignment="textEnd"
+            android:text="@{`Asked by `+question.author + `\n` + CoreutilsKt.prettyElapsedTime(question.modifiedDate)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tagsRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:layout_marginStart="4dp"
+            android:paddingBottom="14dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/asked_time"
+            app:layout_constraintEnd_toStartOf="@id/asked_time"
+            app:layout_constraintStart_toEndOf="@id/vert_guideline"
+            app:layout_constraintTop_toTopOf="@id/asked_time" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

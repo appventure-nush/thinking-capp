@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.NewAnswerViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
+import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentNewAnswerBinding
 
 
@@ -44,6 +46,7 @@ class NewAnswer : Fragment() {
         binding.addAnswerFab.setOnClickListener {
             val answer = newAnswerViewModel.toAnswer().copy()
             answersViewModel.addAnswer(answer)
+            Toast.makeText(this.requireContext(), getString(R.string.answer_added), Toast.LENGTH_SHORT).show()
             val action = NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
             binding.root.findNavController().navigate(action)
         }

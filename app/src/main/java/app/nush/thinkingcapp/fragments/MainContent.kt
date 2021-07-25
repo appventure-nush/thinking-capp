@@ -1,6 +1,6 @@
 package app.nush.thinkingcapp.fragments
 
-import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import app.nush.thinkingcapp.LoginActivity
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
-import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
 
@@ -22,9 +20,6 @@ import com.nush.thinkingcapp.databinding.FragmentMainContentBinding
  */
 class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
 
-    private val firebaseAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
     var binding: FragmentMainContentBinding? = null
 
     override fun onCreateView(
@@ -49,19 +44,17 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         }
         binding.spinner.onItemSelectedListener = this
 
-        binding.filter.setOnClickListener {
-            val filterDialog = FilterDialog()
-            filterDialog.show(childFragmentManager, "dialog")
-        }
-        binding.logout.setOnClickListener {
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
-            firebaseAuth.signOut()
-            activity?.finish()
-        }
-        binding.fab.setOnClickListener {
-            Navigation.navigate(R.id.newQuestion)
+        with (binding) {
+            filter.setOnClickListener {
+                val filterDialog = FilterDialog()
+                filterDialog.show(childFragmentManager, "dialog")
+            }
+            fab.setOnClickListener {
+                Navigation.navigate(R.id.newQuestion)
+            }
+            bar.setBackgroundColor(Color.parseColor(
+                if (Preferences.isDarkMode()) "#000000"
+                else "#FFFFFF"))
         }
 
         this.binding = binding

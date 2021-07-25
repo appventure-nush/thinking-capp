@@ -52,7 +52,7 @@ class NewQuestion : Fragment() {
                 }
                 else -> {
                     Toast.makeText(this.requireContext(),
-                        "Task Cancelled",
+                        "Task cancelled",
                         Toast.LENGTH_SHORT).show()
                 }
             }
@@ -80,6 +80,7 @@ class NewQuestion : Fragment() {
                 )
                 questionsViewModel.addQuestion(question)
             }
+            Toast.makeText(this.requireContext(), getString(R.string.question_added), Toast.LENGTH_SHORT).show()
             Navigation.navigate(R.id.mainContent)
         }
         metaDataViewModel.metadata.observe(viewLifecycleOwner, Observer {

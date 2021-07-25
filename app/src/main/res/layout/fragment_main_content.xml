@@ -9,25 +9,35 @@
         android:layout_height="match_parent"
         tools:context="app.nush.thinkingcapp.fragments.MainContent">
 
+        <View
+            android:id="@+id/bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/filter"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/spinner_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="16dp"
+            android:elevation="8dp"
             android:text="@string/sort_text"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/logout"
+            app:layout_constraintBottom_toBottomOf="@id/filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/logout" />
+            app:layout_constraintTop_toTopOf="@id/bar" />
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/logout"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/filter"
             app:layout_constraintStart_toEndOf="@id/spinner_text"
-            app:layout_constraintTop_toTopOf="@id/logout" />
+            app:layout_constraintTop_toTopOf="@id/filter" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/filter"
@@ -36,26 +46,17 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:elevation="8dp"
             android:text="@string/filter"
-            app:layout_constraintStart_toEndOf="@id/spinner"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:text="@string/logout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/questions_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/logout" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bar" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
