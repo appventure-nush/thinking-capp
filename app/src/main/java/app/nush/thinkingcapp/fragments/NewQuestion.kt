@@ -12,6 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.adapters.URIImagesAdapter
 import app.nush.thinkingcapp.util.*
 import app.nush.thinkingcapp.viewmodels.MetaDataViewModel
 import app.nush.thinkingcapp.viewmodels.NewQuestionViewModel
@@ -44,6 +47,12 @@ class NewQuestion : Fragment() {
                 Activity.RESULT_OK -> {
                     val fileUri = data?.data!!
                     newQuestionViewModel.files += fileUri
+                    binding?.imagesView?.adapter =
+                        URIImagesAdapter(newQuestionViewModel.files)
+                    binding?.imagesView?.layoutManager =
+                        LinearLayoutManager(context,
+                            RecyclerView.HORIZONTAL,
+                            false)
                 }
                 ImagePicker.RESULT_ERROR -> {
                     Toast.makeText(this.requireContext(),
@@ -72,7 +81,8 @@ class NewQuestion : Fragment() {
                 val urls = newQuestionViewModel.files.pmap {
                     val stream =
                         requireContext().contentResolver.openInputStream(it)!!
-                    CloudStorage.addObject(stream, getFileExtension(it, requireContext()))
+                    CloudStorage.addObject(stream,
+                        getFileExtension(it, requireContext()))
                 }
                 val question = newQuestionViewModel.toQuestion().copy(
                     tags = binding.nachoTextView.chipValues,
@@ -80,7 +90,9 @@ class NewQuestion : Fragment() {
                 )
                 questionsViewModel.addQuestion(question)
             }
-            Toast.makeText(this.requireContext(), getString(R.string.question_added), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.requireContext(),
+                getString(R.string.question_added),
+                Toast.LENGTH_SHORT).show()
             Navigation.navigate(R.id.mainContent)
         }
         metaDataViewModel.metadata.observe(viewLifecycleOwner, Observer {

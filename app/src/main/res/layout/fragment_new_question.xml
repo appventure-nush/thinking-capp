@@ -1,16 +1,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="question"
-            type="app.nush.thinkingcapp.viewmodels.NewQuestionViewModel" />
+                name="question"
+                type="app.nush.thinkingcapp.viewmodels.NewQuestionViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <LinearLayout
                 android:id="@+id/linearLayout"
@@ -50,11 +50,18 @@
                         android:text="@={question.body}" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagesView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/upload"
                     android:text="Upload file"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             <com.hootsuite.nachos.NachoTextView
                     android:id="@+id/nacho_text_view"
@@ -65,14 +72,14 @@
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addQuestionFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:background="?attr/colorPrimary"
-            android:enabled="@{question.valid}"
-            app:srcCompat="@drawable/ic_baseline_done_24" />
+                android:id="@+id/addQuestionFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:background="?attr/colorPrimary"
+                android:enabled="@{question.valid}"
+                app:srcCompat="@drawable/ic_baseline_done_24" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

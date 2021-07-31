@@ -20,8 +20,11 @@
             android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_anchor="@+id/constraintLayout"
+                app:layout_anchorGravity="center">
 
             <ImageView
                     android:id="@+id/upvote"
@@ -71,16 +74,26 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                    android:id="@+id/body"
+            <ScrollView
+                    android:id="@+id/bodyScrollView"
+                    android:scrollbars="vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{question.body}"
-                    android:textSize="24sp"
-                    android:layout_marginEnd="8dp"
+                    app:layout_constrainedHeight="true"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/questionTitle"
-                    app:layout_constraintTop_toBottomOf="@+id/questionTitle" />
+                    app:layout_constraintHeight_max="300dp"
+                    app:layout_constraintStart_toStartOf="@id/questionTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/questionTitle">
+
+                <TextView
+                        android:id="@+id/body"
+                        android:scrollbars="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{question.body}"
+                        android:textSize="24sp"
+                        android:layout_marginEnd="8dp" />
+            </ScrollView>
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -91,7 +104,7 @@
                     android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/upvote"
-                    app:layout_constraintTop_toBottomOf="@+id/body" >
+                    app:layout_constraintTop_toBottomOf="@id/bodyScrollView">
 
             </androidx.recyclerview.widget.RecyclerView>
 
