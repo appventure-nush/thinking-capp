@@ -34,7 +34,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         if (firebaseAuth.currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
+            val activityIntent = Intent(this, MainActivity::class.java)
+            if (intent != null) {
+                val questionID =
+                    intent.getStringExtra("questionID")
+                if (questionID != null)
+                    activityIntent.putExtra("questionID", questionID)
+            }
+            startActivity(activityIntent)
             finish()
         }
 
@@ -43,6 +50,20 @@ class LoginActivity : AppCompatActivity() {
 
         modeButton = findViewById(R.id.login_button_mode)
         toggleLoginMode()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent ?: return
+        if (firebaseAuth.currentUser != null) {
+            val activityIntent = Intent(this, MainActivity::class.java)
+            val questionID =
+                intent.getStringExtra("questionID")
+            if (questionID != null)
+                activityIntent.putExtra("questionID", questionID)
+            startActivity(activityIntent)
+            finish()
+        }
     }
 
     fun changeLoginMode(view: View) {

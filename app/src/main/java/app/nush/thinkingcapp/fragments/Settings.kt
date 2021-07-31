@@ -57,7 +57,8 @@ class Settings : Fragment() {
                 NotificationServer.sendNotification(NewQuestionNotification(
                     "test@aahjhshjj.com",
                     "Testing",
-                    "Test question"
+                    "Test question",
+                    "1337"
                 ))
             }
         }

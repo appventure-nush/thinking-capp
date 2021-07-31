@@ -11,4 +11,5 @@ export interface BasicNotification {
     authorEmail: string;
     authorUsername: string;
     questionTitle: string;
+    questionID: string;
 }

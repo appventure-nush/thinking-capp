@@ -7,6 +7,7 @@ class NewQuestionNotification(
     override val authorEmail: String,
     override val authorUsername: String,
     override val questionTitle: String,
+    override val questionID: String,
 ) : NotificationRequest {
     override val type: String
         get() = "new_question"
@@ -14,6 +15,7 @@ class NewQuestionNotification(
     companion object {
         suspend fun fromQuestion(question: Question) = NewQuestionNotification(
             questionTitle = question.title,
+            questionID = question.id,
             authorEmail = question.author,
             authorUsername = getCurrentUser()?.username ?: question.author
         )

@@ -5,11 +5,13 @@ sealed interface NotificationRequest{
     val authorEmail: String
     val authorUsername: String
     val questionTitle: String
+    val questionID: String
 }
 
 fun NotificationRequest.toMap() = mapOf(
     "type" to type,
     "authorEmail" to authorEmail,
     "authorUsername" to authorUsername,
-    "questionTitle" to questionTitle
+    "questionTitle" to questionTitle,
+    "questionID" to questionID
 )

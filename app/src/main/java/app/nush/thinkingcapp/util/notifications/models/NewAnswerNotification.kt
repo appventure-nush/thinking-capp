@@ -8,6 +8,7 @@ class NewAnswerNotification(
     override val authorEmail: String,
     override val authorUsername: String,
     override val questionTitle: String,
+    override val questionID: String,
 ) : NotificationRequest {
     override val type: String
         get() = "new_answer"
@@ -16,6 +17,7 @@ class NewAnswerNotification(
         suspend fun fromQuestionAndAnswer(question: Question, answer: Answer) =
             NewAnswerNotification(
                 questionTitle = question.title,
+                questionID = question.id,
                 authorEmail = answer.author,
                 authorUsername = getCurrentUser()?.username ?: answer.author
             )

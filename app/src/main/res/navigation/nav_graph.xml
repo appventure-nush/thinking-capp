@@ -54,4 +54,12 @@
                 android:id="@+id/action_newAnswer_to_questionDisplay"
                 app:destination="@id/questionDisplay" />
     </fragment>
+    <fragment
+            android:id="@+id/login"
+            android:name="app.nush.thinkingcapp.fragments.Login"
+            android:label="Login" >
+        <action
+                android:id="@+id/action_login_to_questionDisplay"
+                app:destination="@id/questionDisplay" />
+    </fragment>
 </navigation>

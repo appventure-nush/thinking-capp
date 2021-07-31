@@ -68,7 +68,8 @@ infix fun Int.suffix(suffix: String) =
 
 fun uuid() = UUID.randomUUID().toString()
 
-fun prettyElapsedTime(time: Timestamp): String {
+fun prettyElapsedTime(time: Timestamp?): String {
+    if(time == null) return ""
     val date = time.toDate()
     return PrettyTime().format(date)
 }
