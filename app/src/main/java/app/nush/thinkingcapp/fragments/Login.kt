@@ -29,7 +29,7 @@ class Login : Fragment(R.layout.fragment_login) {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         val binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -53,39 +53,56 @@ class Login : Fragment(R.layout.fragment_login) {
         val username = model.username.trim()
         if (username.matches(REGEX.toRegex())) login(username, model)
         else try {
-            Firebase.firestore.collection("usernames")
-                .document(username).get().addOnSuccessListener { documentSnapshot ->
-                    if (!documentSnapshot.exists())
-                        model.usernameError = getString(R.string.login_invalid)
-                    else {
+            Firebase.firestore.collection("emails")
+                .whereEqualTo("username", username).get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (querySnapshot.documents.isEmpty()) {
+                        model.usernameError =
+                            getString(R.string.login_invalid)
+                        return@addOnSuccessListener
+                    }
+                    val documentSnapshot = querySnapshot.documents.first()
+                    if (!documentSnapshot.exists()) {
+                        model.usernameError =
+                            getString(R.string.login_invalid)
+                    } else {
                         val email = documentSnapshot.getString("email")
                         if (email == null) {
-                            model.usernameError = getString(R.string.login_invalid)
+                            model.usernameError =
+                                getString(R.string.login_invalid)
                         } else
                             login(email, model)
                     }
-
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, getString(R.string.login_error), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                getString(R.string.login_error),
+                Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun login(email: String, model: LoginViewModel) {
         try {
-            firebaseAuth.signInWithEmailAndPassword(email, model.password.trim())
+            firebaseAuth.signInWithEmailAndPassword(email,
+                model.password.trim())
                 .addOnCompleteListener(
                     context as Activity,
                     OnCompleteListener { task: Task<AuthResult> ->
                         if (task.isSuccessful) {
-                            startActivity(Intent(context, MainActivity::class.java))
+                            startActivity(Intent(context,
+                                MainActivity::class.java))
                             requireActivity().finish()
-                            Toast.makeText(context, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                getString(R.string.login_success),
+                                Toast.LENGTH_SHORT).show()
                         } else
-                            model.usernameError = getString(R.string.login_invalid)
+                            model.usernameError =
+                                getString(R.string.login_invalid)
                     })
         } catch (e: Exception) {
-            Toast.makeText(context, getString(R.string.login_error), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                getString(R.string.login_error),
+                Toast.LENGTH_SHORT).show()
         }
     }
 

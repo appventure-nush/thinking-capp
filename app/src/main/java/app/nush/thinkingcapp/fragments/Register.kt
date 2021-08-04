@@ -36,8 +36,9 @@ class Register : Fragment(R.layout.fragment_register) {
         binding.register = registerViewModel
 
         binding.registerButtonRegister.setOnClickListener {
-            if (validateRegistration(registerViewModel)) checkRegister(
-                registerViewModel)
+            if (validateRegistration(registerViewModel)) {
+                checkRegister(registerViewModel)
+            }
         }
 
         this.binding = binding
@@ -50,26 +51,37 @@ class Register : Fragment(R.layout.fragment_register) {
     }
 
     private fun checkRegister(model: RegisterViewModel) {
+        model.checkingRegistration = true
+        model.emailError = ""
+        model.usernameError = ""
+        model.passwordError = ""
+        model.confirmError = ""
         try {
             Firebase.firestore.collection("emails")
                 .document(model.email.trim()).get()
                 .addOnSuccessListener { documentSnapshot ->
-                    if (documentSnapshot.exists())
-                        model.emailError = getString(R.string.register_error_email)
-                    else {
-                        Firebase.firestore.collection("usernames")
-                            .document(model.username.trim()).get()
-                            .addOnSuccessListener { documentSnapshot2 ->
-                                if (documentSnapshot2.exists())
-                                    model.usernameError = getString(R.string.register_error_username)
-                                else
-                                    register(model)
-                            }
+                    if (documentSnapshot.exists()) {
+                        model.emailError =
+                            getString(R.string.register_error_email)
+                        println(model.emailError)
+                        return@addOnSuccessListener
                     }
-
+                    Firebase.firestore.collection("emails")
+                        .whereEqualTo("username", model.username.trim()).get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                model.usernameError =
+                                    getString(R.string.register_error_username)
+                                return@addOnSuccessListener
+                            }
+                            register(model)
+                        }
                 }
+
         } catch (e: Exception) {
-            Toast.makeText(context, getString(R.string.register_error), Toast.LENGTH_SHORT)
+            Toast.makeText(context,
+                getString(R.string.register_error),
+                Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -103,7 +115,9 @@ class Register : Fragment(R.layout.fragment_register) {
                             .show()
                 }
         } catch (e: Exception) {
-            Toast.makeText(context, getString(R.string.register_error), Toast.LENGTH_SHORT)
+            Toast.makeText(context,
+                getString(R.string.register_error),
+                Toast.LENGTH_SHORT)
                 .show()
         }
     }
@@ -112,6 +126,7 @@ class Register : Fragment(R.layout.fragment_register) {
         private const val REGEX = "\\w+@\\w+\\.\\w+"
 
         fun validateRegistration(model: RegisterViewModel): Boolean {
+            if(model.checkingRegistration) return true
             model.emailError = ""
             model.usernameError = ""
             model.passwordError = ""
