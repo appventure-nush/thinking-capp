@@ -32,4 +32,26 @@ class QuestionsViewModel : ViewModel() {
         else question
         repo.editItem(newQuestion)
     }
+
+    fun editQuestionStatus(
+        question: Question,
+        changeHasAcceptedAnswer: Boolean = false,
+        changeRequireClarification: Boolean = false,
+    ) {
+        if (!changeHasAcceptedAnswer && !changeRequireClarification)
+            return
+
+        val acceptedAnswer = if (changeHasAcceptedAnswer)
+            !question.hasAcceptedAnswer
+        else question.hasAcceptedAnswer
+        val clarify = if (changeRequireClarification)
+            !question.requireClarification
+        else question.requireClarification
+
+        val newQuestion = question.copy(
+            hasAcceptedAnswer = acceptedAnswer,
+            requireClarification = clarify
+        )
+        repo.editItem(newQuestion)
+    }
 }

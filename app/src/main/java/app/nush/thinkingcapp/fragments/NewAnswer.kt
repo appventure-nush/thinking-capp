@@ -38,17 +38,33 @@ class NewAnswer : Fragment() {
                     it.data.firstOrNull { question -> question.id == args.questionId }
                         ?: run {
                             println("Question not found.")
+                            Toast.makeText(
+                                requireContext(), R.string.load_question_error, Toast.LENGTH_SHORT)
+                                .show()
                             return@Observer
                         }
                 binding.question = question
             }
         })
         binding.addAnswerFab.setOnClickListener {
-            val answer = newAnswerViewModel.toAnswer().copy()
-            answersViewModel.addAnswer(answer)
-            Toast.makeText(this.requireContext(), getString(R.string.answer_added), Toast.LENGTH_SHORT).show()
-            val action = NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
-            binding.root.findNavController().navigate(action)
+            if (binding.question == null) {
+                Toast.makeText(
+                    requireContext(), R.string.load_question_error, Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                val answer = newAnswerViewModel.toAnswer().copy()
+                answersViewModel.addAnswer(answer)
+                with (binding.question!!) {
+                    questionsViewModel.editQuestionStatus(
+                        this,
+                        !hasAcceptedAnswer,
+                        requireClarification)
+                }
+                Toast.makeText(this.requireContext(), getString(R.string.answer_added), Toast.LENGTH_SHORT).show()
+            }
+//            val action = NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
+//            binding.root.findNavController().navigate(action)
+            binding.root.findNavController().popBackStack()
         }
         this.binding = binding
         return binding.root

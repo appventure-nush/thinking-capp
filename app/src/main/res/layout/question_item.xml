@@ -82,7 +82,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tagsRecyclerView"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="4"
             android:layout_marginStart="4dp"
@@ -93,7 +93,9 @@
             app:layout_constraintBottom_toBottomOf="@id/asked_time"
             app:layout_constraintEnd_toStartOf="@id/asked_time"
             app:layout_constraintStart_toEndOf="@id/vert_guideline"
-            app:layout_constraintTop_toTopOf="@id/asked_time" />
+            app:layout_constraintTop_toTopOf="@id/asked_time"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constrainedWidth="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

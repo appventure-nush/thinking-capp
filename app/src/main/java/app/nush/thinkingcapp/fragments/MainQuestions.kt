@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,6 +15,8 @@ import app.nush.thinkingcapp.models.findByEmail
 import app.nush.thinkingcapp.util.State
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import app.nush.thinkingcapp.viewmodels.UsersViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentMainQuestionsBinding
 
 /**
@@ -25,6 +28,9 @@ class MainQuestions : Fragment() {
     private val viewModel: QuestionsViewModel by activityViewModels()
     private val usersViewModel: UsersViewModel by activityViewModels()
     var binding: FragmentMainQuestionsBinding? = null
+    private val firebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,21 +44,40 @@ class MainQuestions : Fragment() {
 
         usersViewModel.users.observe(viewLifecycleOwner) { users ->
             if (users !is State.Success) {
-                println("Failed loading user data in main")
+                println("Still loading user data in main")
                 println(users)
+                if (users is State.Failed) {
+                    println("Failed loading user data in main")
+                    Toast.makeText(requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
                 return@observe
             }
             viewModel.questions.observe(viewLifecycleOwner, {
                 if (it is State.Success) {
-                    var mappedData = it.data.map { question ->
+                    var mappedData = it.data
+                    if (MainContent.showOnlyYou) {
+                        val currentEmail = firebaseAuth.currentUser?.email!!
+                        mappedData = mappedData.filter { question ->
+                            question.author == currentEmail
+                        }
+                    }
+                    mappedData = mappedData.map { question ->
                         question.copy(
                             author = users.data.findByEmail(
                                 question.author
                             ).username
                         )
                     }
-                    if (!MainContent.showAnswered) {
-                        mappedData = mappedData.filter { question -> !question.hasAcceptedAnswer }
+                    if (!MainContent.showPartiallyAnswered) {
+                        mappedData = mappedData.filter { question ->
+                            !(question.hasAcceptedAnswer && question.requireClarification)
+                        }
+                    }
+                    if (!MainContent.showFullyAnswered) {
+                        mappedData = mappedData.filter { question ->
+                            !(question.hasAcceptedAnswer && !question.requireClarification)
+                        }
                     }
                     val tagFilters = MainContent.tagFilters
                     if (tagFilters.isNotEmpty()) {
@@ -68,7 +93,12 @@ class MainQuestions : Fragment() {
                     val adapter = QuestionsAdapter(mappedData)
                     binding.recyclerView.adapter = adapter
                 } else {
-                    println("Failed loading data")
+                    println("Still loading data")
+                    if (it is State.Failed) {
+                        println("Failed loading data")
+                        Toast.makeText(requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             })
         }

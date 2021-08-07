@@ -1,10 +1,12 @@
 package app.nush.thinkingcapp.fragments
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -23,6 +25,7 @@ import app.nush.thinkingcapp.viewmodels.AnswersViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import app.nush.thinkingcapp.viewmodels.UsersViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
 
 
@@ -53,9 +56,13 @@ class QuestionDisplay : Fragment() {
         usersViewModel.users.observe(viewLifecycleOwner, Observer { users ->
             if (users !is State.Success) {
                 println("Failed loading user data")
+                Toast.makeText(
+                    requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                    .show()
                 return@Observer
             }
-            if (users.data.findByEmail(firebaseAuth.currentUser?.email!!).admin)
+            val isAdmin = users.data.findByEmail(firebaseAuth.currentUser?.email!!).admin
+            if (isAdmin)
                 binding.fab.visibility = View.VISIBLE
             viewModel.questions.observe(viewLifecycleOwner, Observer {
                 if (it is State.Success) {
@@ -63,12 +70,21 @@ class QuestionDisplay : Fragment() {
                         it.data.firstOrNull { question -> question.id == args.questionId }
                             ?: run {
                                 println("Question not found.")
+                                Toast.makeText(
+                                    requireContext(), R.string.load_question_error, Toast.LENGTH_SHORT)
+                                    .show()
                                 return@Observer
                             }
-                    renderQuestion(question.copy(author = users.data.findByEmail(
-                        question.author).username), binding)
+                    val questionAuthor = users.data.findByEmail(question.author)
+                    renderQuestion(
+                        question.copy(author = questionAuthor.username),
+                        binding,
+                        isAdmin || questionAuthor.email == firebaseAuth.currentUser?.email!!)
                 } else {
                     println("Failed loading data.")
+                    Toast.makeText(
+                        requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
         })
@@ -77,6 +93,9 @@ class QuestionDisplay : Fragment() {
         usersViewModel.users.observe(viewLifecycleOwner) { users ->
             if (users !is State.Success) {
                 println("Failed user loading data")
+                Toast.makeText(
+                    requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                    .show()
                 return@observe
             }
             answersViewModel.answers.observe(viewLifecycleOwner) {
@@ -84,6 +103,8 @@ class QuestionDisplay : Fragment() {
                 if (it !is State.Success) return@observe
                 val data = it.data.map { answer ->
                     answer.copy(author = users.data.findByEmail(answer.author).username)
+                }.sortedByDescending { answer ->
+                    answer.answeredDate
                 }.sortedBy { answer ->
                     -answer.votes
                 }
@@ -109,6 +130,7 @@ class QuestionDisplay : Fragment() {
     private fun renderQuestion(
         question: Question,
         binding: FragmentQuestionDisplayBinding,
+        showClarify: Boolean
     ) {
         binding.question = question
         binding.tagsListView.adapter = TagsAdapter(question.tags)
@@ -159,6 +181,33 @@ class QuestionDisplay : Fragment() {
                 binding.downvote.clearColorFilter()
                 binding.questionNumVotes.setTextColor(originalColor)
             }
+        }
+
+        if (showClarify) {
+            binding.clarify.setOnClickListener {
+                if (question.requireClarification)
+                    viewModel.editQuestionStatus(
+                        question, false, true)
+                else {
+                    val alertDialog: AlertDialog? = activity?.let {
+                        val builder = AlertDialog.Builder(it)
+                        builder.apply {
+                            setTitle(R.string.clarify_dialog)
+                            setPositiveButton(R.string.ok) { _, _ ->
+                                viewModel.editQuestionStatus(
+                                    question,
+                                    false,
+                                    true)
+                            }
+                            setNegativeButton(R.string.cancel) { _, _ -> }
+                        }
+                        builder.create()
+                    }
+                    alertDialog?.show()
+                }
+            }
+        } else {
+            binding.clarify.visibility = View.INVISIBLE
         }
     }
 

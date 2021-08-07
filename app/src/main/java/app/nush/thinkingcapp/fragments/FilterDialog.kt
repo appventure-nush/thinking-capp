@@ -23,16 +23,22 @@ class FilterDialog : DialogFragment() {
             .associateWith { it in tagFilters }
         val adapter = FilterAdapter(tagFilterMap)
 
-        binding.answered.isChecked = Preferences.getShowAnswered()
+        binding.partiallyAnswered.isChecked = Preferences.getShowPartiallyAnswered()
+        binding.fullyAnswered.isChecked = Preferences.getShowFullyAnswered()
+        binding.onlyYou.isChecked = Preferences.getShowOnlyYou()
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         binding.recycler.adapter = adapter
 
         return AlertDialog.Builder(requireActivity())
                 .setView(binding.root)
                 .setPositiveButton("OK") { _, _ ->
-                    MainContent.showAnswered = binding.answered.isChecked
+                    MainContent.showPartiallyAnswered = binding.partiallyAnswered.isChecked
+                    MainContent.showFullyAnswered = binding.fullyAnswered.isChecked
+                    MainContent.showOnlyYou = binding.onlyYou.isChecked
                     MainContent.tagFilters = adapter.checkedFilters
-                    Preferences.setShowAnswered(binding.answered.isChecked)
+                    Preferences.setShowPartiallyAnswered(binding.partiallyAnswered.isChecked)
+                    Preferences.setShowFullyAnswered(binding.fullyAnswered.isChecked)
+                    Preferences.setShowOnlyYou(binding.onlyYou.isChecked)
                     Preferences.setTagFilters(adapter.checkedFilters)
                     (parentFragment as MainContent).sendResult()
                 }

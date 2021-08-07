@@ -5,6 +5,7 @@
     <data>
 
         <import type="app.nush.thinkingcapp.util.CoreutilsKt" />
+        <import type="android.view.View" />
 
         <variable
                 name="question"
@@ -119,6 +120,20 @@
                     app:layout_constraintStart_toEndOf="@+id/upvote"
                     app:layout_constraintTop_toBottomOf="@+id/tagsListView" />
 
+            <Button
+                    android:id="@+id/clarify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{question.requireClarification ? `Undo` : `Clarify`}"
+                    android:textSize="14sp"
+                    android:visibility="@{question.hasAcceptedAnswer ? View.VISIBLE : View.INVISIBLE}"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    app:layout_constraintBottom_toBottomOf="@+id/questionFooter"
+                    app:layout_constraintEnd_toStartOf="@+id/questionFooter"
+                    app:layout_constraintStart_toStartOf="@+id/tagsListView"
+                    app:layout_constraintTop_toTopOf="@+id/questionFooter" />
+
             <TextView
                     android:id="@+id/questionFooter"
                     android:layout_width="0dp"
@@ -129,7 +144,7 @@
                     android:textAlignment="textEnd"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/tagsListView"
+                    app:layout_constraintStart_toEndOf="@+id/clarify"
                     app:layout_constraintTop_toBottomOf="@+id/imagesView" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -141,9 +156,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="80dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/questionFooter"
+                    app:layout_constraintStart_toStartOf="@id/clarify"
                     app:layout_constraintTop_toBottomOf="@id/questionFooter" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

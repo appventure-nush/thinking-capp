@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.fragments.MainContentDirections
 import app.nush.thinkingcapp.models.Question
+import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.QuestionItemBinding
 
 class QuestionsAdapter(val questions: List<Question>) :
@@ -22,6 +23,10 @@ class QuestionsAdapter(val questions: List<Question>) :
                 val action = MainContentDirections.actionMainContentToQuestionDisplay(item.id)
                 binding.root.findNavController().navigate(action)
             }
+            if (item.files.isNotEmpty())
+                binding.title.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0, 0, R.drawable.ic_baseline_image_24, 0
+                )
             binding.tagsRecyclerView.adapter = TagsAdapter(item.tags)
             binding.tagsRecyclerView.layoutManager =
                 LinearLayoutManager(binding.root.context, RecyclerView.HORIZONTAL, false)

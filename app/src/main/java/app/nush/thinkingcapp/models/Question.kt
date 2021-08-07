@@ -13,6 +13,7 @@ data class Question(
     val upvoters: List<String> = emptyList(),
     val downvoters: List<String> = emptyList(),
     val hasAcceptedAnswer: Boolean = false,
+    val requireClarification: Boolean = false,
     val modifiedDate: Timestamp = Timestamp.now(),
     val modified: Boolean = false,
     val files: List<String> = emptyList()

@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.nush.thinkingcapp.adapters.URIImagesAdapter
@@ -93,7 +94,8 @@ class NewQuestion : Fragment() {
             Toast.makeText(this.requireContext(),
                 getString(R.string.question_added),
                 Toast.LENGTH_SHORT).show()
-            Navigation.navigate(R.id.mainContent)
+//            Navigation.navigate(R.id.mainContent)
+            binding.root.findNavController().popBackStack()
         }
         metaDataViewModel.metadata.observe(viewLifecycleOwner, Observer {
             val data = (it as? State.Success)?.data ?: return@Observer

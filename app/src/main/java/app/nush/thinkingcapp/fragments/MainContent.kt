@@ -30,9 +30,10 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         val binding =
             FragmentMainContentBinding.inflate(inflater, container, false)
 
-        showAnswered = Preferences.getShowAnswered()
+        showFullyAnswered = Preferences.getShowFullyAnswered()
+        showPartiallyAnswered = Preferences.getShowPartiallyAnswered()
+        showOnlyYou = Preferences.getShowOnlyYou()
         tagFilters = Preferences.getTagFilters()
-        binding.spinner.setSelection(Preferences.getSortMode())
 
         ArrayAdapter.createFromResource(
                 requireContext(),
@@ -43,6 +44,7 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
             binding.spinner.adapter = adapter
         }
         binding.spinner.onItemSelectedListener = this
+        binding.spinner.setSelection(Preferences.getSortMode(), false)
 
         with (binding) {
             filter.setOnClickListener {
@@ -93,7 +95,11 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
         @JvmStatic
         var mode = SortMode.TOP
         @JvmStatic
-        var showAnswered = true
+        var showPartiallyAnswered = true
+        @JvmStatic
+        var showFullyAnswered = true
+        @JvmStatic
+        var showOnlyYou = false
         @JvmStatic
         var tagFilters = emptyList<String>()
         @JvmStatic

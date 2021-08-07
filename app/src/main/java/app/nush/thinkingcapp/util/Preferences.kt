@@ -18,8 +18,14 @@ object Preferences {
     fun getSortMode() = preferences.getInt("sortMode?", 0)
     fun setSortMode(sortMode: Int) = preferences.edit().putInt("sortMode?", sortMode).commit()
 
-    fun getShowAnswered() = preferences.getBoolean("showAnswered?", true)
-    fun setShowAnswered(showAnswered: Boolean) = preferences.edit().putBoolean("showAnswered?", showAnswered).commit()
+    fun getShowPartiallyAnswered() = preferences.getBoolean("showPartiallyAnswered?", true)
+    fun setShowPartiallyAnswered(showPartiallyAnswered: Boolean) = preferences.edit().putBoolean("showPartiallyAnswered?", showPartiallyAnswered).commit()
+
+    fun getShowFullyAnswered() = preferences.getBoolean("showFullyAnswered?", true)
+    fun setShowFullyAnswered(showFullyAnswered: Boolean) = preferences.edit().putBoolean("showFullyAnswered?", showFullyAnswered).commit()
+
+    fun getShowOnlyYou() = preferences.getBoolean("showOnlyYou?", false)
+    fun setShowOnlyYou(showOnlyYou: Boolean) = preferences.edit().putBoolean("showOnlyYou?", showOnlyYou).commit()
 
     fun getTagFilters() = preferences.getString("tagFilters?", "")!!
         .split(",").filter { it.isNotEmpty() }
