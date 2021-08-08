@@ -1,8 +1,10 @@
 package app.nush.thinkingcapp.util
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.text.format.DateUtils
+import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.async
@@ -86,5 +88,16 @@ fun getFileExtension(uri: Uri, context: Context): String {
         mime.getExtensionFromMimeType(cR.getType(uri))!!
     }else{
         MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(uri.path)).toString())
+    }
+}
+
+fun hideKeyboard(activity: Activity) {
+    val inputMethodManager =
+        activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+    val currentFocusedView = activity.currentFocus
+    currentFocusedView?.let {
+        inputMethodManager.hideSoftInputFromWindow(
+            currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 }

@@ -44,6 +44,16 @@
         <item>chinese</item>
     </string-array>
 
+    <string name="question_input_title">Question title</string>
+    <string name="question_input_desc">Describe your question in more detail here</string>
+    <string name="question_input_file">Upload file</string>
+    <string name="question_input_tags">Tags</string>
+
+    <string name="answer_here">Answer here:</string>
+    <string name="enable_markdown">Enable Markdown</string>
+    <string name="enable_markdown_body">Enable Markdown (Body)</string>
+
+    <string name="clarify_requested">Clarification requested by asker</string>
     <string name="clarify_dialog">Are you sure you want to request for clarification?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -52,5 +62,10 @@
     <string name="answer_added">Answer added</string>
     <string name="load_data_error">Failed loading data</string>
     <string name="load_question_error">Failed loading question</string>
+
+    <string name="desc_add_question">Add Question</string>
+    <string name="desc_add_answer">Add Answer</string>
+    <string name="desc_upvote">Upvote</string>
+    <string name="desc_downvote">Downvote</string>
 
 </resources>

@@ -27,6 +27,13 @@ class NewQuestionViewModel : BaseObservable() {
         }
 
     @get:Bindable
+    var markdown = false
+        set (value) {
+            field = value
+            notifyChange()
+        }
+
+    @get:Bindable
     val valid: Boolean
         get() = title.isNotBlank() && body.isNotBlank()
     
@@ -38,6 +45,11 @@ class NewQuestionViewModel : BaseObservable() {
             throw IllegalStateException("Invalid question.")
         }
 
-        return Question(title = title, body = body, author = firebaseAuth.currentUser?.email!!)
+        return Question(
+            title = title,
+            body = body,
+            author = firebaseAuth.currentUser?.email!!,
+            markdown = markdown
+        )
     }
 }

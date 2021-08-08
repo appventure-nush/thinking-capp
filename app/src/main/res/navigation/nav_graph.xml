@@ -14,10 +14,16 @@
                 app:destination="@id/settings" />
         <action
                 android:id="@+id/action_mainContent_to_questionDisplay"
-                app:destination="@id/questionDisplay" />
+                app:destination="@id/questionDisplay"
+                app:enterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out" />
         <action
                 android:id="@+id/action_mainContent_to_newQuestion"
-                app:destination="@id/newQuestion" />
+                app:destination="@id/newQuestion"
+                app:enterAnim="@anim/from_bottom"
+                app:exitAnim="@anim/fade_out"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/to_bottom" />
     </fragment>
     <fragment
             android:id="@+id/settings"
@@ -41,7 +47,11 @@
                 app:argType="string" />
         <action
                 android:id="@+id/action_questionDisplay_to_newAnswer"
-                app:destination="@id/newAnswer" />
+                app:destination="@id/newAnswer"
+                app:enterAnim="@anim/from_bottom"
+                app:exitAnim="@anim/fade_out"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/to_bottom" />
     </fragment>
     <fragment
             android:id="@+id/newAnswer"

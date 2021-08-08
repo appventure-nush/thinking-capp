@@ -20,10 +20,14 @@ class AnswersAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(answer: Answer) {
             val originalColor = binding.ansNumVotes.currentTextColor
-            val markwon = Markwon.create(binding.root.context)
             binding.answer = answer
-            binding.executePendingBindings()
-            markwon.setMarkdown(binding.textViewBody, answer.body)
+            if (answer.markdown) {
+                binding.executePendingBindings()
+                val markwon = Markwon.create(binding.root.context)
+                markwon.setMarkdown(binding.textViewBody, answer.body)
+            } else {
+                binding.textViewBody.text = answer.body
+            }
             val name = FirebaseAuth.getInstance().currentUser?.email!!
             binding.upvote.setOnClickListener {
                 val upvoters = if (name in answer.upvoters) {

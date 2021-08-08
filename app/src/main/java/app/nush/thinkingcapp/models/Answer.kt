@@ -8,6 +8,7 @@ data class Answer(
     val questionId: String = uuid(),
     val body: String = "",
     val author: String = "",
+    val markdown: Boolean = false,
     val answers: List<String> = emptyList(),
     val upvoters: List<String> = emptyList(),
     val downvoters: List<String> = emptyList(),

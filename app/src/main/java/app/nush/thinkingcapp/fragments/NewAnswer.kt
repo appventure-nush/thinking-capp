@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -16,6 +17,10 @@ import app.nush.thinkingcapp.viewmodels.NewAnswerViewModel
 import app.nush.thinkingcapp.viewmodels.QuestionsViewModel
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentNewAnswerBinding
+import androidx.core.content.ContextCompat.getSystemService
+import app.nush.thinkingcapp.MainActivity
+import app.nush.thinkingcapp.util.hideKeyboard
+import io.noties.markwon.Markwon
 
 
 class NewAnswer : Fragment() {
@@ -44,6 +49,13 @@ class NewAnswer : Fragment() {
                             return@Observer
                         }
                 binding.question = question
+                if (question.markdown) {
+                    binding.executePendingBindings()
+                    val markwon = Markwon.create(binding.root.context)
+                    markwon.setMarkdown(binding.answerQuestionBody, question.body)
+                } else {
+                    binding.answerQuestionBody.text = question.body
+                }
             }
         })
         binding.addAnswerFab.setOnClickListener {
@@ -55,13 +67,18 @@ class NewAnswer : Fragment() {
                 val answer = newAnswerViewModel.toAnswer().copy()
                 answersViewModel.addAnswer(answer)
                 with (binding.question!!) {
-                    questionsViewModel.editQuestionStatus(
-                        this,
-                        !hasAcceptedAnswer,
-                        requireClarification)
+                    if (!hasAcceptedAnswer || requireClarification) {
+                        questionsViewModel.editQuestion(
+                            this.copy(
+                                hasAcceptedAnswer = true,
+                                requireClarification = false
+                            )
+                        )
+                    }
                 }
                 Toast.makeText(this.requireContext(), getString(R.string.answer_added), Toast.LENGTH_SHORT).show()
             }
+            hideKeyboard(activity as MainActivity)
 //            val action = NewAnswerDirections.actionNewAnswerToQuestionDisplay(args.questionId)
 //            binding.root.findNavController().navigate(action)
             binding.root.findNavController().popBackStack()

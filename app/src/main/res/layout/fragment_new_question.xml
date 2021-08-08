@@ -24,7 +24,7 @@
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Question title">
+                    android:hint="@string/question_input_title">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:hint="Describe your question in more detail here">
+                    android:hint="@string/question_input_desc">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -51,6 +51,12 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enable_markdown_body"
+                android:checked="@={question.markdown}" />
+
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/imagesView"
                     android:layout_width="match_parent"
@@ -59,13 +65,13 @@
 
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/upload"
-                    android:text="Upload file"
+                    android:text="@string/question_input_file"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             <com.hootsuite.nachos.NachoTextView
                     android:id="@+id/nacho_text_view"
-                    android:hint="Tags"
+                    android:hint="@string/question_input_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -79,6 +85,7 @@
                 android:layout_margin="16dp"
                 android:background="?attr/colorPrimary"
                 android:enabled="@{question.valid}"
+                android:contentDescription="@string/desc_add_question"
                 app:srcCompat="@drawable/ic_baseline_done_24" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

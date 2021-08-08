@@ -8,6 +8,7 @@ data class Question(
     val title: String = "",
     val body: String = "",
     val author: String = "",
+    val markdown: Boolean = false,
     val tags: List<String> = emptyList(),
     val answers: List<String> = emptyList(),
     val upvoters: List<String> = emptyList(),

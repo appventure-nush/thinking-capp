@@ -27,6 +27,7 @@ import app.nush.thinkingcapp.viewmodels.UsersViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.nush.thinkingcapp.R
 import com.nush.thinkingcapp.databinding.FragmentQuestionDisplayBinding
+import io.noties.markwon.Markwon
 
 
 /**
@@ -55,10 +56,12 @@ class QuestionDisplay : Fragment() {
 
         usersViewModel.users.observe(viewLifecycleOwner, Observer { users ->
             if (users !is State.Success) {
-                println("Failed loading user data")
-                Toast.makeText(
-                    requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
-                    .show()
+                println("Still loading user data")
+                if (users is State.Failed) {
+                    println("Failed loading user data")
+                    Toast.makeText(requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
                 return@Observer
             }
             val isAdmin = users.data.findByEmail(firebaseAuth.currentUser?.email!!).admin
@@ -79,12 +82,16 @@ class QuestionDisplay : Fragment() {
                     renderQuestion(
                         question.copy(author = questionAuthor.username),
                         binding,
+                        question.author,
                         isAdmin || questionAuthor.email == firebaseAuth.currentUser?.email!!)
                 } else {
-                    println("Failed loading data.")
-                    Toast.makeText(
-                        requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
-                        .show()
+                    println("Still loading data")
+                    if (it is State.Failed) {
+                        println("Failed loading data")
+                        Toast.makeText(
+                            requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             })
         })
@@ -92,10 +99,12 @@ class QuestionDisplay : Fragment() {
         answersViewModel.questionId = args.questionId
         usersViewModel.users.observe(viewLifecycleOwner) { users ->
             if (users !is State.Success) {
-                println("Failed user loading data")
-                Toast.makeText(
-                    requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
-                    .show()
+                println("Still loading user data")
+                if (users is State.Failed) {
+                    println("Failed loading user data")
+                    Toast.makeText(requireContext(), R.string.load_data_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
                 return@observe
             }
             answersViewModel.answers.observe(viewLifecycleOwner) {
@@ -130,6 +139,7 @@ class QuestionDisplay : Fragment() {
     private fun renderQuestion(
         question: Question,
         binding: FragmentQuestionDisplayBinding,
+        authorEmail: String,
         showClarify: Boolean
     ) {
         binding.question = question
@@ -139,6 +149,12 @@ class QuestionDisplay : Fragment() {
         binding.imagesView.adapter = ImagesAdapter(question.files)
         binding.imagesView.layoutManager =
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        if (question.markdown) {
+            val markwon = Markwon.create(binding.root.context)
+            markwon.setMarkdown(binding.body, question.body)
+        } else {
+            binding.body.text = question.body
+        }
         val email = FirebaseAuth.getInstance().currentUser?.email!!
         binding.upvote.setOnClickListener {
             val upvoters = if (email in question.upvoters) {
@@ -149,6 +165,7 @@ class QuestionDisplay : Fragment() {
             val downvoters = question.downvoters - email
             viewModel.editQuestion(
                 question.copy(
+                    author = authorEmail,
                     upvoters = upvoters,
                     downvoters = downvoters
                 )
@@ -163,6 +180,7 @@ class QuestionDisplay : Fragment() {
             val upvoters = question.upvoters - email
             viewModel.editQuestion(
                 question.copy(
+                    author = authorEmail,
                     downvoters = downvoters,
                     upvoters = upvoters
                 )
@@ -186,18 +204,20 @@ class QuestionDisplay : Fragment() {
         if (showClarify) {
             binding.clarify.setOnClickListener {
                 if (question.requireClarification)
-                    viewModel.editQuestionStatus(
-                        question, false, true)
+                    viewModel.editQuestion(
+                        question.copy(author = authorEmail, requireClarification = false))
                 else {
                     val alertDialog: AlertDialog? = activity?.let {
                         val builder = AlertDialog.Builder(it)
                         builder.apply {
                             setTitle(R.string.clarify_dialog)
                             setPositiveButton(R.string.ok) { _, _ ->
-                                viewModel.editQuestionStatus(
-                                    question,
-                                    false,
-                                    true)
+                                viewModel.editQuestion(
+                                    question.copy(
+                                        author = authorEmail,
+                                        requireClarification = true
+                                    )
+                                )
                             }
                             setNegativeButton(R.string.cancel) { _, _ -> }
                         }
@@ -206,7 +226,9 @@ class QuestionDisplay : Fragment() {
                     alertDialog?.show()
                 }
             }
+            println("hi")
         } else {
+            println("bye")
             binding.clarify.visibility = View.INVISIBLE
         }
     }

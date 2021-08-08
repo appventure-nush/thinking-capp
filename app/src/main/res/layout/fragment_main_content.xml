@@ -65,6 +65,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:background="?attr/colorPrimary"
+            android:contentDescription="@string/desc_add_question"
             app:srcCompat="@drawable/ic_baseline_add_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

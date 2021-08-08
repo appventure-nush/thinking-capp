@@ -26,22 +26,22 @@
                     style="@style/Widget.AppCompat.TextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     android:text="@{question.title}" />
 
             <com.google.android.material.textview.MaterialTextView
                     style="@style/Widget.AppCompat.TextView"
+                    android:id="@+id/answer_question_body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:text="@{question.body}" />
+                    android:textSize="16sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Answer here:">
+                    android:hint="@string/answer_here">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -51,6 +51,13 @@
                         android:scrollbars="vertical"
                         android:text="@={answer.body}" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enable_markdown"
+                android:checked="@={answer.markdown}" />
+
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -61,6 +68,7 @@
                 android:layout_margin="16dp"
                 android:background="?attr/colorPrimary"
                 android:enabled="@{answer.valid}"
+                android:contentDescription="@string/desc_add_answer"
                 app:srcCompat="@drawable/ic_baseline_done_24" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

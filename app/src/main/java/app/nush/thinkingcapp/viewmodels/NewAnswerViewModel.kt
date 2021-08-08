@@ -19,6 +19,13 @@ class NewAnswerViewModel : BaseObservable() {
         }
 
     @get:Bindable
+    var markdown = false
+        set(value) {
+            field = value
+            notifyChange()
+        }
+
+    @get:Bindable
     val valid: Boolean
         get() = body.isNotBlank()
 
@@ -26,6 +33,8 @@ class NewAnswerViewModel : BaseObservable() {
         if (!valid) {
             throw IllegalStateException("Invalid answer.")
         }
-        return Answer(body = body, author = firebaseAuth.currentUser!!.email!!)
+        return Answer(
+            body = body, author = firebaseAuth.currentUser!!.email!!, markdown = markdown
+        )
     }
 }

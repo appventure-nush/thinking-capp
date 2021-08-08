@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import app.nush.thinkingcapp.util.Navigation
 import app.nush.thinkingcapp.util.Preferences
 import com.nush.thinkingcapp.R
@@ -52,7 +53,8 @@ class MainContent : Fragment(), AdapterView.OnItemSelectedListener {
                 filterDialog.show(childFragmentManager, "dialog")
             }
             fab.setOnClickListener {
-                Navigation.navigate(R.id.newQuestion)
+                val action = MainContentDirections.actionMainContentToNewQuestion()
+                binding.root.findNavController().navigate(action)
             }
             bar.setBackgroundColor(Color.parseColor(
                 if (Preferences.isDarkMode()) "#000000"

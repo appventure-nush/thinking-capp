@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.nush.thinkingcapp.MainActivity
 import app.nush.thinkingcapp.adapters.URIImagesAdapter
 import app.nush.thinkingcapp.util.*
 import app.nush.thinkingcapp.viewmodels.MetaDataViewModel
@@ -94,6 +95,7 @@ class NewQuestion : Fragment() {
             Toast.makeText(this.requireContext(),
                 getString(R.string.question_added),
                 Toast.LENGTH_SHORT).show()
+            hideKeyboard(activity as MainActivity)
 //            Navigation.navigate(R.id.mainContent)
             binding.root.findNavController().popBackStack()
         }
