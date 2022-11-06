@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "62927762215",
+    "project_id": "thinking-capp-temp",
+    "storage_bucket": "thinking-capp-temp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62927762215:android:1625f1069a908c3a84ef02",
+        "android_client_info": {
+          "package_name": "com.example.thinking_capp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62927762215-lj0fgtt1pmb26ir7ejfsu9m7vc2gmals.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.thinking_capp",
+            "certificate_hash": "052fe5a8c7090f2a6a8ec4457bf8eba5165674c5"
+          }
+        },
+        {
+          "client_id": "62927762215-kbcjstbp06njnsgcd2lj0m5g8j3a563q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAl2JY87cfZuretEcw11RnGsJtLzf4P7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62927762215-kbcjstbp06njnsgcd2lj0m5g8j3a563q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "62927762215-eruh1f5qnpsm0v8hm6ofasjhuevp83rf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thinkingCapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
