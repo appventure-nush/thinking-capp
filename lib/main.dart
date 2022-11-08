@@ -26,28 +26,34 @@ class ThinkingCApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Thinking CApp',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      darkTheme: ThemeData(
-        fontFamily: 'DM Sans',
-        scaffoldBackgroundColor: Palette.black,
-        textTheme: TextTheme(
-          bodyText1: TextStyle(color: Colors.white),
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (overscroll) {
+        overscroll.disallowIndicator();
+        return true;
+      },
+      child: GetMaterialApp(
+        title: 'Thinking CApp',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        darkTheme: ThemeData(
+          fontFamily: 'DM Sans',
+          scaffoldBackgroundColor: Palette.black,
+          textTheme: TextTheme(
+            bodyText1: TextStyle(color: Colors.white),
+          ),
+          colorScheme: ColorScheme.dark(
+            primary: Palette.primary,
+            secondary: Palette.secondary,
+            onPrimary: Colors.black,
+            onSecondary: Colors.black,
+          ),
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+          ),
         ),
-        colorScheme: ColorScheme.dark(
-          primary: Palette.primary,
-          secondary: Palette.secondary,
-          onPrimary: Colors.black,
-          onSecondary: Colors.black,
-        ),
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: Colors.transparent,
-        ),
+        defaultTransition: Transition.rightToLeft,
+        home: const StartupView(),
       ),
-      defaultTransition: Transition.rightToLeft,
-      home: const StartupView(),
     );
   }
 }

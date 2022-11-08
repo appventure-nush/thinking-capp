@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:thinking_capp/models/user.dart';
-import 'package:thinking_capp/services/auth.dart';
 
 class Question {
   final String id;
@@ -9,9 +8,12 @@ class Question {
   List<String> photoUrls;
   List<String> tags;
   AppUser poster;
-  int upvotes;
-  bool? myVote;
+  int numVotes;
+  Rx<bool?> myVote;
   DateTime timestamp;
+
+  bool get upvoted => myVote.value == true;
+  bool get downvoted => myVote.value == false;
 
   Question({
     required this.id,
@@ -20,8 +22,8 @@ class Question {
     required this.photoUrls,
     required this.tags,
     required this.poster,
-    required this.upvotes,
-    required this.myVote,
+    required this.numVotes,
+    bool? myVote,
     required this.timestamp,
-  });
+  }) : myVote = myVote.obs;
 }

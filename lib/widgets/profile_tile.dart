@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/user.dart';
+import 'package:thinking_capp/views/profile/profile.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class ProfileTile extends StatelessWidget {
@@ -10,7 +11,7 @@ class ProfileTile extends StatelessWidget {
   const ProfileTile({Key? key, required this.user}) : super(key: key);
 
   void _onPressed() {
-    // Get.to(ProfileView(user: user));
+    Get.to(ProfileView(user: user));
   }
 
   @override
@@ -21,7 +22,7 @@ class ProfileTile extends StatelessWidget {
         duration: const Duration(milliseconds: 100),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Palette.black1.withOpacity(pressed ? 1 : 0),
+          color: Palette.black2.withOpacity(pressed ? 1 : 0),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(

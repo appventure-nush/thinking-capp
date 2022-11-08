@@ -63,26 +63,20 @@ class AddTagsView extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Expanded(
-                  child: NotificationListener<OverscrollIndicatorNotification>(
-                    onNotification: (overscroll) {
-                      overscroll.disallowIndicator();
-                      return true;
+                  child: ListView.builder(
+                    itemCount: controller.suggestions.length,
+                    itemBuilder: (context, i) {
+                      return GestureDetector(
+                        onTap: () {
+                          controller.addTag(controller.suggestions[i]);
+                          controller.textController.clear();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Text(controller.suggestions[i]),
+                        ),
+                      );
                     },
-                    child: ListView.builder(
-                      itemCount: controller.suggestions.length,
-                      itemBuilder: (context, i) {
-                        return GestureDetector(
-                          onTap: () {
-                            controller.addTag(controller.suggestions[i]);
-                            controller.textController.clear();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Text(controller.suggestions[i]),
-                          ),
-                        );
-                      },
-                    ),
                   ),
                 ),
               ],

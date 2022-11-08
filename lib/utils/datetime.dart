@@ -25,17 +25,17 @@ String formatTimeAgo(DateTime dateTime) {
     return formatTime(dateTime);
   }
   if (isYesterday(dateTime)) {
-    return 'yesterday';
+    return 'Yesterday';
   }
   return formatDate(dateTime);
 }
 
 String timeOfDay() {
   final hour = DateTime.now().hour;
-  if (hour < 12) return 'morning';
-  if (hour < 18) return 'afternoon';
-  if (hour < 21) return 'evening';
-  return 'night';
+  if (hour < 12) return 'Morning';
+  if (hour < 18) return 'Afternoon';
+  if (hour < 21) return 'Evening';
+  return 'Night';
 }
 
 String timeTodayOrYesterday(DateTime dateTime) {

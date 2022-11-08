@@ -33,6 +33,7 @@ class _MyTabBarState extends State<MyTabBar> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: widget.tabs
             .map((tab) => GestureDetector(
                   onTap: () {

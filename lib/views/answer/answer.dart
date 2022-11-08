@@ -25,75 +25,69 @@ class AnswerView extends StatelessWidget {
             loading: controller.loading,
             onPressed: controller.submit,
           ),
-          body: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (overscroll) {
-              overscroll.disallowIndicator();
-              return true;
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 40),
-                        TextField(
-                          controller: controller.textController,
-                          style: TextStyle(
-                            color: Palette.primary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            hintText: 'Your answer...',
-                            hintStyle: TextStyle(
-                              color: Colors.white.withOpacity(0.4),
-                            ),
-                          ),
-                          maxLines: null,
-                          minLines: 4,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 40),
+                      TextField(
+                        controller: controller.textController,
+                        style: TextStyle(
+                          color: Palette.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
-                        SizedBox(height: 24),
-                        Text(
-                          'Images ${controller.photos.isNotEmpty ? '(${controller.photos.length})' : ''}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          hintText: 'Your answer...',
+                          hintStyle: TextStyle(
+                            color: Colors.white.withOpacity(0.4),
                           ),
                         ),
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: MyButton(
-                                height: 60,
-                                text: 'Gallery',
-                                onPressed: () => controller.addPhoto(true),
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: MyButton(
-                                height: 60,
-                                text: 'Camera',
-                                onPressed: () => controller.addPhoto(false),
-                              ),
-                            ),
-                          ],
+                        maxLines: null,
+                        minLines: 4,
+                      ),
+                      SizedBox(height: 24),
+                      Text(
+                        'Images ${controller.photos.isNotEmpty ? '(${controller.photos.length})' : ''}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
                         ),
-                        SizedBox(height: 16),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MyButton(
+                              height: 60,
+                              text: 'Gallery',
+                              onPressed: () => controller.addPhoto(true),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: MyButton(
+                              height: 60,
+                              text: 'Camera',
+                              onPressed: () => controller.addPhoto(false),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                    ],
                   ),
-                  _buildImagesList(controller),
-                  SizedBox(height: 120),
-                ],
-              ),
+                ),
+                _buildImagesList(controller),
+                SizedBox(height: 120),
+              ],
             ),
           ),
         );

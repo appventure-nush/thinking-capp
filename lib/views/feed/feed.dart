@@ -11,77 +11,81 @@ class FeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FeedController>(
-        init: FeedController(),
-        builder: (controller) {
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 20),
-                      Text(
-                        'Feed',
-                        style: TextStyle(
+      init: FeedController(),
+      builder: (controller) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(width: 16),
+                    DefaultFeedback(
+                      onPressed: () {},
+                      child: Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 28),
+                        decoration: BoxDecoration(
                           color: Palette.primary,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ),
-                      Spacer(),
-                      _buildIconButton(Icons.filter_list, () {}),
-                      SizedBox(width: 12),
-                      _buildIconButton(Icons.search, () {}),
-                      SizedBox(width: 16),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Obx(
-                        () => NotificationListener<
-                            OverscrollIndicatorNotification>(
-                          onNotification: (overscroll) {
-                            if (!overscroll.leading) {
-                              overscroll.disallowIndicator();
-                            }
-                            return true;
-                          },
-                          child: RefreshIndicator(
-                            onRefresh: controller.refreshFeed,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.only(bottom: 100),
-                              itemCount: controller.feed.length,
-                              itemBuilder: (context, index) {
-                                final question = controller.feed[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: QuestionCard(
-                                    question: question,
-                                    onPressed: () =>
-                                        controller.toQuestion(question),
-                                  ),
-                                );
-                              },
+                        child: Center(
+                          child: Text(
+                            '5 modules',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  )
-                ],
-              ),
+                    Spacer(),
+                    _buildIconButton(Icons.sort, () {}),
+                    SizedBox(width: 12),
+                    _buildIconButton(Icons.search, () {}),
+                    SizedBox(width: 16),
+                  ],
+                ),
+                SizedBox(height: 24),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Obx(
+                      () => RefreshIndicator(
+                        onRefresh: controller.refreshFeed,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(bottom: 100),
+                          itemCount: controller.feed.length,
+                          itemBuilder: (context, index) {
+                            final question = controller.feed[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: QuestionCard(
+                                question: question,
+                                onPressed: () =>
+                                    controller.toQuestion(question),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildIconButton(IconData icon, Function() onPressed) {
