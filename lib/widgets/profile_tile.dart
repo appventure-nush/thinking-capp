@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
@@ -33,14 +34,22 @@ class ProfileTile extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Color(0xffa4a4a4),
                 borderRadius: BorderRadius.circular(20),
+                image: user.photoUrl == ''
+                    ? null
+                    : DecorationImage(
+                        image: CachedNetworkImageProvider(user.photoUrl),
+                        fit: BoxFit.cover,
+                      ),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.person_outlined,
-                  size: 20,
-                  color: Colors.black,
-                ),
-              ),
+              child: user.photoUrl == ''
+                  ? Center(
+                      child: Icon(
+                        Icons.person_outlined,
+                        size: 20,
+                        color: Colors.black,
+                      ),
+                    )
+                  : null,
             ),
             SizedBox(width: 14),
             Column(

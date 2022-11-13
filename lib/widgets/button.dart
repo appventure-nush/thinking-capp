@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
-import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class MyButton extends StatelessWidget {
   final String text;

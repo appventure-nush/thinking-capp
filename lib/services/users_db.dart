@@ -19,7 +19,13 @@ class UsersDbService extends GetxService {
       'photoUrl': '',
       'reputation': 0,
     });
-    return AppUser(id: id, name: name, photoUrl: '', reputation: 0);
+    return AppUser(
+      id: id,
+      name: name,
+      photoUrl: '',
+      reputation: 0,
+      modules: [],
+    );
   }
 
   Future<void> updateUser(String id, Map<String, dynamic> data) async {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/views/write_question/write_question.dart';
-import 'package:thinking_capp/widgets/default_feedback.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class HomeBottomSheet extends StatelessWidget {

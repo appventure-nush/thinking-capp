@@ -33,7 +33,7 @@ class ProfileView extends StatelessWidget {
                 SizedBox(height: 36),
                 Expanded(
                   child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 200),
                     child: controller.loading
                         ? Center(child: Loading())
                         : controller.tab == 'Questions'

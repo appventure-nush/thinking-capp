@@ -5,12 +5,14 @@ class AppUser {
   String name;
   String photoUrl;
   int reputation;
+  List<String> modules;
 
   AppUser({
     required this.id,
     required this.name,
     required this.photoUrl,
     required this.reputation,
+    required this.modules,
   });
 
   factory AppUser.fromDoc(DocumentSnapshot<Map> doc) {
@@ -20,6 +22,7 @@ class AppUser {
       name: data['name'],
       photoUrl: data['photoUrl'],
       reputation: data['reputation'],
+      modules: List<String>.from(data['modules']),
     );
   }
 }

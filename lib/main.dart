@@ -51,7 +51,7 @@ class ThinkingCApp extends StatelessWidget {
             backgroundColor: Colors.transparent,
           ),
         ),
-        defaultTransition: Transition.rightToLeft,
+        defaultTransition: Transition.rightToLeftWithFade,
         home: const StartupView(),
       ),
     );

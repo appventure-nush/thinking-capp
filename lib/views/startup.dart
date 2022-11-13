@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/cache.dart';
 import 'package:thinking_capp/views/home/home.dart';
+import 'package:thinking_capp/views/select_modules/select_modules.dart';
 import 'package:thinking_capp/views/welcome.dart';
 import 'package:thinking_capp/widgets/loading.dart';
 
@@ -26,7 +27,11 @@ class _StartupViewState extends State<StartupView> {
     await auth.refreshCurrentUser();
     if (auth.isSignedIn) {
       await Get.find<AppCache>().fetchData();
-      Get.off(HomeView());
+      if (auth.currentUser.modules.isEmpty) {
+        Get.off(SelectModulesView(isOnboarding: true));
+      } else {
+        Get.off(HomeView());
+      }
     } else {
       Get.off(WelcomeView());
     }

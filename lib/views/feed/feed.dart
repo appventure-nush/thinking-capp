@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/models/user.dart';
+import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/views/feed/controller.dart';
 import 'package:thinking_capp/views/feed/question_card.dart';
+import 'package:thinking_capp/views/select_modules/select_modules.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 
 class FeedView extends StatelessWidget {
   const FeedView({Key? key}) : super(key: key);
+
+  AppUser get currentUser => Get.find<AuthService>().currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,9 @@ class FeedView extends StatelessWidget {
                   children: [
                     SizedBox(width: 16),
                     DefaultFeedback(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(SelectModulesView(isOnboarding: false));
+                      },
                       child: Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 28),
@@ -32,7 +39,7 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '5 modules',
+                            '${currentUser.modules.length} modules',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
