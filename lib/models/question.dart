@@ -10,6 +10,7 @@ class Question {
   AppUser poster;
   int numVotes;
   Rx<bool?> myVote;
+  int numAnswers;
   DateTime timestamp;
 
   bool get upvoted => myVote.value == true;
@@ -24,6 +25,7 @@ class Question {
     required this.poster,
     required this.numVotes,
     bool? myVote,
+    required this.numAnswers,
     required this.timestamp,
   }) : myVote = myVote.obs;
 }

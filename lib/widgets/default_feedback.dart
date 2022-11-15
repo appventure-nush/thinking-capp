@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thinking_capp/utils/animation.dart';
 
 import 'pressed_builder.dart';
 
@@ -19,16 +20,15 @@ class DefaultFeedback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PressedBuilder(
-      onPressed: () {
-        if (!disabled) onPressed();
-      },
+      disabled: disabled,
+      onPressed: onPressed,
       animationDuration: 100,
       builder: (pressed) => AnimatedOpacity(
-        duration: const Duration(milliseconds: 100),
-        opacity: pressed && !disabled ? pressedOpacity : 1,
+        duration: shortAnimationDuration,
+        opacity: pressed ? pressedOpacity : 1,
         child: AnimatedScale(
-          duration: const Duration(milliseconds: 100),
-          scale: pressed && !disabled ? 0.98 : 1,
+          duration: shortAnimationDuration,
+          scale: pressed ? 0.98 : 1,
           child: child,
         ),
       ),

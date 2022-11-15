@@ -8,9 +8,11 @@ import 'package:thinking_capp/services/media_picker.dart';
 import 'package:thinking_capp/services/storage.dart';
 import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/views/examine_photo.dart';
+import 'package:thinking_capp/views/history/history.dart';
+import 'package:thinking_capp/views/profile/profile.dart';
 import 'package:thinking_capp/views/welcome.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
-import 'package:thinking_capp/widgets/yes_no_dialog.dart';
+import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -142,7 +144,13 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
             SizedBox(height: 50),
-            _buildButton('Profile', () {}),
+            _buildButton('Profile', () {
+              Get.to(ProfileView(user: user));
+            }),
+            SizedBox(height: 12),
+            _buildButton('History', () {
+              Get.to(HistoryView());
+            }),
             SizedBox(height: 12),
             _buildButton('Sign out', _signOut),
           ],
@@ -158,7 +166,7 @@ class _SettingsViewState extends State<SettingsView> {
         width: 160,
         height: 50,
         decoration: BoxDecoration(
-          color: Palette.black1,
+          color: Palette.black2,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(

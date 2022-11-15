@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
+import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/questions_db.dart';
+import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
 import 'package:thinking_capp/views/answer/answer.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
@@ -27,13 +29,17 @@ class QuestionView extends StatefulWidget {
 
 class _QuestionViewState extends State<QuestionView> {
   final _questionsDb = Get.find<QuestionsDbService>();
+  final _currentUser = Get.find<AuthService>().currentUser;
+  final _usersDb = Get.find<UsersDbService>();
 
   String _currentTab = 'Top';
   final List<Answer> _answers = [];
   bool _loadingAnswers = false;
+  bool _isBookmarked = false;
 
   void _switchTab(String tab) {
     _currentTab = tab;
+    _answers.clear();
     _loadMoreAnswers();
   }
 
@@ -57,10 +63,36 @@ class _QuestionViewState extends State<QuestionView> {
     });
   }
 
+  void _toggleBookmarkQuestion() {
+    setState(() => _isBookmarked = !_isBookmarked);
+    if (_isBookmarked) {
+      _usersDb.addBookmark(_currentUser.id, widget.question.id);
+    } else {
+      _usersDb.removeBookmark(_currentUser.id, widget.question.id);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (_currentUser.bookmarks.contains(widget.question.id)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() => _isBookmarked = true);
+      });
+    }
+    _loadMoreAnswers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: 'Question', actions: {}),
+      appBar: MyAppBar(
+        title: 'Question',
+        suffixIcons: {
+          (_isBookmarked ? Icons.bookmark : Icons.bookmark_outline):
+              _toggleBookmarkQuestion
+        },
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -127,7 +159,7 @@ class _QuestionViewState extends State<QuestionView> {
                   Row(
                     children: [
                       Text(
-                        '${_answers.length} answers',
+                        '${widget.question.numAnswers} answers',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -192,9 +224,12 @@ class _QuestionViewState extends State<QuestionView> {
                       shrinkWrap: true,
                       itemCount: _answers.length,
                       itemBuilder: (context, i) {
-                        return AnswerCard(
-                          answer: _answers[i],
-                          onPressed: () {},
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: AnswerCard(
+                            answer: _answers[i],
+                            onPressed: () {},
+                          ),
                         );
                       },
                     ),

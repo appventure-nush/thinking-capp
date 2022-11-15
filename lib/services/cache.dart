@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/models/user.dart';
@@ -10,7 +11,12 @@ class AppCache extends GetxService {
 
   Future<void> fetchData() async {
     feed.addAll(
-      await Get.find<QuestionsDbService>().getQuestions(DateTime.now()),
+      await Get.find<QuestionsDbService>().loadFeed(
+        sortBy: 'timestamp',
+        startAfter: Timestamp.now(),
+        sortDescending: true,
+        tags: null,
+      ),
     );
     rankings.addAll(await Get.find<UsersDbService>().getTopRanked(null));
   }

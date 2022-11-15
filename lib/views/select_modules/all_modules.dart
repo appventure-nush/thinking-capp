@@ -240,4 +240,12 @@ final sortedModules = <String, List<String>>{
   'Year 4': allModules.where((m) => m[2] == '4').toList(),
   'Year 5': allModules.where((m) => m[2] == '5').toList(),
   'Year 6': allModules.where((m) => m[2] == '6').toList(),
+  'Not in curriculum': [
+    'Other Chemistry',
+    'Other Physics',
+    'Other Math',
+    'Other Biology',
+    'Other CS',
+    'Other English',
+  ],
 };

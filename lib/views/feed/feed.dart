@@ -39,7 +39,7 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${currentUser.modules.length} modules',
+                            '${currentUser.modules.length} Modules',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -49,7 +49,7 @@ class FeedView extends StatelessWidget {
                       ),
                     ),
                     Spacer(),
-                    _buildIconButton(Icons.sort, () {}),
+                    _buildIconButton(Icons.sort, controller.selectSortBy),
                     SizedBox(width: 12),
                     _buildIconButton(Icons.search, () {}),
                     SizedBox(width: 16),
@@ -102,7 +102,7 @@ class FeedView extends StatelessWidget {
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-          color: Palette.black1,
+          color: Palette.black2,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(

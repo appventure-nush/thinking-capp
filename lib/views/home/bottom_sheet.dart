@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/views/write_question/write_question.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
@@ -37,10 +38,10 @@ class HomeBottomSheet extends StatelessWidget {
               Get.to(WriteQuestionView());
             },
             builder: (pressed) => AnimatedSlide(
-              duration: const Duration(milliseconds: 100),
+              duration: shortAnimationDuration,
               offset: Offset(0, pressed ? -0.3 : -0.36),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
+                duration: shortAnimationDuration,
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
@@ -76,7 +77,7 @@ class HomeBottomSheet extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 100),
+            duration: shortAnimationDuration,
             opacity: index == currentIndex ? 1 : 0.4,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

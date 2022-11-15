@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/user.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/views/profile/profile.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
@@ -20,7 +21,7 @@ class ProfileTile extends StatelessWidget {
     return PressedBuilder(
       onPressed: _onPressed,
       builder: (pressed) => AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
+        duration: shortAnimationDuration,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Palette.black2.withOpacity(pressed ? 1 : 0),

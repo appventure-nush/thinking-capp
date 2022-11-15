@@ -31,6 +31,7 @@ class QuestionsDbService extends GetxService {
       poster: poster,
       numVotes: data['numVotes'],
       myVote: myVote,
+      numAnswers: data['numAnswers'],
       timestamp: data['timestamp'].toDate(),
     );
   }
@@ -56,14 +57,29 @@ class QuestionsDbService extends GetxService {
     );
   }
 
-  Future<List<Question>> getQuestions(DateTime startAfterTimestamp) async {
+  Future<List<Question>> loadFeed({
+    required String sortBy,
+    required dynamic startAfter, // timestamp or numVotes
+    required bool sortDescending,
+    required List<String>? tags, // if tags is null, load all questions
+  }) async {
     final snapshot = await _questionsRef
-        .orderBy('timestamp', descending: true)
-        .startAfter([Timestamp.fromDate(startAfterTimestamp)])
+        .where('tags', arrayContainsAny: tags)
+        .orderBy(sortBy, descending: sortDescending)
+        .startAfter([startAfter])
         .limit(10)
         .get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
+      questions.add(await _questionFromDoc(doc));
+    }
+    return questions;
+  }
+
+  Future<List<Question>> getQuestionsByIds(List<String> questionIds) async {
+    final questions = <Question>[];
+    for (final id in questionIds) {
+      final doc = await _questionsRef.doc(id).get();
       questions.add(await _questionFromDoc(doc));
     }
     return questions;
@@ -113,6 +129,18 @@ class QuestionsDbService extends GetxService {
     return answers;
   }
 
+  Future<List<Question>> getVotedQuestions(String userId, bool vote) async {
+    final snapshot = await _questionsRef
+        .where(vote ? 'upvotedBy' : 'downvotedBy', arrayContains: userId)
+        .orderBy('timestamp', descending: true)
+        .get();
+    final questions = <Question>[];
+    for (final doc in snapshot.docs) {
+      questions.add(await _questionFromDoc(doc));
+    }
+    return questions;
+  }
+
   Future<Question> postQuestion(
     String title,
     String text,
@@ -140,6 +168,7 @@ class QuestionsDbService extends GetxService {
       poster: _user,
       numVotes: 0,
       myVote: null,
+      numAnswers: 0,
       timestamp: timestamp.toDate(),
     );
   }
@@ -159,6 +188,10 @@ class QuestionsDbService extends GetxService {
       'numVotes': 0,
       'timestamp': timestamp,
     });
+    // update question numAnswers count
+    await _questionsRef
+        .doc(questionId)
+        .update({'numAnswers': FieldValue.increment(1)});
     return Answer(
       id: ref.id,
       questionId: questionId,

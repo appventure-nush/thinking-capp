@@ -6,6 +6,7 @@ class AppUser {
   String photoUrl;
   int reputation;
   List<String> modules;
+  List<String> bookmarks; // questionIds
 
   AppUser({
     required this.id,
@@ -13,6 +14,7 @@ class AppUser {
     required this.photoUrl,
     required this.reputation,
     required this.modules,
+    required this.bookmarks,
   });
 
   factory AppUser.fromDoc(DocumentSnapshot<Map> doc) {
@@ -23,6 +25,7 @@ class AppUser {
       photoUrl: data['photoUrl'],
       reputation: data['reputation'],
       modules: List<String>.from(data['modules']),
+      bookmarks: List<String>.from(data['bookmarks']),
     );
   }
 }

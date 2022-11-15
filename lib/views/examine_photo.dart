@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:photo_view/photo_view.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
 
 class ExaminePhotoView extends StatefulWidget {
@@ -44,7 +45,7 @@ class _ExaminePhotoViewState extends State<ExaminePhotoView> {
             imageProvider: CachedNetworkImageProvider(widget.photoUrl),
           ),
           TweenAnimationBuilder(
-            duration: Duration(milliseconds: 200),
+            duration: mediumAnimationDuration,
             tween: Tween(
               begin: Offset(0, -1),
               end: _isZooming ? Offset(0, -1) : Offset(0, 0),

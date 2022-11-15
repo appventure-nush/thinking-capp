@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class MyIconButton extends StatelessWidget {
@@ -16,7 +17,7 @@ class MyIconButton extends StatelessWidget {
     return PressedBuilder(
       onPressed: onPressed,
       builder: (pressed) => AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
+        duration: shortAnimationDuration,
         width: 40,
         height: 40,
         decoration: BoxDecoration(

@@ -37,8 +37,10 @@ class _MyTabBarState extends State<MyTabBar> {
         children: widget.tabs
             .map((tab) => GestureDetector(
                   onTap: () {
-                    setState(() => _currentTab = tab);
-                    widget.onChanged(tab);
+                    if (tab != _currentTab) {
+                      setState(() => _currentTab = tab);
+                      widget.onChanged(tab);
+                    }
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

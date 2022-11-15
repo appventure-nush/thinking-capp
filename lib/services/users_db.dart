@@ -25,6 +25,7 @@ class UsersDbService extends GetxService {
       photoUrl: '',
       reputation: 0,
       modules: [],
+      bookmarks: [],
     );
   }
 
@@ -40,5 +41,17 @@ class UsersDbService extends GetxService {
         .limit(10)
         .get();
     return snapshot.docs.map((doc) => AppUser.fromDoc(doc)).toList();
+  }
+
+  Future<void> addBookmark(String userId, String questionId) async {
+    await _usersRef.doc(userId).update({
+      'bookmarks': FieldValue.arrayUnion([questionId]),
+    });
+  }
+
+  Future<void> removeBookmark(String userId, String questionId) async {
+    await _usersRef.doc(userId).update({
+      'bookmarks': FieldValue.arrayRemove([questionId]),
+    });
   }
 }

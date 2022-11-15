@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 
 class MyButton extends StatelessWidget {
@@ -24,7 +25,7 @@ class MyButton extends StatelessWidget {
       disabled: loading,
       onPressed: onPressed,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: mediumAnimationDuration,
         height: height,
         decoration: BoxDecoration(
           color: loading

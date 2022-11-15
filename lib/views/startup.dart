@@ -28,12 +28,12 @@ class _StartupViewState extends State<StartupView> {
     if (auth.isSignedIn) {
       await Get.find<AppCache>().fetchData();
       if (auth.currentUser.modules.isEmpty) {
-        Get.off(SelectModulesView(isOnboarding: true));
+        Get.off(() => SelectModulesView(isOnboarding: true));
       } else {
-        Get.off(HomeView());
+        Get.off(() => HomeView());
       }
     } else {
-      Get.off(WelcomeView());
+      Get.off(() => WelcomeView());
     }
   }
 

@@ -5,7 +5,7 @@ import 'package:thinking_capp/widgets/icon_button.dart';
 
 PreferredSize MyAppBar({
   required String title,
-  Map<String, Function()>? actions,
+  Map<IconData, Function()>? suffixIcons,
   Function()? onBack,
 }) {
   return PreferredSize(
@@ -38,11 +38,15 @@ PreferredSize MyAppBar({
             ),
           ),
           Spacer(),
-          if (actions != null)
-            MyIconButton(
-              icon: Icons.menu,
-              onPressed: () {},
-            ),
+          ...(suffixIcons ?? {})
+              .map(
+                (icon, onPressed) => MapEntry(
+                  icon,
+                  MyIconButton(icon: icon, onPressed: onPressed),
+                ),
+              )
+              .values
+              .toList(),
         ],
       ),
     ),

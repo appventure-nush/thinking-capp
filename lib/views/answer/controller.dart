@@ -6,7 +6,7 @@ import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/services/media_picker.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/storage.dart';
-import 'package:thinking_capp/widgets/yes_no_dialog.dart';
+import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
 class AnswerController extends GetxController {
   final _mediaPicker = Get.find<MediaPickerService>();

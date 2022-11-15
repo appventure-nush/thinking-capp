@@ -48,7 +48,7 @@ class _SelectModulesViewState extends State<SelectModulesView> {
     );
     setState(() => loading = false);
     if (widget.isOnboarding) {
-      Get.off(HomeView());
+      Get.off(() => HomeView());
     } else {
       Get.back();
     }

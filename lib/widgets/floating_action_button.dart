@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thinking_capp/colors/palette.dart';
-
-import 'default_feedback.dart';
+import 'package:thinking_capp/utils/animation.dart';
+import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class MyFloatingActionButton extends StatelessWidget {
   final IconData icon;
@@ -17,33 +17,37 @@ class MyFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultFeedback(
+    return PressedBuilder(
       disabled: loading,
       onPressed: onPressed,
-      child: Container(
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          color: loading ? Palette.black2 : Palette.primary,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Palette.black.withOpacity(0.4),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Center(
-          child: loading
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Icon(
-                  icon,
-                  color: Colors.black,
-                ),
+      builder: (pressed) => AnimatedScale(
+        duration: shortAnimationDuration,
+        scale: pressed ? 0.94 : 1,
+        child: Container(
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            color: loading ? Palette.black2 : Palette.primary,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Palette.black.withOpacity(0.4),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Center(
+            child: loading
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(
+                    icon,
+                    color: Colors.black,
+                  ),
+          ),
         ),
       ),
     );

@@ -30,7 +30,7 @@ class _WelcomeViewState extends State<WelcomeView> {
     final success = await Get.find<AuthService>().msAuth();
     if (success) {
       await Get.find<AppCache>().fetchData();
-      Get.off(HomeView());
+      Get.off(() => HomeView());
     }
     _loading = false;
   }
