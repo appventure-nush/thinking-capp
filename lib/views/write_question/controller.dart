@@ -36,7 +36,6 @@ class WriteQuestionController extends GetxController {
   void submit() {
     if (titleController.text.isEmpty) {
       Get.rawSnackbar(
-        shouldIconPulse: false,
         message: 'A title is required',
         backgroundColor: Palette.red,
       );
@@ -44,7 +43,6 @@ class WriteQuestionController extends GetxController {
     }
     if (descriptionController.text.isEmpty && photos.isEmpty) {
       Get.rawSnackbar(
-        shouldIconPulse: false,
         message: 'A description or photo is required',
         backgroundColor: Palette.red,
       );

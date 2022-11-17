@@ -5,7 +5,7 @@ class AppUser {
   String name;
   String photoUrl;
   int reputation;
-  List<String> modules;
+  List<String> followingTags;
   List<String> bookmarks; // questionIds
 
   AppUser({
@@ -13,7 +13,7 @@ class AppUser {
     required this.name,
     required this.photoUrl,
     required this.reputation,
-    required this.modules,
+    required this.followingTags,
     required this.bookmarks,
   });
 
@@ -24,7 +24,7 @@ class AppUser {
       name: data['name'],
       photoUrl: data['photoUrl'],
       reputation: data['reputation'],
-      modules: List<String>.from(data['modules']),
+      followingTags: List<String>.from(data['followingTags']),
       bookmarks: List<String>.from(data['bookmarks']),
     );
   }

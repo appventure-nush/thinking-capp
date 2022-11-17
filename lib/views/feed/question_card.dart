@@ -4,6 +4,7 @@ import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
+import 'package:thinking_capp/views/tag/tag.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 import 'package:thinking_capp/widgets/question_tag.dart';
@@ -55,7 +56,12 @@ class QuestionCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: question.tags
-                    .map((tag) => QuestionTag(label: tag, onPressed: () {}))
+                    .map((tag) => QuestionTag(
+                          label: tag,
+                          onPressed: () {
+                            Get.to(TagView(tag: tag));
+                          },
+                        ))
                     .toList(),
               ),
             SizedBox(height: 24),

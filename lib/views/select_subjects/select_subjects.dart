@@ -8,43 +8,61 @@ import 'package:thinking_capp/widgets/app_bar.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 import 'package:thinking_capp/widgets/floating_action_button.dart';
 
-import 'all_modules.dart';
+import 'subjects.dart';
 
-class SelectModulesView extends StatefulWidget {
+class SelectSubjectsView extends StatefulWidget {
   final bool isOnboarding; // false when first creating account
 
-  const SelectModulesView({
+  const SelectSubjectsView({
     Key? key,
     required this.isOnboarding,
   }) : super(key: key);
 
   @override
-  State<SelectModulesView> createState() => _SelectModulesViewState();
+  State<SelectSubjectsView> createState() => _SelectSubjectsViewState();
 }
 
-class _SelectModulesViewState extends State<SelectModulesView> {
+class _SelectSubjectsViewState extends State<SelectSubjectsView> {
   final _currentUser = Get.find<AuthService>().currentUser;
 
   final searchController = TextEditingController();
 
+  List<String> visibleSubjects = subjects;
   final List<String> selected = [];
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    selected.addAll(_currentUser.modules);
+    selected.addAll(_currentUser.followingTags);
     searchController.addListener(() {
-      setState(() {});
+      if (searchController.text.isEmpty) {
+        setState(() => visibleSubjects = subjects);
+      } else {
+        setState(() {
+          visibleSubjects = subjects
+              .where((m) =>
+                  m.toLowerCase().contains(searchController.text.toLowerCase()))
+              .toList();
+        });
+      }
     });
   }
 
   void _onSubmit() async {
+    if (selected.isEmpty) {
+      Get.rawSnackbar(
+        message: 'You must choose at least one subject',
+        backgroundColor: Palette.red,
+      );
+      return;
+    }
+
     setState(() => loading = true);
-    _currentUser.modules = selected;
+    _currentUser.followingTags = selected;
     await Get.find<UsersDbService>().updateUser(
       _currentUser.id,
-      {'modules': selected},
+      {'followingTags': selected},
     );
     setState(() => loading = false);
     if (widget.isOnboarding) {
@@ -57,7 +75,8 @@ class _SelectModulesViewState extends State<SelectModulesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.isOnboarding ? null : MyAppBar(title: 'Edit your modules'),
+      appBar:
+          widget.isOnboarding ? null : MyAppBar(title: 'Edit your subjects'),
       floatingActionButton: MyFloatingActionButton(
         icon: Icons.check,
         loading: loading,
@@ -73,7 +92,7 @@ class _SelectModulesViewState extends State<SelectModulesView> {
             if (widget.isOnboarding)
               Center(
                 child: Text(
-                  'Select your modules',
+                  'Select your subjects',
                   style: TextStyle(
                     color: Palette.primary,
                     fontSize: 24,
@@ -81,40 +100,40 @@ class _SelectModulesViewState extends State<SelectModulesView> {
                   ),
                 ),
               ),
-            if (widget.isOnboarding)
-              SizedBox(height: 36)
-            else
-              SizedBox(height: 20),
+            SizedBox(height: widget.isOnboarding ? 36 : 20),
             _buildSearchField(),
-            SizedBox(height: 16),
+            SizedBox(height: widget.isOnboarding ? 36 : 20),
             Expanded(
               child: Stack(
                 children: [
-                  ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 16,
+                  GridView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 14,
+                      childAspectRatio: 2,
                     ),
-                    itemCount: sortedModules.length,
+                    padding: EdgeInsets.zero,
+                    itemCount: visibleSubjects.length,
                     itemBuilder: (context, i) {
-                      final category = sortedModules.keys.elementAt(i);
-                      final moduleCodes = sortedModules[category]!;
-                      return _buildCategory(category, moduleCodes);
+                      return _buildSubjectTile(visibleSubjects[i]);
                     },
                   ),
-                  Container(
-                    height: 16,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Palette.black,
-                          Palette.black.withOpacity(0),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: 16,
+                  //   decoration: BoxDecoration(
+                  //     gradient: LinearGradient(
+                  //       begin: Alignment.topCenter,
+                  //       end: Alignment.bottomCenter,
+                  //       colors: [
+                  //         Palette.black,
+                  //         Palette.black.withOpacity(0),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -161,62 +180,26 @@ class _SelectModulesViewState extends State<SelectModulesView> {
     );
   }
 
-  Column _buildCategory(String category, List<String> moduleCodes) {
-    if (searchController.text.isNotEmpty) {
-      moduleCodes = moduleCodes
-          .where((code) => code.contains(searchController.text.toUpperCase()))
-          .toList();
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          category,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: 12),
-        GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 2,
-          ),
-          itemCount: moduleCodes.length,
-          itemBuilder: (context, i) {
-            return _buildModuleCard(moduleCodes[i]);
-          },
-        ),
-        SizedBox(height: 32),
-      ],
-    );
-  }
-
-  Widget _buildModuleCard(String moduleCode) {
-    final isSelected = selected.contains(moduleCode);
+  Widget _buildSubjectTile(String subject) {
+    final isSelected = selected.contains(subject);
     return DefaultFeedback(
       onPressed: () {
         setState(() {
-          if (selected.contains(moduleCode)) {
-            selected.remove(moduleCode);
+          if (selected.contains(subject)) {
+            selected.remove(subject);
           } else {
-            selected.add(moduleCode);
+            selected.add(subject);
           }
         });
       },
       child: Container(
         decoration: BoxDecoration(
           color: isSelected ? Palette.primary : Palette.black1,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Center(
           child: Text(
-            moduleCode,
+            subject,
             style: TextStyle(
               color: isSelected ? Colors.black : Colors.white,
               fontSize: 16,

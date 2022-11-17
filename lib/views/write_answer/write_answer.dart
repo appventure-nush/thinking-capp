@@ -8,15 +8,15 @@ import 'package:thinking_capp/widgets/floating_action_button.dart';
 
 import 'controller.dart';
 
-class AnswerView extends StatelessWidget {
+class WriteAnswerView extends StatelessWidget {
   final String questionId;
 
-  const AnswerView({Key? key, required this.questionId}) : super(key: key);
+  const WriteAnswerView({Key? key, required this.questionId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AnswerController>(
-      init: AnswerController(questionId),
+    return GetBuilder<WriteAnswerController>(
+      init: WriteAnswerController(questionId),
       builder: (controller) {
         return Scaffold(
           appBar: MyAppBar(title: 'Write your answer'),
@@ -95,7 +95,7 @@ class AnswerView extends StatelessWidget {
     );
   }
 
-  SizedBox _buildImagesList(AnswerController controller) {
+  SizedBox _buildImagesList(WriteAnswerController controller) {
     return SizedBox(
       height: 80,
       child: ListView.separated(

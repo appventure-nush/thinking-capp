@@ -5,7 +5,9 @@ import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/views/feed/controller.dart';
 import 'package:thinking_capp/views/feed/question_card.dart';
-import 'package:thinking_capp/views/select_modules/select_modules.dart';
+import 'package:thinking_capp/views/question/question.dart';
+import 'package:thinking_capp/views/search/search.dart';
+import 'package:thinking_capp/views/select_subjects/select_subjects.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 
 class FeedView extends StatelessWidget {
@@ -28,7 +30,9 @@ class FeedView extends StatelessWidget {
                     SizedBox(width: 16),
                     DefaultFeedback(
                       onPressed: () {
-                        Get.to(SelectModulesView(isOnboarding: false));
+                        Get.to(SelectSubjectsView(isOnboarding: false))
+                            // update number of subjects displayed
+                            ?.then((_) => controller.update());
                       },
                       child: Container(
                         height: 50,
@@ -39,7 +43,7 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${currentUser.modules.length} Modules',
+                            '${currentUser.followingTags.length} Subjects',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -51,7 +55,9 @@ class FeedView extends StatelessWidget {
                     Spacer(),
                     _buildIconButton(Icons.sort, controller.selectSortBy),
                     SizedBox(width: 12),
-                    _buildIconButton(Icons.search, () {}),
+                    _buildIconButton(Icons.search, () {
+                      Get.to(SearchView());
+                    }),
                     SizedBox(width: 16),
                   ],
                 ),
@@ -77,8 +83,10 @@ class FeedView extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: QuestionCard(
                                 question: question,
-                                onPressed: () =>
-                                    controller.toQuestion(question),
+                                onPressed: () {
+                                  Get.to(
+                                      () => QuestionView(question: question));
+                                },
                               ),
                             );
                           },

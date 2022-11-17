@@ -8,7 +8,7 @@ import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/storage.dart';
 import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
-class AnswerController extends GetxController {
+class WriteAnswerController extends GetxController {
   final _mediaPicker = Get.find<MediaPickerService>();
   final _questionsDb = Get.find<QuestionsDbService>();
   final _storage = Get.find<StorageService>();
@@ -19,7 +19,7 @@ class AnswerController extends GetxController {
 
   final String _questionId;
 
-  AnswerController(this._questionId);
+  WriteAnswerController(this._questionId);
 
   void addPhoto(bool fromGallery) async {
     final file = fromGallery
@@ -43,7 +43,6 @@ class AnswerController extends GetxController {
   void submit() async {
     if (textController.text.isEmpty) {
       Get.rawSnackbar(
-        shouldIconPulse: false,
         message: 'You need to write something',
         backgroundColor: Palette.red,
       );
@@ -56,9 +55,13 @@ class AnswerController extends GetxController {
       final url = await _storage.uploadPhoto(file, 'answer');
       photoUrls.add(url);
     }
-    await _questionsDb.postAnswer(_questionId, textController.text, photoUrls);
+    final answer = await _questionsDb.postAnswer(
+      _questionId,
+      textController.text,
+      photoUrls,
+    );
     loading = false;
     update();
-    Get.back();
+    Get.back(result: answer);
   }
 }

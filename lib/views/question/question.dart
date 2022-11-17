@@ -7,7 +7,8 @@ import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
-import 'package:thinking_capp/views/answer/answer.dart';
+import 'package:thinking_capp/views/write_answer/write_answer.dart';
+import 'package:thinking_capp/views/tag/tag.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
 import 'package:thinking_capp/views/question/answer_card.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
@@ -72,6 +73,14 @@ class _QuestionViewState extends State<QuestionView> {
     }
   }
 
+  void _toWriteAnswer() async {
+    final answer =
+        await Get.to(WriteAnswerView(questionId: widget.question.id));
+    if (answer != null) {
+      setState(() => _answers.insert(0, answer));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -129,14 +138,19 @@ class _QuestionViewState extends State<QuestionView> {
                     spacing: 12,
                     runSpacing: 12,
                     children: widget.question.tags
-                        .map((tag) => QuestionTag(label: tag, onPressed: () {}))
+                        .map((tag) => QuestionTag(
+                              label: tag,
+                              onPressed: () {
+                                Get.to(TagView(tag: tag));
+                              },
+                            ))
                         .toList(),
                   ),
                   SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 1 + 20 / (Get.width - 72),
-                    child: ProfileTile(user: widget.question.poster),
-                  ),
+                  // FractionallySizedBox(
+                  //   widthFactor: 1 + 20 / (Get.width - 72),
+                  //   child: ProfileTile(user: widget.question.poster),
+                  // ),
                   SizedBox(height: 12),
                   Row(
                     children: [
@@ -181,9 +195,7 @@ class _QuestionViewState extends State<QuestionView> {
               child: Column(
                 children: [
                   DefaultFeedback(
-                    onPressed: () {
-                      Get.to(AnswerView(questionId: widget.question.id));
-                    },
+                    onPressed: _toWriteAnswer,
                     child: Container(
                       height: 60,
                       padding: EdgeInsets.symmetric(horizontal: 24),

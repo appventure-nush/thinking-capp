@@ -157,6 +157,7 @@ class QuestionsDbService extends GetxService {
       'upvotedBy': [],
       'downvotedBy': [],
       'numVotes': 0,
+      'numAnswers': 0,
       'timestamp': timestamp,
     });
     return Question(

@@ -18,13 +18,15 @@ class UsersDbService extends GetxService {
       'name': name,
       'photoUrl': '',
       'reputation': 0,
+      'followingTags': [],
+      'bookmarks': [],
     });
     return AppUser(
       id: id,
       name: name,
       photoUrl: '',
       reputation: 0,
-      modules: [],
+      followingTags: [],
       bookmarks: [],
     );
   }

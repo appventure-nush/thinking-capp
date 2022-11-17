@@ -1,19 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/question.dart';
-import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/cache.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/widgets/dialogs/choice_dialog.dart';
 
-class FeedController extends GetxController {
+class TagController extends GetxController {
   final _questionsDb = Get.find<QuestionsDbService>();
-  final _cache = Get.find<AppCache>();
-  final _currentUser = Get.find<AuthService>().currentUser;
 
-  RxList<Question> get feed => _cache.feed;
-
+  final questions = RxList<Question>();
   String sortBy = 'timestamp';
+
+  final String _tag;
+
+  TagController(this._tag);
+
+  @override
+  void onReady() {
+    refreshList();
+  }
 
   dynamic initialStartAfter() {
     if (sortBy == 'timestamp') {
@@ -28,14 +32,14 @@ class FeedController extends GetxController {
     throw 'cannot sort by $sortBy';
   }
 
-  Future<void> refreshFeed() async {
-    feed.clear();
-    feed.addAll(
+  Future<void> refreshList() async {
+    questions.clear();
+    questions.addAll(
       await _questionsDb.loadFeed(
         sortBy: sortBy,
         startAfter: initialStartAfter(),
         sortDescending: sortBy != 'numAnswers',
-        tags: _currentUser.followingTags,
+        tags: [_tag],
       ),
     );
   }
@@ -43,16 +47,16 @@ class FeedController extends GetxController {
   void loadMoreQuestions() async {
     // TODO: this might not work if too many posts have the same number of votes
     final startAfter = sortBy == 'timestamp'
-        ? feed.last.timestamp
+        ? questions.last.timestamp
         : sortBy == 'numVotes'
-            ? feed.last.numVotes
-            : feed.last.numAnswers;
-    feed.addAll(
+            ? questions.last.numVotes
+            : questions.last.numAnswers;
+    questions.addAll(
       await _questionsDb.loadFeed(
         sortBy: sortBy,
         startAfter: startAfter,
         sortDescending: sortBy != 'numAnswers',
-        tags: _currentUser.followingTags,
+        tags: [_tag],
       ),
     );
   }
@@ -73,13 +77,13 @@ class FeedController extends GetxController {
           : choice == 'Recent'
               ? 'timestamp'
               : 'numAnswers';
-      feed.clear();
-      feed.addAll(
+      questions.clear();
+      questions.addAll(
         await _questionsDb.loadFeed(
           sortBy: sortBy,
           startAfter: initialStartAfter(),
           sortDescending: sortBy != 'numAnswers',
-          tags: _currentUser.followingTags,
+          tags: [_tag],
         ),
       );
     }

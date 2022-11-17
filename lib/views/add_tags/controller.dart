@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/storage.dart';
 import 'package:thinking_capp/views/write_question/controller.dart';
@@ -11,12 +12,11 @@ const allTags = <String>[
   'Y4',
   'Y5',
   'Y6',
-  'Other',
-  'Math',
-  'Chemistry',
-  'Physics',
-  'Biology',
-  'Computer Science',
+  'Core module',
+  'Elective module',
+  'Honours module',
+  'Unrelated',
+  'Beyond curriculum',
 ];
 
 class AddTagsController extends GetxController {
@@ -26,6 +26,7 @@ class AddTagsController extends GetxController {
 
   final textController = TextEditingController();
 
+  String? selectedSubject;
   final List<String> tags = [];
   final List<String> suggestions = List<String>.from(allTags);
   bool loading = false;
@@ -45,6 +46,11 @@ class AddTagsController extends GetxController {
     });
   }
 
+  void selectSubject(String subject) {
+    selectedSubject = subject;
+    update();
+  }
+
   void removeTag(String tag) {
     tags.remove(tag);
     update();
@@ -57,9 +63,17 @@ class AddTagsController extends GetxController {
   }
 
   void submit() async {
-    // upload photos
+    if (selectedSubject == null) {
+      Get.rawSnackbar(
+        message: 'You must choose a subject',
+        backgroundColor: Palette.red,
+      );
+      return;
+    }
+
     loading = true;
     update();
+    // upload photos
     final photoUrls = <String>[];
     for (final file in questionController.photos) {
       final url = await _storage.uploadPhoto(file, 'question');
@@ -69,7 +83,7 @@ class AddTagsController extends GetxController {
       questionController.titleController.text,
       questionController.descriptionController.text,
       photoUrls,
-      tags,
+      [selectedSubject!] + tags,
     );
     loading = false;
     update();

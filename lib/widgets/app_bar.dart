@@ -29,15 +29,16 @@ PreferredSize MyAppBar({
             onPressed: onBack ?? () => Get.back(),
           ),
           SizedBox(width: 12),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          Spacer(),
           ...(suffixIcons ?? {})
               .map(
                 (icon, onPressed) => MapEntry(
