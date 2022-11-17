@@ -75,6 +75,7 @@ class FeedView extends StatelessWidget {
                       () => RefreshIndicator(
                         onRefresh: controller.refreshFeed,
                         child: ListView.builder(
+                          controller: controller.scrollController,
                           padding: const EdgeInsets.only(bottom: 100),
                           itemCount: controller.feed.length,
                           itemBuilder: (context, index) {

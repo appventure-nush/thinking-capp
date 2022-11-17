@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/questions_db.dart';
@@ -7,6 +8,7 @@ import 'package:thinking_capp/widgets/dialogs/choice_dialog.dart';
 class TagController extends GetxController {
   final _questionsDb = Get.find<QuestionsDbService>();
 
+  final scrollController = ScrollController();
   final questions = RxList<Question>();
   String sortBy = 'timestamp';
 
@@ -17,6 +19,13 @@ class TagController extends GetxController {
   @override
   void onReady() {
     refreshList();
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge &&
+          scrollController.position.pixels > 0) {
+        // scrolled to bottom
+        loadMoreQuestions();
+      }
+    });
   }
 
   dynamic initialStartAfter() {
@@ -45,7 +54,6 @@ class TagController extends GetxController {
   }
 
   void loadMoreQuestions() async {
-    // TODO: this might not work if too many posts have the same number of votes
     final startAfter = sortBy == 'timestamp'
         ? questions.last.timestamp
         : sortBy == 'numVotes'
@@ -77,15 +85,7 @@ class TagController extends GetxController {
           : choice == 'Recent'
               ? 'timestamp'
               : 'numAnswers';
-      questions.clear();
-      questions.addAll(
-        await _questionsDb.loadFeed(
-          sortBy: sortBy,
-          startAfter: initialStartAfter(),
-          sortDescending: sortBy != 'numAnswers',
-          tags: [_tag],
-        ),
-      );
+      await refreshList();
     }
   }
 }

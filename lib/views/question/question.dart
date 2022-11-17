@@ -32,6 +32,7 @@ class _QuestionViewState extends State<QuestionView> {
   final _currentUser = Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
 
+  final _scrollController = ScrollController();
   String _currentTab = 'Top';
   final List<Answer> _answers = [];
   bool _loadingAnswers = false;
@@ -39,12 +40,17 @@ class _QuestionViewState extends State<QuestionView> {
 
   void _switchTab(String tab) {
     _currentTab = tab;
-    _answers.clear();
-    _loadMoreAnswers();
+    _refreshAnswers();
   }
 
-  void _loadMoreAnswers() async {
+  void _refreshAnswers() async {
     setState(() => _loadingAnswers = true);
+    _answers.clear();
+    await _loadMoreAnswers();
+    setState(() => _loadingAnswers = false);
+  }
+
+  Future<void> _loadMoreAnswers() async {
     dynamic startAfter;
     if (_currentTab == 'Top') {
       startAfter = _answers.isEmpty ? 9999 : _answers.last.numVotes;
@@ -57,9 +63,7 @@ class _QuestionViewState extends State<QuestionView> {
       startAfter,
     );
     setState(() {
-      _answers.clear();
       _answers.addAll(answers);
-      _loadingAnswers = false;
     });
   }
 
@@ -88,7 +92,13 @@ class _QuestionViewState extends State<QuestionView> {
         setState(() => _isBookmarked = true);
       });
     }
-    _loadMoreAnswers();
+    _refreshAnswers();
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge &&
+          _scrollController.position.pixels > 0) {
+        _loadMoreAnswers();
+      }
+    });
   }
 
   @override
@@ -102,6 +112,7 @@ class _QuestionViewState extends State<QuestionView> {
         },
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           children: [
             Padding(

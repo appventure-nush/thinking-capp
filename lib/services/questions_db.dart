@@ -105,6 +105,8 @@ class QuestionsDbService extends GetxService {
     String orderBy,
     dynamic startAfter,
   ) async {
+    // TODO FIXME: this doesnt work properly if there are too many answers
+    // with the same number of votes
     final snapshot = await _questionsRef
         .doc(questionId)
         .collection('answers')

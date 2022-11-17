@@ -24,6 +24,7 @@ class TagView extends StatelessWidget {
             () => RefreshIndicator(
               onRefresh: controller.refreshList,
               child: ListView.builder(
+                controller: controller.scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 itemCount: controller.questions.length,
                 itemBuilder: (context, i) {

@@ -73,6 +73,29 @@ class QuestionCard extends StatelessWidget {
                   myVote: question.myVote,
                   questionId: question.id,
                 ),
+                SizedBox(width: 12),
+                if (question.numAnswers > 0)
+                  Container(
+                    height: 36,
+                    padding: EdgeInsets.only(left: 14, right: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          size: 16,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          '${question.numAnswers}',
+                          style: TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                  ),
                 Spacer(),
                 Text(
                   formatTimeAgo(question.timestamp),

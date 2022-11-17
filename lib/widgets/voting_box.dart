@@ -64,7 +64,7 @@ class VotingBox extends StatelessWidget {
                 color: myVote.value == true ? Palette.primary : Colors.white,
               ),
             ),
-            SizedBox(width: 8),
+            SizedBox(width: 4),
             SizedBox(
               width: 20,
               child: Center(
@@ -86,7 +86,7 @@ class VotingBox extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 8),
+            SizedBox(width: 4),
             GestureDetector(
               onTap: () {
                 _changeVote(myVote.value == false ? null : false);

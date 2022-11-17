@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/auth.dart';
@@ -13,7 +14,19 @@ class FeedController extends GetxController {
 
   RxList<Question> get feed => _cache.feed;
 
+  final scrollController = ScrollController();
   String sortBy = 'timestamp';
+
+  @override
+  void onReady() {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge &&
+          scrollController.position.pixels > 0) {
+        // scrolled to bottom
+        loadMoreQuestions();
+      }
+    });
+  }
 
   dynamic initialStartAfter() {
     if (sortBy == 'timestamp') {
@@ -41,7 +54,6 @@ class FeedController extends GetxController {
   }
 
   void loadMoreQuestions() async {
-    // TODO: this might not work if too many posts have the same number of votes
     final startAfter = sortBy == 'timestamp'
         ? feed.last.timestamp
         : sortBy == 'numVotes'
@@ -73,15 +85,7 @@ class FeedController extends GetxController {
           : choice == 'Recent'
               ? 'timestamp'
               : 'numAnswers';
-      feed.clear();
-      feed.addAll(
-        await _questionsDb.loadFeed(
-          sortBy: sortBy,
-          startAfter: initialStartAfter(),
-          sortDescending: sortBy != 'numAnswers',
-          tags: _currentUser.followingTags,
-        ),
-      );
+      await refreshFeed();
     }
   }
 }
