@@ -21,7 +21,7 @@ class Answer {
     required this.photoUrls,
     required this.poster,
     required this.numVotes,
-    bool? myVote,
+    required this.myVote,
     required this.timestamp,
-  }) : myVote = myVote.obs;
+  });
 }

@@ -24,8 +24,8 @@ class Question {
     required this.tags,
     required this.poster,
     required this.numVotes,
-    bool? myVote,
+    required this.myVote,
     required this.numAnswers,
     required this.timestamp,
-  }) : myVote = myVote.obs;
+  });
 }

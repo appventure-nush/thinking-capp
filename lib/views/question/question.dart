@@ -14,7 +14,6 @@ import 'package:thinking_capp/views/question/answer_card.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 import 'package:thinking_capp/widgets/loading.dart';
-import 'package:thinking_capp/widgets/profile_tile.dart';
 import 'package:thinking_capp/widgets/question_tag.dart';
 import 'package:thinking_capp/widgets/tab_bar.dart';
 import 'package:thinking_capp/widgets/voting_box.dart';
@@ -146,12 +145,7 @@ class _QuestionViewState extends State<QuestionView> {
                             ))
                         .toList(),
                   ),
-                  SizedBox(height: 16),
-                  // FractionallySizedBox(
-                  //   widthFactor: 1 + 20 / (Get.width - 72),
-                  //   child: ProfileTile(user: widget.question.poster),
-                  // ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 28),
                   Row(
                     children: [
                       VotingBox(

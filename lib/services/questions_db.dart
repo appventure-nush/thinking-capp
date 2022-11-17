@@ -6,9 +6,14 @@ import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/users_db.dart';
 
+class DataSync {
+  final Map<String, Rx<bool?>> myVotes = {}; // for both questions and answers
+}
+
 class QuestionsDbService extends GetxService {
   AppUser get _user => Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
+  final _sync = DataSync();
 
   final _questionsRef = FirebaseFirestore.instance.collection('questions');
   final _answersGroup = FirebaseFirestore.instance.collectionGroup('answers');
@@ -22,6 +27,11 @@ class QuestionsDbService extends GetxService {
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
+    if (_sync.myVotes.containsKey(doc.id)) {
+      _sync.myVotes[doc.id]!.value = myVote;
+    } else {
+      _sync.myVotes[doc.id] = Rx<bool?>(myVote);
+    }
     return Question(
       id: doc.id,
       title: data['title'],
@@ -30,7 +40,7 @@ class QuestionsDbService extends GetxService {
       tags: List<String>.from(data['tags']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: myVote,
+      myVote: _sync.myVotes[doc.id]!,
       numAnswers: data['numAnswers'],
       timestamp: data['timestamp'].toDate(),
     );
@@ -45,6 +55,11 @@ class QuestionsDbService extends GetxService {
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
+    if (_sync.myVotes.containsKey(doc.id)) {
+      _sync.myVotes[doc.id]!.value = myVote;
+    } else {
+      _sync.myVotes[doc.id] = Rx<bool?>(myVote);
+    }
     return Answer(
       id: doc.id,
       questionId: doc.reference.parent.parent!.id,
@@ -52,7 +67,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: List<String>.from(data['photoUrls']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: myVote,
+      myVote: _sync.myVotes[doc.id]!,
       timestamp: data['timestamp'].toDate(),
     );
   }
@@ -160,6 +175,7 @@ class QuestionsDbService extends GetxService {
       'numAnswers': 0,
       'timestamp': timestamp,
     });
+    _sync.myVotes[ref.id] = Rx<bool?>(null);
     return Question(
       id: ref.id,
       title: title,
@@ -168,7 +184,7 @@ class QuestionsDbService extends GetxService {
       tags: tags,
       poster: _user,
       numVotes: 0,
-      myVote: null,
+      myVote: _sync.myVotes[ref.id]!,
       numAnswers: 0,
       timestamp: timestamp.toDate(),
     );
@@ -193,6 +209,7 @@ class QuestionsDbService extends GetxService {
     await _questionsRef
         .doc(questionId)
         .update({'numAnswers': FieldValue.increment(1)});
+    _sync.myVotes[ref.id] = Rx<bool?>(null);
     return Answer(
       id: ref.id,
       questionId: questionId,
@@ -200,7 +217,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: photoUrls,
       poster: _user,
       numVotes: 0,
-      myVote: null,
+      myVote: _sync.myVotes[ref.id]!,
       timestamp: timestamp.toDate(),
     );
   }

@@ -30,8 +30,6 @@ class TagView extends StatelessWidget {
                   final question = controller.questions[i];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    // TODO: my vote in voting box does not sync properly
-                    // because its 2 different question objects
                     child: QuestionCard(
                       question: question,
                       onPressed: () {
