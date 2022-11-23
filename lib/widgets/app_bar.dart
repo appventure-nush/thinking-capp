@@ -15,7 +15,7 @@ PreferredSize MyAppBar({
       margin: const EdgeInsets.symmetric(horizontal: 8),
       padding: const EdgeInsets.fromLTRB(18, 0, 18, 14),
       decoration: BoxDecoration(
-        color: Palette.secondary,
+        color: Palette.black2,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),
@@ -33,7 +33,7 @@ PreferredSize MyAppBar({
             child: Text(
               title,
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),

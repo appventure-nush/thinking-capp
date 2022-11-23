@@ -21,11 +21,11 @@ class MyIconButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(pressed ? 0.1 : 0),
+          color: Colors.white.withOpacity(pressed ? 0.1 : 0),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
-          child: Icon(icon, color: Colors.black, size: 20),
+          child: Icon(icon, color: Colors.white, size: 20),
         ),
       ),
     );

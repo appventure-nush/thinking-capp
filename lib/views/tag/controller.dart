@@ -10,7 +10,10 @@ class TagController extends GetxController {
 
   final scrollController = ScrollController();
   final questions = RxList<Question>();
+  DocumentSnapshot? lastDoc;
+  bool reachedEnd = false;
   String sortBy = 'timestamp';
+  bool loadingMore = false;
 
   final String _tag;
 
@@ -28,45 +31,28 @@ class TagController extends GetxController {
     });
   }
 
-  dynamic initialStartAfter() {
-    if (sortBy == 'timestamp') {
-      return Timestamp.now();
-    }
-    if (sortBy == 'numVotes') {
-      return 9999;
-    }
-    if (sortBy == 'numAnswers') {
-      return -1; // ascending
-    }
-    throw 'cannot sort by $sortBy';
-  }
-
   Future<void> refreshList() async {
+    loadingMore = true;
+    update();
     questions.clear();
-    questions.addAll(
-      await _questionsDb.loadFeed(
-        sortBy: sortBy,
-        startAfter: initialStartAfter(),
-        sortDescending: sortBy != 'numAnswers',
-        tags: [_tag],
-      ),
-    );
+    lastDoc = null;
+    reachedEnd = false;
+    await loadMoreQuestions();
+    loadingMore = false;
+    update();
   }
 
-  void loadMoreQuestions() async {
-    final startAfter = sortBy == 'timestamp'
-        ? questions.last.timestamp
-        : sortBy == 'numVotes'
-            ? questions.last.numVotes
-            : questions.last.numAnswers;
-    questions.addAll(
-      await _questionsDb.loadFeed(
-        sortBy: sortBy,
-        startAfter: startAfter,
-        sortDescending: sortBy != 'numAnswers',
-        tags: [_tag],
-      ),
+  Future<void> loadMoreQuestions() async {
+    if (reachedEnd) return;
+    final page = await _questionsDb.loadFeed(
+      sortBy: sortBy,
+      startAfterDoc: lastDoc,
+      sortDescending: sortBy != 'numAnswers',
+      tags: [_tag],
     );
+    questions.addAll(page.data);
+    lastDoc = page.lastDoc;
+    reachedEnd = page.reachedEnd;
   }
 
   void selectSortBy() async {

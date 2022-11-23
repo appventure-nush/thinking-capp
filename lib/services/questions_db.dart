@@ -10,6 +10,14 @@ class DataSync {
   final Map<String, Rx<bool?>> myVotes = {}; // for both questions and answers
 }
 
+class PaginationData<T> {
+  List<T> data;
+  DocumentSnapshot? lastDoc;
+  bool reachedEnd;
+
+  PaginationData(this.data, this.lastDoc, this.reachedEnd);
+}
+
 class QuestionsDbService extends GetxService {
   AppUser get _user => Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
@@ -72,23 +80,29 @@ class QuestionsDbService extends GetxService {
     );
   }
 
-  Future<List<Question>> loadFeed({
+  Future<PaginationData<Question>> loadFeed({
     required String sortBy,
-    required dynamic startAfter, // timestamp or numVotes
+    required DocumentSnapshot? startAfterDoc,
     required bool sortDescending,
     required List<String>? tags, // if tags is null, load all questions
   }) async {
-    final snapshot = await _questionsRef
+    var query = _questionsRef
         .where('tags', arrayContainsAny: tags)
-        .orderBy(sortBy, descending: sortDescending)
-        .startAfter([startAfter])
-        .limit(10)
-        .get();
+        .orderBy(sortBy, descending: sortDescending);
+    if (startAfterDoc != null) {
+      query = query.startAfterDocument(startAfterDoc);
+    }
+    final snapshot = await query.limit(10).get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
       questions.add(await _questionFromDoc(doc));
     }
-    return questions;
+    if (questions.isEmpty) return PaginationData([], startAfterDoc, true);
+    return PaginationData(
+      questions,
+      snapshot.docs.last,
+      questions.length < 10,
+    );
   }
 
   Future<List<Question>> getQuestionsByIds(List<String> questionIds) async {
@@ -100,25 +114,29 @@ class QuestionsDbService extends GetxService {
     return questions;
   }
 
-  Future<List<Answer>> getAnswersForQuestion(
+  Future<PaginationData<Answer>> getAnswersForQuestion(
     String questionId,
     String orderBy,
-    dynamic startAfter,
+    DocumentSnapshot? startAfterDoc,
   ) async {
-    // TODO FIXME: this doesnt work properly if there are too many answers
-    // with the same number of votes
-    final snapshot = await _questionsRef
+    var query = _questionsRef
         .doc(questionId)
         .collection('answers')
-        .orderBy(orderBy, descending: true)
-        .startAfter([startAfter])
-        .limit(10)
-        .get();
+        .orderBy(orderBy, descending: true);
+    if (startAfterDoc != null) {
+      query = query.startAfterDocument(startAfterDoc);
+    }
+    final snapshot = await query.limit(10).get();
     final answers = <Answer>[];
     for (final doc in snapshot.docs) {
       answers.add(await _answerFromDoc(doc));
     }
-    return answers;
+    if (answers.isEmpty) return PaginationData([], startAfterDoc, true);
+    return PaginationData(
+      answers,
+      snapshot.docs.last,
+      answers.length < 10,
+    );
   }
 
   Future<List<Question>> getQuestionsByPoster(String userId) async {

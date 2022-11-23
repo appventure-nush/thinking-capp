@@ -29,7 +29,7 @@ class _SettingsViewState extends State<SettingsView> {
       _changePhoto();
     } else {
       Get.to(
-        ExaminePhotoView(
+        () => ExaminePhotoView(
           photoUrl: user.photoUrl,
           heroTag: 'profilephoto',
         ),

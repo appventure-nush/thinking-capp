@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
@@ -35,7 +36,9 @@ class _QuestionViewState extends State<QuestionView> {
   final _scrollController = ScrollController();
   String _currentTab = 'Top';
   final List<Answer> _answers = [];
+  DocumentSnapshot? _startAfterDoc;
   bool _loadingAnswers = false;
+  bool _reachedEnd = false;
   bool _isBookmarked = false;
 
   void _switchTab(String tab) {
@@ -46,25 +49,24 @@ class _QuestionViewState extends State<QuestionView> {
   void _refreshAnswers() async {
     setState(() => _loadingAnswers = true);
     _answers.clear();
+    _startAfterDoc = null;
+    _reachedEnd = false;
     await _loadMoreAnswers();
     setState(() => _loadingAnswers = false);
   }
 
   Future<void> _loadMoreAnswers() async {
-    dynamic startAfter;
-    if (_currentTab == 'Top') {
-      startAfter = _answers.isEmpty ? 9999 : _answers.last.numVotes;
-    } else {
-      startAfter = _answers.isEmpty ? DateTime.now() : _answers.last.timestamp;
-    }
-    final answers = await _questionsDb.getAnswersForQuestion(
+    if (_reachedEnd) return;
+    final page = await _questionsDb.getAnswersForQuestion(
       widget.question.id,
       _currentTab == 'Top' ? 'numVotes' : 'timestamp',
-      startAfter,
+      _startAfterDoc,
     );
     setState(() {
-      _answers.addAll(answers);
+      _answers.addAll(page.data);
     });
+    _startAfterDoc = page.lastDoc;
+    _reachedEnd = page.reachedEnd;
   }
 
   void _toggleBookmarkQuestion() {
