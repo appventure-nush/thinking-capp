@@ -41,11 +41,10 @@ class SearchView extends StatelessWidget {
   }
 
   Widget _buildSearchField(SearchController controller) {
-    return AnimatedContainer(
-      duration: shortAnimationDuration,
+    return Container(
       height: controller.focusNode.hasFocus ? 76 : 60,
       decoration: BoxDecoration(
-        color: controller.focusNode.hasFocus ? Palette.black2 : Palette.black1,
+        color: Palette.black1,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -53,6 +52,7 @@ class SearchView extends StatelessWidget {
           SizedBox(width: 18),
           PressedBuilder(
             onPressed: Get.back,
+            disabled: !controller.focusNode.hasFocus,
             builder: (pressed) => AnimatedContainer(
               duration: shortAnimationDuration,
               width: 40,
@@ -62,7 +62,12 @@ class SearchView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Center(
-                child: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                child: Icon(
+                    controller.focusNode.hasFocus
+                        ? Icons.arrow_back
+                        : Icons.search,
+                    color: Colors.white,
+                    size: 20),
               ),
             ),
           ),

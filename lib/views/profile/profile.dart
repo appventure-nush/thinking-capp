@@ -21,25 +21,25 @@ class ProfileView extends StatelessWidget {
       init: ProfileController(user.id),
       builder: (controller) {
         return Scaffold(
-          appBar: MyAppBar(title: user.name),
+          appBar: MyAppBar(title: "Answers posted by ${user.name}"),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 12),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 24),
-                MyTabBar(
-                  tabs: const ['Questions', 'Answers'],
-                  onChanged: controller.changeTab,
-                ),
-                SizedBox(height: 36),
+                // SizedBox(height: 36),
+                // MyTabBar(
+                //   tabs: const ['Questions', 'Answers'],
+                //   onChanged: controller.changeTab,
+                // ),
+                // SizedBox(height: 20),
+                SizedBox(height: 20),
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: mediumAnimationDuration,
                     child: controller.loading
                         ? Center(child: Loading())
-                        : controller.tab == 'Questions'
-                            ? _buildQuestionsList(controller)
-                            : _buildAnswersList(controller),
+                        : _buildAnswersList(controller),
                   ),
                 ),
               ],
@@ -50,32 +50,32 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionsList(ProfileController controller) {
-    return Container(
-      key: ValueKey('questions'),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: ListView.builder(
-        itemCount: controller.questions.length,
-        itemBuilder: (context, i) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: QuestionCard(
-              question: controller.questions[i],
-              onPressed: () {
-                Get.to(QuestionView(question: controller.questions[i]));
-              },
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // Widget _buildQuestionsList(ProfileController controller) {
+  //   return Container(
+  //     key: ValueKey('questions'),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.only(
+  //         topLeft: Radius.circular(20),
+  //         topRight: Radius.circular(20),
+  //       ),
+  //     ),
+  //     clipBehavior: Clip.antiAlias,
+  //     child: ListView.builder(
+  //       itemCount: controller.questions.length,
+  //       itemBuilder: (context, i) {
+  //         return Padding(
+  //           padding: const EdgeInsets.only(bottom: 12),
+  //           child: QuestionCard(
+  //             question: controller.questions[i],
+  //             onPressed: () {
+  //               Get.to(QuestionView(question: controller.questions[i]));
+  //             },
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _buildAnswersList(ProfileController controller) {
     return Container(

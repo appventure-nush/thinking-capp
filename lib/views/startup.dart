@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/cache.dart';
 import 'package:thinking_capp/views/home/home.dart';
-import 'package:thinking_capp/views/select_subjects/select_subjects.dart';
+import 'package:thinking_capp/views/onboading/onboarding.dart';
 import 'package:thinking_capp/views/welcome.dart';
 import 'package:thinking_capp/widgets/loading.dart';
 
@@ -28,7 +28,7 @@ class _StartupViewState extends State<StartupView> {
     if (auth.isSignedIn) {
       await Get.find<AppCache>().fetchData();
       if (auth.currentUser.followingTags.isEmpty) {
-        Get.off(() => SelectSubjectsView(isOnboarding: true));
+        Get.off(() => OnboardingView());
       } else {
         Get.off(() => HomeView());
       }

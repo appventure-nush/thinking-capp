@@ -22,12 +22,12 @@ class FeedView extends StatelessWidget {
       builder: (controller) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+            padding: const EdgeInsets.fromLTRB(12, 24, 12, 0),
             child: Column(
               children: [
                 Row(
                   children: [
-                    SizedBox(width: 16),
+                    SizedBox(width: 20),
                     DefaultFeedback(
                       onPressed: () {
                         Get.to(SelectSubjectsView(isOnboarding: false))
@@ -58,7 +58,7 @@ class FeedView extends StatelessWidget {
                     _buildIconButton(Icons.search, () {
                       Get.to(SearchView());
                     }),
-                    SizedBox(width: 16),
+                    SizedBox(width: 20),
                   ],
                 ),
                 SizedBox(height: 24),

@@ -101,8 +101,8 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
                 ),
               ),
             SizedBox(height: widget.isOnboarding ? 36 : 20),
-            _buildSearchField(),
-            SizedBox(height: widget.isOnboarding ? 36 : 20),
+            // _buildSearchField(),
+            // SizedBox(height: widget.isOnboarding ? 36 : 20),
             Expanded(
               child: Stack(
                 children: [

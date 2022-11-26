@@ -19,15 +19,15 @@ class HistoryView extends StatelessWidget {
         return Scaffold(
           appBar: MyAppBar(title: 'History'),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               children: [
-                SizedBox(height: 24),
+                SizedBox(height: 36),
                 MyTabBar(
                   tabs: const ['Upvoted', 'Downvoted', 'Bookmarked'],
                   onChanged: controller.changeTab,
                 ),
-                SizedBox(height: 36),
+                SizedBox(height: 20),
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: mediumAnimationDuration,

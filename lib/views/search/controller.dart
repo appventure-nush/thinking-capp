@@ -14,6 +14,9 @@ class SearchController extends GetxController {
     focusNode.addListener(() {
       update();
     });
+    textController.addListener(() {
+      update();
+    });
   }
 
   void selectCategory(String category) {

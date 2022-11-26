@@ -72,8 +72,10 @@ class _QuestionViewState extends State<QuestionView> {
   void _toggleBookmarkQuestion() {
     setState(() => _isBookmarked = !_isBookmarked);
     if (_isBookmarked) {
+      _currentUser.bookmarks.add(widget.question.id);
       _usersDb.addBookmark(_currentUser.id, widget.question.id);
     } else {
+      _currentUser.bookmarks.remove(widget.question.id);
       _usersDb.removeBookmark(_currentUser.id, widget.question.id);
     }
   }
@@ -198,7 +200,7 @@ class _QuestionViewState extends State<QuestionView> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 children: [
                   DefaultFeedback(
@@ -236,6 +238,22 @@ class _QuestionViewState extends State<QuestionView> {
                         padding: const EdgeInsets.only(top: 32),
                         child: Loading(),
                       ),
+                    )
+                  else if (_answers.isEmpty)
+                    Column(
+                      children: [
+                        SizedBox(height: 60),
+                        Image.asset('assets/images/empty.png', width: 280),
+                        SizedBox(height: 28),
+                        Text(
+                          'Nothing here yet',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 60),
+                      ],
                     )
                   else
                     ListView.builder(

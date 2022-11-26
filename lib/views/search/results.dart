@@ -14,49 +14,43 @@ class SearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          SizedBox(height: 16),
-          Row(
-            children: [
-              _buildCategoryTile(
-                'Questions',
-                controller.selectedCategory == 'Questions',
-                () => controller.selectCategory('Questions'),
-              ),
-              SizedBox(width: 14),
-              _buildCategoryTile(
-                'Answers',
-                controller.selectedCategory == 'Answers',
-                () => controller.selectCategory('Answers'),
-              ),
-              SizedBox(width: 14),
-              _buildCategoryTile(
-                'Users',
-                controller.selectedCategory == 'Users',
-                () => controller.selectCategory('Users'),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: controller.questionResults.length,
-              itemBuilder: (context, i) {
-                final question = controller.questionResults[i];
-                return QuestionCard(
-                  question: question,
-                  onPressed: () {
-                    Get.to(() => QuestionView(question: question));
-                  },
-                );
-              },
+    return Column(
+      children: [
+        SizedBox(height: 16),
+        Row(
+          children: [
+            SizedBox(width: 8),
+            _buildCategoryTile(
+              'Questions',
+              controller.selectedCategory == 'Questions',
+              () => controller.selectCategory('Questions'),
             ),
+            SizedBox(width: 14),
+            _buildCategoryTile(
+              'Answers',
+              controller.selectedCategory == 'Answers',
+              () => controller.selectCategory('Answers'),
+            ),
+            SizedBox(width: 14),
+            _buildCategoryTile(
+              'Users',
+              controller.selectedCategory == 'Users',
+              () => controller.selectCategory('Users'),
+            ),
+            SizedBox(width: 8),
+          ],
+        ),
+        SizedBox(height: 20),
+        Expanded(
+          child: AnimatedSwitcher(
+            duration: mediumAnimationDuration,
+            child: controller.textController.text.isNotEmpty &&
+                    controller.questionResults.isEmpty
+                ? _buildPlaceholder()
+                : _buildList(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -89,6 +83,42 @@ class SearchResults extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/search_empty.png',
+          height: 160,
+          fit: BoxFit.cover,
+        ),
+        SizedBox(height: 28),
+        Text(
+          'We couldnt find anything...',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.8),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildList() {
+    return ListView.builder(
+      itemCount: controller.questionResults.length,
+      itemBuilder: (context, i) {
+        final question = controller.questionResults[i];
+        return QuestionCard(
+          question: question,
+          onPressed: () {
+            Get.to(() => QuestionView(question: question));
+          },
+        );
+      },
     );
   }
 }
