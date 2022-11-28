@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/views/feed/feed.dart';
 import 'package:thinking_capp/views/rankings/rankings.dart';
-import 'package:thinking_capp/views/settings/settings.dart';
+import 'package:thinking_capp/views/my_profile/my_profile.dart';
 
 import 'bottom_sheet.dart';
 
@@ -24,7 +24,7 @@ class _HomeViewState extends State<HomeView> {
         child: [
           const FeedView(),
           const RankingsView(),
-          const SettingsView(),
+          const MyProfileView(),
         ][_currentIndex],
       ),
       bottomSheet: HomeBottomSheet(

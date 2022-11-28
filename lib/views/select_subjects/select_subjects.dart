@@ -7,6 +7,7 @@ import 'package:thinking_capp/views/home/home.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
 import 'package:thinking_capp/widgets/floating_action_button.dart';
+import 'package:thinking_capp/widgets/switch.dart';
 
 import 'subjects.dart';
 
@@ -101,8 +102,31 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
                 ),
               ),
             SizedBox(height: widget.isOnboarding ? 36 : 20),
-            // _buildSearchField(),
-            // SizedBox(height: widget.isOnboarding ? 36 : 20),
+            if (!widget.isOnboarding)
+              Container(
+                height: 60,
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                margin: EdgeInsets.only(bottom: 14),
+                decoration: BoxDecoration(
+                  color: Palette.black1,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Show all subjects',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    MySwitch(defaultValue: true, onChanged: (p0) {}),
+                  ],
+                ),
+              ),
+
             Expanded(
               child: Stack(
                 children: [

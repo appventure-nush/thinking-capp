@@ -31,7 +31,7 @@ class HomeBottomSheet extends StatelessWidget {
           SizedBox(width: 20),
           _buildNavItem(Icons.view_agenda_outlined, 'Feed', 0),
           _buildNavItem(Icons.workspace_premium_outlined, 'Rankings', 1),
-          _buildNavItem(Icons.settings_outlined, 'Settings', 2),
+          _buildNavItem(Icons.person_outlined, 'Profile', 2),
           SizedBox(width: 20),
           PressedBuilder(
             onPressed: () {
