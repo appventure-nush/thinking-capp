@@ -15,18 +15,19 @@ class SearchView extends StatelessWidget {
     return GetBuilder<SearchController>(
       init: SearchController(),
       builder: (controller) {
+        double p = controller.clickedSearch ? 12 : 20;
         return Scaffold(
           body: SafeArea(
             child: AnimatedPadding(
               duration: shortAnimationDuration,
-              padding: EdgeInsets.all(controller.focusNode.hasFocus ? 12 : 20),
+              padding: EdgeInsets.fromLTRB(p, p, p, 0),
               child: Column(
                 children: [
                   _buildSearchField(controller),
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: mediumAnimationDuration,
-                      child: controller.focusNode.hasFocus
+                      child: controller.clickedSearch
                           ? SearchResults()
                           : BrowseSubjects(),
                     ),
@@ -42,7 +43,7 @@ class SearchView extends StatelessWidget {
 
   Widget _buildSearchField(SearchController controller) {
     return Container(
-      height: controller.focusNode.hasFocus ? 76 : 60,
+      height: controller.clickedSearch ? 76 : 60,
       decoration: BoxDecoration(
         color: Palette.black1,
         borderRadius: BorderRadius.circular(20),
@@ -52,7 +53,7 @@ class SearchView extends StatelessWidget {
           SizedBox(width: 18),
           PressedBuilder(
             onPressed: Get.back,
-            disabled: !controller.focusNode.hasFocus,
+            disabled: !controller.clickedSearch,
             builder: (pressed) => AnimatedContainer(
               duration: shortAnimationDuration,
               width: 40,
@@ -63,9 +64,7 @@ class SearchView extends StatelessWidget {
               ),
               child: Center(
                 child: Icon(
-                    controller.focusNode.hasFocus
-                        ? Icons.arrow_back
-                        : Icons.search,
+                    controller.clickedSearch ? Icons.arrow_back : Icons.search,
                     color: Colors.white,
                     size: 20),
               ),
@@ -74,7 +73,6 @@ class SearchView extends StatelessWidget {
           SizedBox(width: 10),
           Expanded(
             child: TextField(
-              focusNode: controller.focusNode,
               controller: controller.textController,
               style: TextStyle(
                 fontSize: 16,
@@ -88,6 +86,7 @@ class SearchView extends StatelessWidget {
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
               ),
               cursorColor: Colors.white,
+              onTap: controller.clickSearch,
             ),
           ),
         ],

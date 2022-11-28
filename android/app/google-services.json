@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "62927762215-u5r8c5cl1e8dpe75gqormo9ikml6he6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.thinking_capp",
+            "certificate_hash": "39090a1c97ed5dcc8c607dffaebff0e23f663a8b"
+          }
+        },
+        {
           "client_id": "62927762215-kbcjstbp06njnsgcd2lj0m5g8j3a563q.apps.googleusercontent.com",
           "client_type": 3
         }

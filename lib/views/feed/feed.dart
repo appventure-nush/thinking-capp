@@ -13,7 +13,7 @@ import 'package:thinking_capp/widgets/default_feedback.dart';
 class FeedView extends StatelessWidget {
   const FeedView({Key? key}) : super(key: key);
 
-  AppUser get currentUser => Get.find<AuthService>().currentUser;
+  AppUser get _user => Get.find<AuthService>().currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${currentUser.followingTags.length} Subjects',
+                            '${_user.followingTags.length} Subjects',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,

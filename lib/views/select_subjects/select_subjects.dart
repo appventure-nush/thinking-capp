@@ -24,7 +24,7 @@ class SelectSubjectsView extends StatefulWidget {
 }
 
 class _SelectSubjectsViewState extends State<SelectSubjectsView> {
-  final _currentUser = Get.find<AuthService>().currentUser;
+  final _user = Get.find<AuthService>().currentUser;
 
   final searchController = TextEditingController();
 
@@ -35,7 +35,7 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
   @override
   void initState() {
     super.initState();
-    selected.addAll(_currentUser.followingTags);
+    selected.addAll(_user.followingTags);
     searchController.addListener(() {
       if (searchController.text.isEmpty) {
         setState(() => visibleSubjects = subjects);
@@ -60,9 +60,9 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
     }
 
     setState(() => loading = true);
-    _currentUser.followingTags = selected;
+    _user.followingTags = selected;
     await Get.find<UsersDbService>().updateUser(
-      _currentUser.id,
+      _user.id,
       {'followingTags': selected},
     );
     setState(() => loading = false);

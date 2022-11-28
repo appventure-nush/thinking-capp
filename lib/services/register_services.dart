@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:thinking_capp/services/search.dart';
 
 import 'cache.dart';
 import 'auth.dart';
@@ -14,4 +15,5 @@ void registerServices() {
   Get.put(UsersDbService());
   Get.put(AuthService());
   Get.put(QuestionsDbService());
+  Get.put(SearchService());
 }

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:thinking_capp/models/user.dart';
 
 class Question {
   final String id;
@@ -7,7 +6,7 @@ class Question {
   String text;
   List<String> photoUrls;
   List<String> tags;
-  AppUser poster;
+  bool byMe;
   int numVotes;
   Rx<bool?> myVote;
   int numAnswers;
@@ -22,7 +21,7 @@ class Question {
     required this.text,
     required this.photoUrls,
     required this.tags,
-    required this.poster,
+    required this.byMe,
     required this.numVotes,
     required this.myVote,
     required this.numAnswers,

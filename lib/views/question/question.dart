@@ -30,8 +30,8 @@ class QuestionView extends StatefulWidget {
 
 class _QuestionViewState extends State<QuestionView> {
   final _questionsDb = Get.find<QuestionsDbService>();
-  final _currentUser = Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
+  final _user = Get.find<AuthService>().currentUser;
 
   final _scrollController = ScrollController();
   String _currentTab = 'Top';
@@ -72,11 +72,11 @@ class _QuestionViewState extends State<QuestionView> {
   void _toggleBookmarkQuestion() {
     setState(() => _isBookmarked = !_isBookmarked);
     if (_isBookmarked) {
-      _currentUser.bookmarks.add(widget.question.id);
-      _usersDb.addBookmark(_currentUser.id, widget.question.id);
+      _user.bookmarks.add(widget.question.id);
+      _usersDb.addBookmark(_user.id, widget.question.id);
     } else {
-      _currentUser.bookmarks.remove(widget.question.id);
-      _usersDb.removeBookmark(_currentUser.id, widget.question.id);
+      _user.bookmarks.remove(widget.question.id);
+      _usersDb.removeBookmark(_user.id, widget.question.id);
     }
   }
 
@@ -91,7 +91,7 @@ class _QuestionViewState extends State<QuestionView> {
   @override
   void initState() {
     super.initState();
-    if (_currentUser.bookmarks.contains(widget.question.id)) {
+    if (_user.bookmarks.contains(widget.question.id)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() => _isBookmarked = true);
       });

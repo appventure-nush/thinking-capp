@@ -14,6 +14,12 @@ class AppCache extends GetxService {
   final RxBool feedLoadingMore = false.obs;
   final RxList<AppUser> rankings = RxList.empty();
 
+  // ensure this data remains synced throughout the app
+  // the same questions/answers may be loaded as separate objects in different
+  // pages, resulting in different myVote objects. The following ensures that
+  // all question objects with the same id share the same myVote object.
+  final Map<String, Rx<bool?>> myVotes = {}; // for both questions and answers
+
   Future<void> fetchData() async {
     await refreshFeed();
     rankings.addAll(await Get.find<UsersDbService>().getTopRanked(null));
