@@ -11,7 +11,7 @@ import 'package:thinking_capp/widgets/loading.dart';
 import 'package:thinking_capp/widgets/tab_bar.dart';
 
 class ProfileView extends StatelessWidget {
-  final AppUser user;
+  final MyUser user;
 
   const ProfileView({Key? key, required this.user}) : super(key: key);
 

@@ -8,10 +8,10 @@ class AuthService extends GetxService {
   final _fbAuth = FirebaseAuth.instance;
   final _usersDb = Get.find<UsersDbService>();
 
-  AppUser? _currentUser;
+  MyUser? _currentUser;
 
   bool get isSignedIn => _currentUser != null;
-  AppUser get currentUser => _currentUser!;
+  MyUser get currentUser => _currentUser!;
   String get id => _currentUser!.id;
 
   @override

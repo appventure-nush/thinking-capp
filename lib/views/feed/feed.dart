@@ -13,7 +13,7 @@ import 'package:thinking_capp/widgets/default_feedback.dart';
 class FeedView extends StatelessWidget {
   const FeedView({Key? key}) : super(key: key);
 
-  AppUser get _user => Get.find<AuthService>().currentUser;
+  MyUser get _user => Get.find<AuthService>().currentUser;
 
   @override
   Widget build(BuildContext context) {

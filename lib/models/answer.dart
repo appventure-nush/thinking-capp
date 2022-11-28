@@ -6,7 +6,7 @@ class Answer {
   final String questionId;
   String text;
   List<String> photoUrls;
-  AppUser poster;
+  MyUser poster;
   int numVotes;
   Rx<bool?> myVote;
   DateTime timestamp;

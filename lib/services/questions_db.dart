@@ -4,7 +4,7 @@ import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/cache.dart';
+import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/services/users_db.dart';
 
 class PaginationData<T> {
@@ -16,9 +16,9 @@ class PaginationData<T> {
 }
 
 class QuestionsDbService extends GetxService {
-  AppUser get _user => Get.find<AuthService>().currentUser;
+  MyUser get _user => Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
-  final _cache = Get.find<AppCache>();
+  final _store = Get.find<Store>();
 
   final _questionsRef = FirebaseFirestore.instance.collection('questions');
   final _answersGroup = FirebaseFirestore.instance.collectionGroup('answers');
@@ -31,10 +31,10 @@ class QuestionsDbService extends GetxService {
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
-    if (_cache.myVotes.containsKey(doc.id)) {
-      _cache.myVotes[doc.id]!.value = myVote;
+    if (_store.myVotes.containsKey(doc.id)) {
+      _store.myVotes[doc.id]!.value = myVote;
     } else {
-      _cache.myVotes[doc.id] = Rx<bool?>(myVote);
+      _store.myVotes[doc.id] = Rx<bool?>(myVote);
     }
     return Question(
       id: doc.id,
@@ -44,7 +44,7 @@ class QuestionsDbService extends GetxService {
       tags: List<String>.from(data['tags']),
       byMe: data['poster'] == _user.id,
       numVotes: data['numVotes'],
-      myVote: _cache.myVotes[doc.id]!,
+      myVote: _store.myVotes[doc.id]!,
       numAnswers: data['numAnswers'],
       timestamp: data['timestamp'].toDate(),
     );
@@ -59,10 +59,10 @@ class QuestionsDbService extends GetxService {
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
-    if (_cache.myVotes.containsKey(doc.id)) {
-      _cache.myVotes[doc.id]!.value = myVote;
+    if (_store.myVotes.containsKey(doc.id)) {
+      _store.myVotes[doc.id]!.value = myVote;
     } else {
-      _cache.myVotes[doc.id] = Rx<bool?>(myVote);
+      _store.myVotes[doc.id] = Rx<bool?>(myVote);
     }
     return Answer(
       id: doc.id,
@@ -71,7 +71,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: List<String>.from(data['photoUrls']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: _cache.myVotes[doc.id]!,
+      myVote: _store.myVotes[doc.id]!,
       timestamp: data['timestamp'].toDate(),
     );
   }
@@ -191,7 +191,7 @@ class QuestionsDbService extends GetxService {
       'numAnswers': 0,
       'timestamp': timestamp,
     });
-    _cache.myVotes[ref.id] = Rx<bool?>(null);
+    _store.myVotes[ref.id] = Rx<bool?>(null);
     return Question(
       id: ref.id,
       title: title,
@@ -200,7 +200,7 @@ class QuestionsDbService extends GetxService {
       tags: tags,
       byMe: true,
       numVotes: 0,
-      myVote: _cache.myVotes[ref.id]!,
+      myVote: _store.myVotes[ref.id]!,
       numAnswers: 0,
       timestamp: timestamp.toDate(),
     );
@@ -225,7 +225,7 @@ class QuestionsDbService extends GetxService {
     await _questionsRef
         .doc(questionId)
         .update({'numAnswers': FieldValue.increment(1)});
-    _cache.myVotes[ref.id] = Rx<bool?>(null);
+    _store.myVotes[ref.id] = Rx<bool?>(null);
     return Answer(
       id: ref.id,
       questionId: questionId,
@@ -233,7 +233,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: photoUrls,
       poster: _user,
       numVotes: 0,
-      myVote: _cache.myVotes[ref.id]!,
+      myVote: _store.myVotes[ref.id]!,
       timestamp: timestamp.toDate(),
     );
   }

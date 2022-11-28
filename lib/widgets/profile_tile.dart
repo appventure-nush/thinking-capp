@@ -8,7 +8,7 @@ import 'package:thinking_capp/views/profile/profile.dart';
 import 'package:thinking_capp/widgets/pressed_builder.dart';
 
 class ProfileTile extends StatelessWidget {
-  final AppUser user;
+  final MyUser user;
 
   const ProfileTile({Key? key, required this.user}) : super(key: key);
 

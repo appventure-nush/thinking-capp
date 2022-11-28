@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AppUser {
+class MyUser {
   final String id;
   String name;
   String photoUrl;
@@ -8,7 +8,7 @@ class AppUser {
   List<String> followingTags;
   List<String> bookmarks; // questionIds
 
-  AppUser({
+  MyUser({
     required this.id,
     required this.name,
     required this.photoUrl,
@@ -17,9 +17,9 @@ class AppUser {
     required this.bookmarks,
   });
 
-  factory AppUser.fromDoc(DocumentSnapshot<Map> doc) {
+  factory MyUser.fromDoc(DocumentSnapshot<Map> doc) {
     final data = doc.data()!;
-    return AppUser(
+    return MyUser(
       id: doc.id,
       name: data['name'],
       photoUrl: data['photoUrl'],

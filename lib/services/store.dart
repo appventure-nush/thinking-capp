@@ -6,13 +6,13 @@ import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/users_db.dart';
 
-class AppCache extends GetxService {
+class Store extends GetxService {
   final RxList<Question> feed = RxList.empty();
   DocumentSnapshot? feedLastDoc;
   bool feedReachedEnd = false;
   String feedSortBy = 'timestamp';
   final RxBool feedLoadingMore = false.obs;
-  final RxList<AppUser> rankings = RxList.empty();
+  final RxList<MyUser> rankings = RxList.empty();
 
   // ensure this data remains synced throughout the app
   // the same questions/answers may be loaded as separate objects in different

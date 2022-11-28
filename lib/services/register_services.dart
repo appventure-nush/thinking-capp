@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:thinking_capp/services/search.dart';
 
-import 'cache.dart';
+import 'store.dart';
 import 'auth.dart';
 import 'media_picker.dart';
 import 'questions_db.dart';
@@ -9,7 +9,7 @@ import 'storage.dart';
 import 'users_db.dart';
 
 void registerServices() {
-  Get.put(AppCache());
+  Get.put(Store());
   Get.put(MediaPickerService());
   Get.put(StorageService());
   Get.put(UsersDbService());

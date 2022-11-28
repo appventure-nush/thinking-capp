@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/cache.dart';
+import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/views/home/home.dart';
 import 'package:thinking_capp/widgets/button.dart';
 
@@ -29,7 +29,7 @@ class _WelcomeViewState extends State<WelcomeView> {
     setState(() => _loading = true);
     final success = await Get.find<AuthService>().msAuth();
     if (success) {
-      await Get.find<AppCache>().fetchData();
+      await Get.find<Store>().fetchData();
       Get.off(() => HomeView());
     }
     _loading = false;

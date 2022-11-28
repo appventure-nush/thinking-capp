@@ -9,11 +9,11 @@ class UsersDbService extends GetxService {
     return (await _usersRef.doc(id).get()).exists;
   }
 
-  Future<AppUser> getUser(String id) async {
-    return AppUser.fromDoc(await _usersRef.doc(id).get());
+  Future<MyUser> getUser(String id) async {
+    return MyUser.fromDoc(await _usersRef.doc(id).get());
   }
 
-  Future<AppUser> newUser(String id, String name) async {
+  Future<MyUser> newUser(String id, String name) async {
     await _usersRef.doc(id).set({
       'name': name,
       'photoUrl': '',
@@ -21,7 +21,7 @@ class UsersDbService extends GetxService {
       'followingTags': [],
       'bookmarks': [],
     });
-    return AppUser(
+    return MyUser(
       id: id,
       name: name,
       photoUrl: '',
@@ -35,14 +35,14 @@ class UsersDbService extends GetxService {
     await _usersRef.doc(id).update(data);
   }
 
-  Future<List<AppUser>> getTopRanked(int? startAfterScore) async {
+  Future<List<MyUser>> getTopRanked(int? startAfterScore) async {
     final subQuery = _usersRef.orderBy('reputation', descending: true);
     final snapshot = await (startAfterScore == null
             ? subQuery
             : subQuery.startAfter([startAfterScore]))
         .limit(10)
         .get();
-    return snapshot.docs.map((doc) => AppUser.fromDoc(doc)).toList();
+    return snapshot.docs.map((doc) => MyUser.fromDoc(doc)).toList();
   }
 
   Future<void> addBookmark(String userId, String questionId) async {

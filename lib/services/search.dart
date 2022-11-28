@@ -4,13 +4,13 @@ import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/cache.dart';
+import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/services/users_db.dart';
 
 class SearchService extends GetxService {
-  final _cache = Get.find<AppCache>();
+  final _store = Get.find<Store>();
   final _usersDb = Get.find<UsersDbService>();
-  AppUser get _user => Get.find<AuthService>().currentUser;
+  MyUser get _user => Get.find<AuthService>().currentUser;
 
   final _algolia = Algolia.init(
     applicationId: 'DLCIV2U0R3',
@@ -25,10 +25,10 @@ class SearchService extends GetxService {
       myVote = false;
     }
     final id = data['id'];
-    if (_cache.myVotes.containsKey(id)) {
-      _cache.myVotes[id]!.value = myVote;
+    if (_store.myVotes.containsKey(id)) {
+      _store.myVotes[id]!.value = myVote;
     } else {
-      _cache.myVotes[id] = Rx<bool?>(myVote);
+      _store.myVotes[id] = Rx<bool?>(myVote);
     }
     return Question(
       id: id,
@@ -38,7 +38,7 @@ class SearchService extends GetxService {
       tags: List<String>.from(data['tags']),
       byMe: data['poster'] == _user.id,
       numVotes: data['numVotes'],
-      myVote: _cache.myVotes[id]!,
+      myVote: _store.myVotes[id]!,
       numAnswers: data['numAnswers'],
       timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp']),
     );
@@ -53,10 +53,10 @@ class SearchService extends GetxService {
       myVote = false;
     }
     final id = data['id'];
-    if (_cache.myVotes.containsKey(id)) {
-      _cache.myVotes[id]!.value = myVote;
+    if (_store.myVotes.containsKey(id)) {
+      _store.myVotes[id]!.value = myVote;
     } else {
-      _cache.myVotes[id] = Rx<bool?>(myVote);
+      _store.myVotes[id] = Rx<bool?>(myVote);
     }
     return Answer(
       id: id,
@@ -65,13 +65,13 @@ class SearchService extends GetxService {
       photoUrls: List<String>.from(data['photoUrls']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: _cache.myVotes[id]!,
+      myVote: _store.myVotes[id]!,
       timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp']),
     );
   }
 
-  AppUser _userFromHitData(Map<String, dynamic> data) {
-    return AppUser(
+  MyUser _userFromHitData(Map<String, dynamic> data) {
+    return MyUser(
       id: data['id'],
       name: data['name'],
       photoUrl: data['photoUrl'],
@@ -103,7 +103,7 @@ class SearchService extends GetxService {
     );
   }
 
-  Future<List<AppUser>> searchUsers(String query, int page) async {
+  Future<List<MyUser>> searchUsers(String query, int page) async {
     final snapshot = await _algolia
         .index('users')
         .query(query)

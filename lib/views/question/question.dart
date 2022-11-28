@@ -111,6 +111,7 @@ class _QuestionViewState extends State<QuestionView> {
       appBar: MyAppBar(
         title: 'Question',
         suffixIcons: {
+          if (widget.question.byMe) Icons.edit_outlined: () {},
           (_isBookmarked ? Icons.bookmark : Icons.bookmark_outline):
               _toggleBookmarkQuestion
         },
