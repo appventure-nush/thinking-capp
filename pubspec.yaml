@@ -19,6 +19,7 @@ dependencies:
   firebase_auth: ^4.1.1
   firebase_storage: ^11.0.4
   cloud_firestore: ^4.0.4
+  algolia: ^1.1.1
 
   get: ^4.6.5
   image_picker: ^0.8.6

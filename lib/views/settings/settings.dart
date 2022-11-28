@@ -22,15 +22,15 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final user = Get.find<AuthService>().currentUser;
+  final _user = Get.find<AuthService>().currentUser;
 
   void _viewPhoto() {
-    if (user.photoUrl == '') {
+    if (_user.photoUrl == '') {
       _changePhoto();
     } else {
       Get.to(
         () => ExaminePhotoView(
-          photoUrl: user.photoUrl,
+          photoUrl: _user.photoUrl,
           heroTag: 'profilephoto',
         ),
         transition: Transition.fadeIn,
@@ -43,9 +43,9 @@ class _SettingsViewState extends State<SettingsView> {
     if (file != null) {
       final photoUrl =
           await Get.find<StorageService>().uploadPhoto(file, 'profile');
-      user.photoUrl = photoUrl;
+      _user.photoUrl = photoUrl;
       await Get.find<UsersDbService>()
-          .updateUser(user.id, {'photoUrl': photoUrl});
+          .updateUser(_user.id, {'photoUrl': photoUrl});
       setState(() {});
     }
   }
@@ -87,7 +87,7 @@ class _SettingsViewState extends State<SettingsView> {
                   border: Border.all(color: Palette.primary, width: 4),
                   borderRadius: BorderRadius.circular(60),
                 ),
-                child: user.photoUrl == ''
+                child: _user.photoUrl == ''
                     ? Center(
                         child: Icon(
                           Icons.person_outlined,
@@ -100,7 +100,7 @@ class _SettingsViewState extends State<SettingsView> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(60 - 4),
                           child: CachedNetworkImage(
-                            imageUrl: user.photoUrl,
+                            imageUrl: _user.photoUrl,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -130,7 +130,7 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             SizedBox(height: 7),
             Text(
-              user.name,
+              _user.name,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -138,14 +138,14 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             SizedBox(height: 12),
             Text(
-              '${user.reputation} reputation',
+              '${_user.reputation} reputation',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
               ),
             ),
             SizedBox(height: 50),
             _buildButton('Profile', () {
-              Get.to(ProfileView(user: user));
+              Get.to(ProfileView(user: _user));
             }),
             SizedBox(height: 12),
             _buildButton('History', () {

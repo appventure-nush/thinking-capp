@@ -4,11 +4,8 @@ import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
+import 'package:thinking_capp/services/cache.dart';
 import 'package:thinking_capp/services/users_db.dart';
-
-class DataSync {
-  final Map<String, Rx<bool?>> myVotes = {}; // for both questions and answers
-}
 
 class PaginationData<T> {
   List<T> data;
@@ -21,24 +18,23 @@ class PaginationData<T> {
 class QuestionsDbService extends GetxService {
   AppUser get _user => Get.find<AuthService>().currentUser;
   final _usersDb = Get.find<UsersDbService>();
-  final _sync = DataSync();
+  final _cache = Get.find<AppCache>();
 
   final _questionsRef = FirebaseFirestore.instance.collection('questions');
   final _answersGroup = FirebaseFirestore.instance.collectionGroup('answers');
 
-  Future<Question> _questionFromDoc(DocumentSnapshot<Map> doc) async {
+  Question _questionFromDoc(DocumentSnapshot<Map> doc) {
     final data = doc.data()!;
-    final poster = await _usersDb.getUser(data['poster']);
     bool? myVote;
     if (data['upvotedBy'].contains(_user.id)) {
       myVote = true;
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
-    if (_sync.myVotes.containsKey(doc.id)) {
-      _sync.myVotes[doc.id]!.value = myVote;
+    if (_cache.myVotes.containsKey(doc.id)) {
+      _cache.myVotes[doc.id]!.value = myVote;
     } else {
-      _sync.myVotes[doc.id] = Rx<bool?>(myVote);
+      _cache.myVotes[doc.id] = Rx<bool?>(myVote);
     }
     return Question(
       id: doc.id,
@@ -46,9 +42,9 @@ class QuestionsDbService extends GetxService {
       text: data['text'],
       photoUrls: List<String>.from(data['photoUrls']),
       tags: List<String>.from(data['tags']),
-      poster: poster,
+      byMe: data['poster'] == _user.id,
       numVotes: data['numVotes'],
-      myVote: _sync.myVotes[doc.id]!,
+      myVote: _cache.myVotes[doc.id]!,
       numAnswers: data['numAnswers'],
       timestamp: data['timestamp'].toDate(),
     );
@@ -63,10 +59,10 @@ class QuestionsDbService extends GetxService {
     } else if (data['downvotedBy'].contains(_user.id)) {
       myVote = false;
     }
-    if (_sync.myVotes.containsKey(doc.id)) {
-      _sync.myVotes[doc.id]!.value = myVote;
+    if (_cache.myVotes.containsKey(doc.id)) {
+      _cache.myVotes[doc.id]!.value = myVote;
     } else {
-      _sync.myVotes[doc.id] = Rx<bool?>(myVote);
+      _cache.myVotes[doc.id] = Rx<bool?>(myVote);
     }
     return Answer(
       id: doc.id,
@@ -75,7 +71,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: List<String>.from(data['photoUrls']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: _sync.myVotes[doc.id]!,
+      myVote: _cache.myVotes[doc.id]!,
       timestamp: data['timestamp'].toDate(),
     );
   }
@@ -95,7 +91,7 @@ class QuestionsDbService extends GetxService {
     final snapshot = await query.limit(10).get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(await _questionFromDoc(doc));
+      questions.add(_questionFromDoc(doc));
     }
     if (questions.isEmpty) return PaginationData([], startAfterDoc, true);
     return PaginationData(
@@ -109,7 +105,7 @@ class QuestionsDbService extends GetxService {
     final questions = <Question>[];
     for (final id in questionIds) {
       final doc = await _questionsRef.doc(id).get();
-      questions.add(await _questionFromDoc(doc));
+      questions.add(_questionFromDoc(doc));
     }
     return questions;
   }
@@ -146,7 +142,7 @@ class QuestionsDbService extends GetxService {
         .get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(await _questionFromDoc(doc));
+      questions.add(_questionFromDoc(doc));
     }
     return questions;
   }
@@ -171,7 +167,7 @@ class QuestionsDbService extends GetxService {
         .get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(await _questionFromDoc(doc));
+      questions.add(_questionFromDoc(doc));
     }
     return questions;
   }
@@ -195,16 +191,16 @@ class QuestionsDbService extends GetxService {
       'numAnswers': 0,
       'timestamp': timestamp,
     });
-    _sync.myVotes[ref.id] = Rx<bool?>(null);
+    _cache.myVotes[ref.id] = Rx<bool?>(null);
     return Question(
       id: ref.id,
       title: title,
       text: text,
       photoUrls: photoUrls,
       tags: tags,
-      poster: _user,
+      byMe: true,
       numVotes: 0,
-      myVote: _sync.myVotes[ref.id]!,
+      myVote: _cache.myVotes[ref.id]!,
       numAnswers: 0,
       timestamp: timestamp.toDate(),
     );
@@ -229,7 +225,7 @@ class QuestionsDbService extends GetxService {
     await _questionsRef
         .doc(questionId)
         .update({'numAnswers': FieldValue.increment(1)});
-    _sync.myVotes[ref.id] = Rx<bool?>(null);
+    _cache.myVotes[ref.id] = Rx<bool?>(null);
     return Answer(
       id: ref.id,
       questionId: questionId,
@@ -237,7 +233,7 @@ class QuestionsDbService extends GetxService {
       photoUrls: photoUrls,
       poster: _user,
       numVotes: 0,
-      myVote: _sync.myVotes[ref.id]!,
+      myVote: _cache.myVotes[ref.id]!,
       timestamp: timestamp.toDate(),
     );
   }
