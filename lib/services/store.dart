@@ -26,29 +26,35 @@ class Store extends GetxService {
   }
 
   Future<void> refreshFeed() async {
-    feedLoadingMore.value = true;
     feed.clear();
     feedLastDoc = null;
     feedReachedEnd = false;
     await feedLoadMore();
-    feedLoadingMore.value = false;
   }
 
   Future<void> feedLoadMore() async {
     if (feedReachedEnd) return;
+    feedLoadingMore.value = true;
+    final user = Get.find<AuthService>().currentUser;
     final page = await Get.find<QuestionsDbService>().loadFeed(
       sortBy: feedSortBy,
       startAfterDoc: feedLastDoc,
       sortDescending: feedSortBy != 'numAnswers',
-      tags: Get.find<AuthService>().currentUser.followingTags,
+      tags: user.showEverything ? null : user.followingTags,
     );
     feed.addAll(page.data);
     feedLastDoc = page.lastDoc;
     feedReachedEnd = page.reachedEnd;
+    feedLoadingMore.value = false;
   }
 
   void clearData() {
     feed.clear();
+    feedLastDoc = null;
+    feedReachedEnd = false;
+    feedSortBy = 'timestamp';
+    feedLoadingMore.value = false;
     rankings.clear();
+    myVotes.clear();
   }
 }

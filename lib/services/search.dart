@@ -77,6 +77,7 @@ class SearchService extends GetxService {
       photoUrl: data['photoUrl'],
       reputation: data['reputation'],
       followingTags: List<String>.from(data['followingTags']),
+      showEverything: data['showEverything'],
       bookmarks: List<String>.from(data['bookmarks']),
     );
   }

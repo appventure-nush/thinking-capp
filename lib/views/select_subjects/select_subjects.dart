@@ -50,6 +50,12 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
     });
   }
 
+  void _setShowEverything(bool value) async {
+    _user.showEverything = value;
+    await Get.find<UsersDbService>()
+        .updateUser(_user.id, {'showEverything': value});
+  }
+
   void _onSubmit() async {
     if (selected.isEmpty) {
       Get.rawSnackbar(
@@ -77,7 +83,7 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          widget.isOnboarding ? null : MyAppBar(title: 'Edit your subjects'),
+          widget.isOnboarding ? null : MyAppBar(title: 'Customize your feed'),
       floatingActionButton: MyFloatingActionButton(
         icon: Icons.check,
         loading: loading,
@@ -115,18 +121,20 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Show all subjects',
+                        'Show everything',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    MySwitch(defaultValue: true, onChanged: (p0) {}),
+                    MySwitch(
+                      defaultValue: _user.showEverything,
+                      onChanged: _setShowEverything,
+                    ),
                   ],
                 ),
               ),
-
             Expanded(
               child: Stack(
                 children: [
@@ -145,61 +153,11 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
                       return _buildSubjectTile(visibleSubjects[i]);
                     },
                   ),
-                  // Container(
-                  //   height: 16,
-                  //   decoration: BoxDecoration(
-                  //     gradient: LinearGradient(
-                  //       begin: Alignment.topCenter,
-                  //       end: Alignment.bottomCenter,
-                  //       colors: [
-                  //         Palette.black,
-                  //         Palette.black.withOpacity(0),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSearchField() {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: Palette.black1,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          SizedBox(width: 24),
-          Icon(
-            Icons.search,
-            size: 20,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: TextField(
-              controller: searchController,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-                border: InputBorder.none,
-                hintText: 'Search',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-              ),
-              cursorColor: Colors.white,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -43,7 +43,9 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            '${_user.followingTags.length} Subjects',
+                            _user.showEverything
+                                ? 'Everything'
+                                : '${_user.followingTags.length} Subjects',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,

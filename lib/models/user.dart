@@ -6,6 +6,7 @@ class MyUser {
   String photoUrl;
   int reputation;
   List<String> followingTags;
+  bool showEverything; // show everything in feed, dont filter by tags
   List<String> bookmarks; // questionIds
 
   MyUser({
@@ -14,6 +15,7 @@ class MyUser {
     required this.photoUrl,
     required this.reputation,
     required this.followingTags,
+    required this.showEverything,
     required this.bookmarks,
   });
 
@@ -25,6 +27,7 @@ class MyUser {
       photoUrl: data['photoUrl'],
       reputation: data['reputation'],
       followingTags: List<String>.from(data['followingTags']),
+      showEverything: data['showEverything'],
       bookmarks: List<String>.from(data['bookmarks']),
     );
   }

@@ -27,6 +27,7 @@ class UsersDbService extends GetxService {
       photoUrl: '',
       reputation: 0,
       followingTags: [],
+      showEverything: false,
       bookmarks: [],
     );
   }
