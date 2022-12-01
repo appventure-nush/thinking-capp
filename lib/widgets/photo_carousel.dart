@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/utils/animation.dart';
 import 'package:thinking_capp/views/examine_photo.dart';
 
 class PhotoCarousel extends StatefulWidget {
@@ -50,7 +51,6 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
                     child: CachedNetworkImage(
                       imageUrl: photoUrl,
                       height: 260,
-                      fit: BoxFit.cover,
                     ),
                   ),
                 );
@@ -81,7 +81,8 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     for (int i = 0; i < widget.photoUrls.length; i++)
-                      Container(
+                      AnimatedContainer(
+                        duration: mediumAnimationDuration,
                         width: 16,
                         height: 4,
                         margin: const EdgeInsets.symmetric(horizontal: 3),

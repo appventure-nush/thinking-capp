@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/views/home/home.dart';
+import 'package:thinking_capp/views/onboading/onboarding.dart';
 import 'package:thinking_capp/widgets/button.dart';
 
 class WelcomeView extends StatefulWidget {
@@ -16,21 +17,15 @@ class _WelcomeViewState extends State<WelcomeView> {
   bool _loading = false;
 
   Future<void> _msAuth() async {
-    // final config = Config(
-    //   tenant: 'organizations',
-    //   clientId: '10100754-7d1f-473c-95a0-50cc01e54f9c',
-    //   clientSecret: 'jvLnGnMhOA1tjY+5wtNwfpPI664MSti2/uWpl91uux8=',
-    //   scope: 'openid email',
-    //   redirectUri: 'https://thinking-capp-temp.firebaseapp.com/__/auth/handler',
-    //   navigatorKey: Get.key,
-    // );
-    // final oauth = AadOAuth(config);
-    // await oauth.login();
     setState(() => _loading = true);
     final success = await Get.find<AuthService>().msAuth();
     if (success) {
-      await Get.find<Store>().fetchData();
-      Get.off(() => HomeView());
+      if (Get.find<AuthService>().currentUser.followingTags.isEmpty) {
+        Get.off(() => OnboardingView());
+      } else {
+        await Get.find<Store>().fetchData();
+        Get.off(() => HomeView());
+      }
     }
     _loading = false;
   }

@@ -99,7 +99,6 @@ class SearchResults extends StatelessWidget {
         Image.asset(
           'assets/images/search_empty.png',
           height: 160,
-          fit: BoxFit.cover,
         ),
         SizedBox(height: 28),
         Text(

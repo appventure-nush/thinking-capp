@@ -69,7 +69,6 @@ class QuestionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 VotingBox(
-                  numVotes: _questionsDb.numVotesStream(question.id),
                   myVote: question.myVote,
                   questionId: question.id,
                 ),

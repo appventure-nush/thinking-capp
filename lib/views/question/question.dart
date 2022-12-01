@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
-import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
-import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/questions_db.dart';
-import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
-import 'package:thinking_capp/views/write_answer/write_answer.dart';
+import 'package:thinking_capp/views/question/controller.dart';
 import 'package:thinking_capp/views/tag/tag.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
 import 'package:thinking_capp/views/question/answer_card.dart';
@@ -19,265 +14,186 @@ import 'package:thinking_capp/widgets/question_tag.dart';
 import 'package:thinking_capp/widgets/tab_bar.dart';
 import 'package:thinking_capp/widgets/voting_box.dart';
 
-class QuestionView extends StatefulWidget {
+class QuestionView extends StatelessWidget {
   final Question question;
 
   const QuestionView({Key? key, required this.question}) : super(key: key);
 
   @override
-  State<QuestionView> createState() => _QuestionViewState();
-}
-
-class _QuestionViewState extends State<QuestionView> {
-  final _questionsDb = Get.find<QuestionsDbService>();
-  final _usersDb = Get.find<UsersDbService>();
-  final _user = Get.find<AuthService>().currentUser;
-
-  final _scrollController = ScrollController();
-  String _currentTab = 'Top';
-  final List<Answer> _answers = [];
-  DocumentSnapshot? _startAfterDoc;
-  bool _loadingAnswers = false;
-  bool _reachedEnd = false;
-  bool _isBookmarked = false;
-
-  void _switchTab(String tab) {
-    _currentTab = tab;
-    _refreshAnswers();
-  }
-
-  void _refreshAnswers() async {
-    setState(() => _loadingAnswers = true);
-    _answers.clear();
-    _startAfterDoc = null;
-    _reachedEnd = false;
-    await _loadMoreAnswers();
-    setState(() => _loadingAnswers = false);
-  }
-
-  Future<void> _loadMoreAnswers() async {
-    if (_reachedEnd) return;
-    final page = await _questionsDb.getAnswersForQuestion(
-      widget.question.id,
-      _currentTab == 'Top' ? 'numVotes' : 'timestamp',
-      _startAfterDoc,
-    );
-    setState(() {
-      _answers.addAll(page.data);
-    });
-    _startAfterDoc = page.lastDoc;
-    _reachedEnd = page.reachedEnd;
-  }
-
-  void _toggleBookmarkQuestion() {
-    setState(() => _isBookmarked = !_isBookmarked);
-    if (_isBookmarked) {
-      _user.bookmarks.add(widget.question.id);
-      _usersDb.addBookmark(_user.id, widget.question.id);
-    } else {
-      _user.bookmarks.remove(widget.question.id);
-      _usersDb.removeBookmark(_user.id, widget.question.id);
-    }
-  }
-
-  void _toWriteAnswer() async {
-    final answer =
-        await Get.to(WriteAnswerView(questionId: widget.question.id));
-    if (answer != null) {
-      setState(() => _answers.insert(0, answer));
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (_user.bookmarks.contains(widget.question.id)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() => _isBookmarked = true);
-      });
-    }
-    _refreshAnswers();
-    _scrollController.addListener(() {
-      if (_scrollController.position.atEdge &&
-          _scrollController.position.pixels > 0) {
-        _loadMoreAnswers();
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(
-        title: 'Question',
-        suffixIcons: {
-          if (widget.question.byMe) Icons.edit_outlined: () {},
-          (_isBookmarked ? Icons.bookmark : Icons.bookmark_outline):
-              _toggleBookmarkQuestion
-        },
-      ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 36),
-                  Text(
-                    widget.question.title,
-                    style: TextStyle(
-                      color: Palette.primary,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  if (widget.question.text.isNotEmpty) SizedBox(height: 14),
-                  if (widget.question.text.isNotEmpty)
-                    Text(
-                      widget.question.text,
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  if (widget.question.photoUrls.isNotEmpty)
-                    SizedBox(height: 20),
-                  if (widget.question.photoUrls.isNotEmpty)
-                    FractionallySizedBox(
-                      widthFactor: 1,
-                      child:
-                          PhotoCarousel(photoUrls: widget.question.photoUrls),
-                    ),
-                  SizedBox(height: 20),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: widget.question.tags
-                        .map((tag) => QuestionTag(
-                              label: tag,
-                              onPressed: () {
-                                Get.to(TagView(tag: tag));
-                              },
-                            ))
-                        .toList(),
-                  ),
-                  SizedBox(height: 28),
-                  Row(
+    return GetBuilder<QuestionController>(
+      init: QuestionController(question),
+      builder: (controller) {
+        return Scaffold(
+          appBar: MyAppBar(
+            title: 'Question',
+            suffixIcons: {
+              if (question.byMe) Icons.edit_outlined: controller.toEditQuestion,
+              (controller.isBookmarked
+                  ? Icons.bookmark
+                  : Icons.bookmark_outline): controller.toggleBookmarkQuestion,
+            },
+          ),
+          body: SingleChildScrollView(
+            controller: controller.scrollController,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 36),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      VotingBox(
-                        numVotes:
-                            _questionsDb.numVotesStream(widget.question.id),
-                        myVote: widget.question.myVote,
-                        questionId: widget.question.id,
-                      ),
-                      Spacer(),
+                      SizedBox(height: 36),
                       Text(
-                        formatTimeAgo(widget.question.timestamp),
+                        question.title,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 40),
-                  Row(
-                    children: [
-                      Text(
-                        '${widget.question.numAnswers} answers',
-                        style: TextStyle(
-                          fontSize: 16,
+                          color: Palette.primary,
+                          fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Spacer(),
-                      MyTabBar(
-                        tabs: const ['Top', 'Newest'],
-                        onChanged: _switchTab,
+                      if (question.text.isNotEmpty) SizedBox(height: 14),
+                      if (question.text.isNotEmpty)
+                        Text(
+                          question.text,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
+                      if (question.photoUrls.isNotEmpty)
+                        FractionallySizedBox(
+                          widthFactor: 1,
+                          child: PhotoCarousel(photoUrls: question.photoUrls),
+                        ),
+                      SizedBox(height: 20),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: question.tags
+                            .map((tag) => QuestionTag(
+                                  label: tag,
+                                  onPressed: () {
+                                    Get.to(TagView(tag: tag));
+                                  },
+                                ))
+                            .toList(),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                children: [
-                  DefaultFeedback(
-                    onPressed: _toWriteAnswer,
-                    child: Container(
-                      height: 60,
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      decoration: BoxDecoration(
-                        color: Palette.black1,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
+                      SizedBox(height: 28),
+                      Row(
                         children: [
-                          Icon(
-                            Icons.edit_outlined,
-                            size: 20,
-                            color: Colors.white.withOpacity(0.6),
+                          VotingBox(
+                            myVote: question.myVote,
+                            questionId: question.id,
                           ),
-                          SizedBox(width: 16),
+                          Spacer(),
                           Text(
-                            'Write your answer',
+                            formatTimeAgo(question.timestamp),
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.6),
-                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  if (_loadingAnswers)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 32),
-                        child: Loading(),
+                      SizedBox(height: 40),
+                      Row(
+                        children: [
+                          Text(
+                            '${question.numAnswers} answers',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Spacer(),
+                          MyTabBar(
+                            tabs: const ['Top', 'Newest'],
+                            onChanged: controller.switchTab,
+                          ),
+                        ],
                       ),
-                    )
-                  else if (_answers.isEmpty)
-                    Column(
-                      children: [
-                        SizedBox(height: 60),
-                        Image.asset('assets/images/empty.png', width: 280),
-                        SizedBox(height: 28),
-                        Text(
-                          'Nothing here yet',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.8),
-                            fontWeight: FontWeight.w500,
+                      SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Column(
+                    children: [
+                      DefaultFeedback(
+                        onPressed: controller.toWriteAnswer,
+                        child: Container(
+                          height: 60,
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          decoration: BoxDecoration(
+                            color: Palette.black1,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: Colors.white.withOpacity(0.6),
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                'Write your answer',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.6),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 60),
-                      ],
-                    )
-                  else
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: _answers.length,
-                      itemBuilder: (context, i) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: AnswerCard(
-                            answer: _answers[i],
-                            onPressed: () {},
+                      ),
+                      SizedBox(height: 12),
+                      if (controller.loadingAnswers)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 32),
+                            child: Loading(),
                           ),
-                        );
-                      },
-                    ),
-                  SizedBox(height: 40),
-                ],
-              ),
+                        )
+                      else if (controller.answers.isEmpty)
+                        Column(
+                          children: [
+                            SizedBox(height: 60),
+                            Image.asset('assets/images/empty.png', width: 280),
+                            SizedBox(height: 28),
+                            Text(
+                              'Nothing here yet',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 60),
+                          ],
+                        )
+                      else
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: controller.answers.length,
+                          itemBuilder: (context, i) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: AnswerCard(
+                                answer: controller.answers[i],
+                                onPressed: () {},
+                              ),
+                            );
+                          },
+                        ),
+                      SizedBox(height: 40),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

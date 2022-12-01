@@ -26,10 +26,10 @@ class _StartupViewState extends State<StartupView> {
     final auth = Get.find<AuthService>();
     await auth.refreshCurrentUser();
     if (auth.isSignedIn) {
-      await Get.find<Store>().fetchData();
       if (auth.currentUser.followingTags.isEmpty) {
         Get.off(() => OnboardingView());
       } else {
+        await Get.find<Store>().fetchData();
         Get.off(() => HomeView());
       }
     } else {

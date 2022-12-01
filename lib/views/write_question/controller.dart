@@ -1,25 +1,37 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/media_picker.dart';
+import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/views/add_tags/add_tags.dart';
+import 'package:thinking_capp/views/write_question/photo.dart';
 import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
 class WriteQuestionController extends GetxController {
   final _mediaPicker = Get.find<MediaPickerService>();
+  final _questionsDb = Get.find<QuestionsDbService>();
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final List<File> photos = [];
+  final List<Photo> photos = [];
+
+  final Question? _editQuestion;
+
+  WriteQuestionController(this._editQuestion) {
+    if (_editQuestion != null) {
+      titleController.text = _editQuestion!.title;
+      descriptionController.text = _editQuestion!.text;
+      photos.addAll(_editQuestion!.photoUrls.map((url) => Photo.url(url)));
+    }
+  }
 
   void addPhoto(bool fromGallery) async {
     final file = fromGallery
         ? await _mediaPicker.selectFromGallery()
         : await _mediaPicker.takePhotoWithCamera();
     if (file != null) {
-      photos.add(file);
+      photos.add(Photo.file(file));
       update();
     }
   }
@@ -48,6 +60,6 @@ class WriteQuestionController extends GetxController {
       );
       return;
     }
-    Get.to(() => AddTagsView());
+    Get.to(() => AddTagsView(editQuestion: _editQuestion));
   }
 }

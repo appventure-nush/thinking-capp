@@ -45,10 +45,6 @@ class AnswerCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 VotingBox(
-                  numVotes: _questionsDb.numVotesStream(
-                    answer.questionId,
-                    answerId: answer.id,
-                  ),
                   myVote: answer.myVote,
                   questionId: answer.questionId,
                   answerId: answer.id,

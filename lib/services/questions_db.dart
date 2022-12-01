@@ -238,6 +238,21 @@ class QuestionsDbService extends GetxService {
     );
   }
 
+  Future<void> editQuestion(
+    String id,
+    String title,
+    String text,
+    List<String> photoUrls,
+    List<String> tags,
+  ) async {
+    await _questionsRef.doc(id).update({
+      'title': title,
+      'text': text,
+      'photoUrls': photoUrls,
+      'tags': tags,
+    });
+  }
+
   Stream<int> numVotesStream(String questionId, {String? answerId}) {
     var ref = _questionsRef.doc(questionId);
     if (answerId != null) {

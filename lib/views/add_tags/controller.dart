@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/storage.dart';
+import 'package:thinking_capp/views/question/controller.dart';
 import 'package:thinking_capp/views/write_question/controller.dart';
 
 const allTags = <String>[
@@ -30,6 +32,15 @@ class AddTagsController extends GetxController {
   final List<String> tags = [];
   final List<String> suggestions = List<String>.from(allTags);
   bool loading = false;
+
+  final Question? _editQuestion;
+
+  AddTagsController(this._editQuestion) {
+    if (_editQuestion != null) {
+      selectedSubject = _editQuestion!.tags[0];
+      tags.addAll(_editQuestion!.tags.sublist(1));
+    }
+  }
 
   @override
   void onReady() {
@@ -74,20 +85,47 @@ class AddTagsController extends GetxController {
     loading = true;
     update();
     // upload photos
-    final photoUrls = <String>[];
-    for (final file in questionController.photos) {
-      final url = await _storage.uploadPhoto(file, 'question');
-      photoUrls.add(url);
+    for (final photo in questionController.photos) {
+      if (!photo.hasBeenUploaded) {
+        photo.url = await _storage.uploadPhoto(photo.file, 'question');
+      }
     }
-    await _questionsDb.postQuestion(
-      questionController.titleController.text,
-      questionController.descriptionController.text,
-      photoUrls,
-      [selectedSubject!] + tags,
-    );
+    if (_editQuestion == null) {
+      // new question
+      await _questionsDb.postQuestion(
+        questionController.titleController.text,
+        questionController.descriptionController.text,
+        questionController.photos.map((photo) => photo.url).toList(),
+        [selectedSubject!] + tags,
+      );
+    } else {
+      _editQuestion!.title = questionController.titleController.text;
+      _editQuestion!.text = questionController.descriptionController.text;
+      _editQuestion!.photoUrls =
+          questionController.photos.map((photo) => photo.url).toList();
+      _editQuestion!.tags = [selectedSubject!] + tags;
+      await _questionsDb.editQuestion(
+        _editQuestion!.id,
+        _editQuestion!.title,
+        _editQuestion!.text,
+        _editQuestion!.photoUrls,
+        _editQuestion!.tags,
+      );
+    }
     loading = false;
     update();
     Get.back();
     Get.back();
+    if (_editQuestion != null) {
+      // this doesnt update the other pages
+      // change everything to rx attributes?
+      Get.find<QuestionController>().update();
+    }
+    Get.rawSnackbar(
+      message: _editQuestion == null
+          ? 'Your question has been posted'
+          : 'Question updated',
+      backgroundColor: Palette.secondary,
+    );
   }
 }

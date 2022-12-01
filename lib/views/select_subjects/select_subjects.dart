@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/services/auth.dart';
+import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/views/home/home.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
@@ -73,7 +74,9 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
     );
     setState(() => loading = false);
     if (widget.isOnboarding) {
-      Get.off(() => HomeView());
+      // load feed only after setting up account
+      await Get.find<Store>().fetchData();
+      Get.offAll(() => HomeView());
     } else {
       Get.back();
     }
