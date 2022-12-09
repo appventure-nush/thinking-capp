@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:thinking_capp/utils/animation.dart';
+import 'package:thinking_capp/views/feed/controller.dart';
 import 'package:thinking_capp/views/feed/feed.dart';
 import 'package:thinking_capp/views/rankings/rankings.dart';
 import 'package:thinking_capp/views/my_profile/my_profile.dart';
@@ -18,6 +20,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(FeedController());
     return Scaffold(
       body: AnimatedSwitcher(
         duration: mediumAnimationDuration,

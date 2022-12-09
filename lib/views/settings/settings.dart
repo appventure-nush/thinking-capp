@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/views/about.dart';
 import 'package:thinking_capp/views/welcome.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
@@ -20,7 +19,6 @@ class SettingsView extends StatelessWidget {
     ));
     if (confirm ?? false) {
       await Get.find<AuthService>().signOut();
-      Get.find<Store>().clearData();
       Get.offAll(WelcomeView());
     }
   }

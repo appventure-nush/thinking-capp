@@ -14,12 +14,23 @@ class SearchController extends GetxController {
   String selectedCategory = 'Questions';
   final List<dynamic> results = [];
   int page = 0;
+  bool loading = false;
 
   Timer? currentTimer;
 
   @override
   void onReady() {
     textController.addListener(() {
+      if (textController.text.isEmpty) {
+        currentTimer?.cancel();
+        results.clear();
+        page = 0;
+        loading = false;
+        update();
+        return;
+      }
+      loading = true;
+      update();
       // only fetch results after 1 second of not typing
       currentTimer?.cancel();
       currentTimer = Timer(Duration(seconds: 1), fetchResults);
@@ -49,6 +60,7 @@ class SearchController extends GetxController {
     results.clear();
     page = 0;
     if (textController.text.isEmpty) {
+      loading = false;
       update();
       return;
     }
@@ -60,6 +72,7 @@ class SearchController extends GetxController {
     } else {
       results.addAll(await _search.searchUsers(textController.text, page));
     }
+    loading = false;
     update();
   }
 

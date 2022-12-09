@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/question.dart';
-import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
 import 'package:thinking_capp/views/tag/tag.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
@@ -11,12 +10,10 @@ import 'package:thinking_capp/widgets/question_tag.dart';
 import 'package:thinking_capp/widgets/voting_box.dart';
 
 class QuestionCard extends StatelessWidget {
-  final _questionsDb = Get.find<QuestionsDbService>();
-
   final Question question;
   final Function() onPressed;
 
-  QuestionCard({
+  const QuestionCard({
     Key? key,
     required this.question,
     required this.onPressed,

@@ -11,37 +11,42 @@ class RankingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RankingsController>(
-      init: RankingsController(),
+      // init: RankingsController(),
       builder: (controller) {
         return SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(40, 32, 40, 32),
-                  child: Text(
-                    'Most helpful users',
-                    style: TextStyle(
-                      color: Palette.primary,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+          child: RefreshIndicator(
+            onRefresh: controller.refreshList,
+            child: Obx(
+              () => CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 32, 40, 32),
+                      child: Text(
+                        'Most helpful users',
+                        style: TextStyle(
+                          color: Palette.primary,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, i) {
-                      final user = controller.rankings[i];
-                      return ProfileTile(user: user);
-                    },
-                    childCount: controller.rankings.length,
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, i) {
+                          final user = controller.rankings[i];
+                          return ProfileTile(user: user);
+                        },
+                        childCount: controller.rankings.length,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },

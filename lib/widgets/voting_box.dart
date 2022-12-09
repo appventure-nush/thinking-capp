@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
-import 'package:thinking_capp/services/questions_db.dart';
+import 'package:thinking_capp/services/voting.dart';
 
 class VotingBox extends StatelessWidget {
-  final _questionsDb = Get.find<QuestionsDbService>();
+  final _voting = Get.find<VotingService>();
 
   final Rx<bool?> myVote;
   final String questionId;
@@ -19,19 +19,19 @@ class VotingBox extends StatelessWidget {
 
   void _changeVote(bool? newVote) async {
     if (newVote == null) {
-      await _questionsDb.removeVote(
+      await _voting.removeVote(
         questionId,
         answerId: answerId,
         oldVote: myVote.value!,
       );
     } else if (newVote == true) {
-      await _questionsDb.upvote(
+      await _voting.upvote(
         questionId,
         answerId: answerId,
         removeDownvote: myVote.value == false,
       );
     } else {
-      await _questionsDb.downvote(
+      await _voting.downvote(
         questionId,
         answerId: answerId,
         removeUpvote: myVote.value == true,
@@ -67,7 +67,7 @@ class VotingBox extends StatelessWidget {
               width: 20,
               child: Center(
                 child: StreamBuilder<int>(
-                  stream: _questionsDb.numVotesStream(
+                  stream: _voting.numVotesStream(
                     questionId,
                     answerId: answerId,
                   ),

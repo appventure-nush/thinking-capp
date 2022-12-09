@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/store.dart';
+import 'package:thinking_capp/views/feed/controller.dart';
+import 'package:thinking_capp/views/rankings/controller.dart';
 import 'package:thinking_capp/services/users_db.dart';
 import 'package:thinking_capp/views/home/home.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
@@ -25,7 +26,7 @@ class SelectSubjectsView extends StatefulWidget {
 }
 
 class _SelectSubjectsViewState extends State<SelectSubjectsView> {
-  final _user = Get.find<AuthService>().currentUser;
+  final _currentUser = Get.find<AuthService>().currentUser;
 
   final searchController = TextEditingController();
 
@@ -36,7 +37,7 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
   @override
   void initState() {
     super.initState();
-    selected.addAll(_user.followingTags);
+    selected.addAll(_currentUser.followingTags);
     searchController.addListener(() {
       if (searchController.text.isEmpty) {
         setState(() => visibleSubjects = subjects);
@@ -52,9 +53,8 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
   }
 
   void _setShowEverything(bool value) async {
-    _user.showEverything = value;
-    await Get.find<UsersDbService>()
-        .updateUser(_user.id, {'showEverything': value});
+    _currentUser.showEverything = value;
+    await Get.find<UsersDbService>().updateUser({'showEverything': value});
   }
 
   void _onSubmit() async {
@@ -67,15 +67,13 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
     }
 
     setState(() => loading = true);
-    _user.followingTags = selected;
-    await Get.find<UsersDbService>().updateUser(
-      _user.id,
-      {'followingTags': selected},
-    );
+    _currentUser.followingTags = selected;
+    await Get.find<UsersDbService>().updateUser({'followingTags': selected});
     setState(() => loading = false);
     if (widget.isOnboarding) {
       // load feed only after setting up account
-      await Get.find<Store>().fetchData();
+      await Get.put(FeedController()).refreshFeed();
+      await Get.put(RankingsController()).refreshList();
       Get.offAll(() => HomeView());
     } else {
       Get.back();
@@ -132,7 +130,7 @@ class _SelectSubjectsViewState extends State<SelectSubjectsView> {
                       ),
                     ),
                     MySwitch(
-                      defaultValue: _user.showEverything,
+                      defaultValue: _currentUser.showEverything,
                       onChanged: _setShowEverything,
                     ),
                   ],

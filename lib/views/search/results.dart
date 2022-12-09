@@ -48,12 +48,14 @@ class SearchResults extends StatelessWidget {
         Expanded(
           child: AnimatedSwitcher(
             duration: mediumAnimationDuration,
-            child: controller.textController.text.isNotEmpty &&
-                    controller.results.isEmpty
-                ? _buildPlaceholder()
-                : controller.results.isEmpty
-                    ? SizedBox()
-                    : _buildList(),
+            child: controller.loading
+                ? Center(child: CircularProgressIndicator())
+                : controller.textController.text.isNotEmpty &&
+                        controller.results.isEmpty
+                    ? _buildPlaceholder()
+                    : controller.results.isEmpty
+                        ? SizedBox()
+                        : _buildList(),
           ),
         ),
       ],

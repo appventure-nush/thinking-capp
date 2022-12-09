@@ -13,14 +13,14 @@ class StorageService extends GetxService {
 
   Future<String> uploadPhoto(File file, String prefix) async {
     final tempDir = await getTemporaryDirectory();
-    final userId = Get.find<AuthService>().id;
+    final uid = Get.find<AuthService>().currentUser.id;
     final id = _randomString();
     final compressedFile = await FlutterImageCompress.compressAndGetFile(
       file.path,
       '${tempDir.path}/$id.jpg',
       quality: 70,
     );
-    final storagePath = 'photos/$userId/${prefix}_$id.jpg';
+    final storagePath = 'photos/$uid/${prefix}_$id.jpg';
     final taskSnapshot =
         await _storageRef.child(storagePath).putFile(compressedFile!);
     return taskSnapshot.ref.getDownloadURL();

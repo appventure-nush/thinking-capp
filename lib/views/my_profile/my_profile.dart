@@ -42,8 +42,7 @@ class _MyProfileViewState extends State<MyProfileView> {
       final photoUrl =
           await Get.find<StorageService>().uploadPhoto(file, 'profile');
       user.photoUrl = photoUrl;
-      await Get.find<UsersDbService>()
-          .updateUser(user.id, {'photoUrl': photoUrl});
+      await Get.find<UsersDbService>().updateUser({'photoUrl': photoUrl});
       setState(() {});
     }
   }

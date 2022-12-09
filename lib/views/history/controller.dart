@@ -17,10 +17,15 @@ class HistoryController extends GetxController {
   void onReady() async {
     loading = true;
     update();
-    upvoted.addAll(await _questionsDb.getVotedQuestions(_auth.id, true));
-    downvoted.addAll(await _questionsDb.getVotedQuestions(_auth.id, false));
+    upvoted.addAll(
+      await _questionsDb.getVotedQuestions(_auth.currentUser.id, true),
+    );
+    downvoted.addAll(
+      await _questionsDb.getVotedQuestions(_auth.currentUser.id, false),
+    );
     bookmarked.addAll(
-        await _questionsDb.getQuestionsByIds(_auth.currentUser.bookmarks));
+      await _questionsDb.getQuestionsByIds(_auth.currentUser.bookmarks),
+    );
     loading = false;
     update();
   }

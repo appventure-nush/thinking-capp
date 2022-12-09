@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/user.dart';
+import 'package:thinking_capp/services/auth.dart';
 
 class UsersDbService extends GetxService {
+  String get _currentUserId => Get.find<AuthService>().currentUser.id;
+
   final _usersRef = FirebaseFirestore.instance.collection('users');
 
   Future<bool> hasUser(String id) async {
@@ -32,8 +35,8 @@ class UsersDbService extends GetxService {
     );
   }
 
-  Future<void> updateUser(String id, Map<String, dynamic> data) async {
-    await _usersRef.doc(id).update(data);
+  Future<void> updateUser(Map<String, dynamic> data) async {
+    await _usersRef.doc(_currentUserId).update(data);
   }
 
   Future<List<MyUser>> getTopRanked(int? startAfterScore) async {
@@ -46,14 +49,14 @@ class UsersDbService extends GetxService {
     return snapshot.docs.map((doc) => MyUser.fromDoc(doc)).toList();
   }
 
-  Future<void> addBookmark(String userId, String questionId) async {
-    await _usersRef.doc(userId).update({
+  Future<void> addBookmark(String questionId) async {
+    await _usersRef.doc(_currentUserId).update({
       'bookmarks': FieldValue.arrayUnion([questionId]),
     });
   }
 
-  Future<void> removeBookmark(String userId, String questionId) async {
-    await _usersRef.doc(userId).update({
+  Future<void> removeBookmark(String questionId) async {
+    await _usersRef.doc(_currentUserId).update({
       'bookmarks': FieldValue.arrayRemove([questionId]),
     });
   }

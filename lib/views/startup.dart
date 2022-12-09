@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/store.dart';
+import 'package:thinking_capp/views/feed/controller.dart';
+import 'package:thinking_capp/views/rankings/controller.dart';
 import 'package:thinking_capp/views/home/home.dart';
 import 'package:thinking_capp/views/onboading/onboarding.dart';
 import 'package:thinking_capp/views/welcome.dart';
@@ -29,7 +30,8 @@ class _StartupViewState extends State<StartupView> {
       if (auth.currentUser.followingTags.isEmpty) {
         Get.off(() => OnboardingView());
       } else {
-        await Get.find<Store>().fetchData();
+        await Get.put(FeedController()).refreshFeed();
+        await Get.put(RankingsController()).refreshList();
         Get.off(() => HomeView());
       }
     } else {

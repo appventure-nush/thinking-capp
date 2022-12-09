@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
+import 'package:thinking_capp/services/answers_db.dart';
 import 'package:thinking_capp/services/auth.dart';
 import 'package:thinking_capp/services/questions_db.dart';
 
 class ProfileController extends GetxController {
   final _questionsDb = Get.find<QuestionsDbService>();
+  final _answersDb = Get.find<AnswersDbService>();
 
   String tab = 'Questions';
   final List<Question> questions = [];
@@ -27,7 +29,7 @@ class ProfileController extends GetxController {
     } else {
       tab = 'Answers';
     }
-    answers.addAll(await _questionsDb.getAnswersByPoster(_userId));
+    answers.addAll(await _answersDb.getAnswersByPoster(_userId));
     loading = false;
     update();
   }

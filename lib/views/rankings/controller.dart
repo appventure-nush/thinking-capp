@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
 import 'package:thinking_capp/models/user.dart';
-import 'package:thinking_capp/services/store.dart';
+import 'package:thinking_capp/services/users_db.dart';
 
 class RankingsController extends GetxController {
-  final _store = Get.find<Store>();
+  final RxList<MyUser> rankings = RxList.empty();
 
-  List<MyUser> get rankings => _store.rankings;
+  Future<void> refreshList() async {
+    final newRankings = await Get.find<UsersDbService>().getTopRanked(null);
+    rankings.clear();
+    rankings.addAll(newRankings);
+  }
 }

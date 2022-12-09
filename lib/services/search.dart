@@ -4,13 +4,13 @@ import 'package:thinking_capp/models/answer.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/models/user.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/store.dart';
 import 'package:thinking_capp/services/users_db.dart';
+import 'package:thinking_capp/services/voting.dart';
 
 class SearchService extends GetxService {
-  final _store = Get.find<Store>();
   final _usersDb = Get.find<UsersDbService>();
-  MyUser get _user => Get.find<AuthService>().currentUser;
+  final _voting = Get.find<VotingService>();
+  String get _currentUserId => Get.find<AuthService>().currentUser.id;
 
   final _algolia = Algolia.init(
     applicationId: 'DLCIV2U0R3',
@@ -19,26 +19,21 @@ class SearchService extends GetxService {
 
   Question _questionFromHitData(Map<String, dynamic> data) {
     bool? myVote;
-    if (data['upvotedBy'].contains(_user.id)) {
+    if (data['upvotedBy'].contains(_currentUserId)) {
       myVote = true;
-    } else if (data['downvotedBy'].contains(_user.id)) {
+    } else if (data['downvotedBy'].contains(_currentUserId)) {
       myVote = false;
     }
     final id = data['id'];
-    if (_store.myVotes.containsKey(id)) {
-      _store.myVotes[id]!.value = myVote;
-    } else {
-      _store.myVotes[id] = Rx<bool?>(myVote);
-    }
     return Question(
       id: id,
       title: data['title'],
       text: data['text'],
       photoUrls: List<String>.from(data['photoUrls']),
       tags: List<String>.from(data['tags']),
-      byMe: data['poster'] == _user.id,
+      byMe: data['poster'] == _currentUserId,
       numVotes: data['numVotes'],
-      myVote: _store.myVotes[id]!,
+      myVote: _voting.setMyVote(id, myVote),
       numAnswers: data['numAnswers'],
       timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp']),
     );
@@ -47,17 +42,12 @@ class SearchService extends GetxService {
   Future<Answer> _answerFromHitData(Map<String, dynamic> data) async {
     final poster = await _usersDb.getUser(data['poster']);
     bool? myVote;
-    if (data['upvotedBy'].contains(_user.id)) {
+    if (data['upvotedBy'].contains(_currentUserId)) {
       myVote = true;
-    } else if (data['downvotedBy'].contains(_user.id)) {
+    } else if (data['downvotedBy'].contains(_currentUserId)) {
       myVote = false;
     }
     final id = data['id'];
-    if (_store.myVotes.containsKey(id)) {
-      _store.myVotes[id]!.value = myVote;
-    } else {
-      _store.myVotes[id] = Rx<bool?>(myVote);
-    }
     return Answer(
       id: id,
       questionId: data['questionId'],
@@ -65,7 +55,7 @@ class SearchService extends GetxService {
       photoUrls: List<String>.from(data['photoUrls']),
       poster: poster,
       numVotes: data['numVotes'],
-      myVote: _store.myVotes[id]!,
+      myVote: _voting.setMyVote(id, myVote),
       timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp']),
     );
   }

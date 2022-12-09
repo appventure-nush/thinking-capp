@@ -51,7 +51,7 @@ class TagController extends GetxController {
       tags: [_tag],
     );
     questions.addAll(page.data);
-    lastDoc = page.lastDoc;
+    lastDoc = page.cursor;
     reachedEnd = page.reachedEnd;
   }
 

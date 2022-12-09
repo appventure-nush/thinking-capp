@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/answer.dart';
-import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/utils/datetime.dart';
 import 'package:thinking_capp/widgets/photo_carousel.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
+import 'package:thinking_capp/widgets/profile_tile.dart';
 import 'package:thinking_capp/widgets/voting_box.dart';
 
 class AnswerCard extends StatelessWidget {
-  final _questionsDb = Get.find<QuestionsDbService>();
-
   final Answer answer;
   final Function() onPressed;
 
-  AnswerCard({
+  const AnswerCard({
     Key? key,
     required this.answer,
     required this.onPressed,
@@ -35,12 +33,17 @@ class AnswerCard extends StatelessWidget {
           children: [
             Text(
               answer.text,
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 14),
             ),
             if (answer.photoUrls.isNotEmpty) SizedBox(height: 20),
             if (answer.photoUrls.isNotEmpty)
               PhotoCarousel(photoUrls: answer.photoUrls),
-            SizedBox(height: 20),
+            SizedBox(height: 18),
+            FractionallySizedBox(
+              widthFactor: 1 + 20 / (Get.width - 64),
+              child: ProfileTile(user: answer.poster),
+            ),
+            SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

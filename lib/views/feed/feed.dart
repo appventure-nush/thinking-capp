@@ -13,12 +13,12 @@ import 'package:thinking_capp/widgets/default_feedback.dart';
 class FeedView extends StatelessWidget {
   const FeedView({Key? key}) : super(key: key);
 
-  MyUser get _user => Get.find<AuthService>().currentUser;
+  MyUser get _currentUser => Get.find<AuthService>().currentUser;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FeedController>(
-      init: FeedController(),
+      // init: FeedController(),
       builder: (controller) {
         return SafeArea(
           child: Padding(
@@ -43,9 +43,9 @@ class FeedView extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            _user.showEverything
+                            _currentUser.showEverything
                                 ? 'Everything'
-                                : '${_user.followingTags.length} Subjects',
+                                : '${_currentUser.followingTags.length} Subjects',
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,

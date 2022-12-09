@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
+import 'package:thinking_capp/services/answers_db.dart';
 import 'package:thinking_capp/services/media_picker.dart';
-import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/services/storage.dart';
 import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
 class WriteAnswerController extends GetxController {
   final _mediaPicker = Get.find<MediaPickerService>();
-  final _questionsDb = Get.find<QuestionsDbService>();
+  final _answersDb = Get.find<AnswersDbService>();
   final _storage = Get.find<StorageService>();
 
   final textController = TextEditingController();
@@ -55,7 +55,7 @@ class WriteAnswerController extends GetxController {
       final url = await _storage.uploadPhoto(file, 'answer');
       photoUrls.add(url);
     }
-    final answer = await _questionsDb.postAnswer(
+    final answer = await _answersDb.postAnswer(
       _questionId,
       textController.text,
       photoUrls,

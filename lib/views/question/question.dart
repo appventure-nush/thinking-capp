@@ -9,7 +9,6 @@ import 'package:thinking_capp/widgets/photo_carousel.dart';
 import 'package:thinking_capp/views/question/answer_card.dart';
 import 'package:thinking_capp/widgets/app_bar.dart';
 import 'package:thinking_capp/widgets/default_feedback.dart';
-import 'package:thinking_capp/widgets/loading.dart';
 import 'package:thinking_capp/widgets/question_tag.dart';
 import 'package:thinking_capp/widgets/tab_bar.dart';
 import 'package:thinking_capp/widgets/voting_box.dart';
@@ -56,7 +55,7 @@ class QuestionView extends StatelessWidget {
                       if (question.text.isNotEmpty)
                         Text(
                           question.text,
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 14),
                         ),
                       if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
                       if (question.photoUrls.isNotEmpty)
@@ -147,44 +146,37 @@ class QuestionView extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 12),
-                      if (controller.loadingAnswers)
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 32),
-                            child: Loading(),
-                          ),
-                        )
-                      else if (controller.answers.isEmpty)
-                        Column(
-                          children: [
-                            SizedBox(height: 60),
-                            Image.asset('assets/images/empty.png', width: 280),
-                            SizedBox(height: 28),
-                            Text(
-                              'Nothing here yet',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 60),
-                          ],
-                        )
-                      else
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: controller.answers.length,
-                          itemBuilder: (context, i) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: AnswerCard(
-                                answer: controller.answers[i],
-                                onPressed: () {},
-                              ),
-                            );
-                          },
-                        ),
+                      Obx(() => controller.answers.isEmpty
+                          ? Column(
+                              children: [
+                                SizedBox(height: 60),
+                                Image.asset('assets/images/empty.png',
+                                    width: 280),
+                                SizedBox(height: 28),
+                                Text(
+                                  'Nothing here yet',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 60),
+                              ],
+                            )
+                          : ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.answers.length,
+                              itemBuilder: (context, i) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: AnswerCard(
+                                    answer: controller.answers[i],
+                                    onPressed: () {},
+                                  ),
+                                );
+                              },
+                            )),
                       SizedBox(height: 40),
                     ],
                   ),

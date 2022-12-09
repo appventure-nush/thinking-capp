@@ -3,14 +3,12 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/colors/palette.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/media_picker.dart';
-import 'package:thinking_capp/services/questions_db.dart';
 import 'package:thinking_capp/views/add_tags/add_tags.dart';
 import 'package:thinking_capp/views/write_question/photo.dart';
 import 'package:thinking_capp/widgets/dialogs/yes_no_dialog.dart';
 
 class WriteQuestionController extends GetxController {
   final _mediaPicker = Get.find<MediaPickerService>();
-  final _questionsDb = Get.find<QuestionsDbService>();
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();

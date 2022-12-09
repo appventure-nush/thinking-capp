@@ -12,7 +12,6 @@ class AuthService extends GetxService {
 
   bool get isSignedIn => _currentUser != null;
   MyUser get currentUser => _currentUser!;
-  String get id => _currentUser!.id;
 
   @override
   void onReady() {
