@@ -11,7 +11,7 @@ class RankingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RankingsController>(
-      // init: RankingsController(),
+      // RankingsController initialized immediately after signing in
       builder: (controller) {
         return SafeArea(
           child: RefreshIndicator(

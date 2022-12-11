@@ -18,8 +18,8 @@ class WriteQuestionController extends GetxController {
 
   WriteQuestionController(this._editQuestion) {
     if (_editQuestion != null) {
-      titleController.text = _editQuestion!.title;
-      descriptionController.text = _editQuestion!.text;
+      titleController.text = _editQuestion!.title.value;
+      descriptionController.text = _editQuestion!.text.value;
       photos.addAll(_editQuestion!.photoUrls.map((url) => Photo.url(url)));
     }
   }

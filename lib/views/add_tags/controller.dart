@@ -99,15 +99,15 @@ class AddTagsController extends GetxController {
         [selectedSubject!] + tags,
       );
     } else {
-      _editQuestion!.title = questionController.titleController.text;
-      _editQuestion!.text = questionController.descriptionController.text;
-      _editQuestion!.photoUrls =
+      _editQuestion!.title.value = questionController.titleController.text;
+      _editQuestion!.text.value = questionController.descriptionController.text;
+      _editQuestion!.photoUrls.value =
           questionController.photos.map((photo) => photo.url).toList();
-      _editQuestion!.tags = [selectedSubject!] + tags;
+      _editQuestion!.tags.value = [selectedSubject!] + tags;
       await _questionsDb.editQuestion(
         _editQuestion!.id,
-        _editQuestion!.title,
-        _editQuestion!.text,
+        _editQuestion!.title.value,
+        _editQuestion!.text.value,
         _editQuestion!.photoUrls,
         _editQuestion!.tags,
       );

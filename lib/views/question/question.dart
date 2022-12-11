@@ -39,78 +39,80 @@ class QuestionView extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 36),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 36),
-                      Text(
-                        question.title,
-                        style: TextStyle(
-                          color: Palette.primary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      if (question.text.isNotEmpty) SizedBox(height: 14),
-                      if (question.text.isNotEmpty)
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 36),
                         Text(
-                          question.text,
-                          style: TextStyle(fontSize: 14),
+                          question.title.value,
+                          style: TextStyle(
+                            color: Palette.primary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
-                      if (question.photoUrls.isNotEmpty)
-                        FractionallySizedBox(
-                          widthFactor: 1,
-                          child: PhotoCarousel(photoUrls: question.photoUrls),
+                        if (question.text.isNotEmpty) SizedBox(height: 14),
+                        if (question.text.isNotEmpty)
+                          Text(
+                            question.text.value,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
+                        if (question.photoUrls.isNotEmpty)
+                          FractionallySizedBox(
+                            widthFactor: 1,
+                            child: PhotoCarousel(photoUrls: question.photoUrls),
+                          ),
+                        SizedBox(height: 20),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: question.tags
+                              .map((tag) => QuestionTag(
+                                    label: tag,
+                                    onPressed: () {
+                                      Get.to(TagView(tag: tag));
+                                    },
+                                  ))
+                              .toList(),
                         ),
-                      SizedBox(height: 20),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: question.tags
-                            .map((tag) => QuestionTag(
-                                  label: tag,
-                                  onPressed: () {
-                                    Get.to(TagView(tag: tag));
-                                  },
-                                ))
-                            .toList(),
-                      ),
-                      SizedBox(height: 28),
-                      Row(
-                        children: [
-                          VotingBox(
-                            myVote: question.myVote,
-                            questionId: question.id,
-                          ),
-                          Spacer(),
-                          Text(
-                            formatTimeAgo(question.timestamp),
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.6),
+                        SizedBox(height: 28),
+                        Row(
+                          children: [
+                            VotingBox(
+                              myVote: question.myVote,
+                              questionId: question.id,
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 40),
-                      Row(
-                        children: [
-                          Text(
-                            '${question.numAnswers} answers',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                            Spacer(),
+                            Text(
+                              formatTimeAgo(question.timestamp),
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                              ),
                             ),
-                          ),
-                          Spacer(),
-                          MyTabBar(
-                            tabs: const ['Top', 'Newest'],
-                            onChanged: controller.switchTab,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 24),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 40),
+                        Row(
+                          children: [
+                            Text(
+                              '${question.numAnswers} answers',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Spacer(),
+                            MyTabBar(
+                              tabs: const ['Top', 'Newest'],
+                              onChanged: controller.switchTab,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(

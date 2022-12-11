@@ -1,11 +1,15 @@
 import 'package:get/get.dart';
 
 class PaginationData<T> {
-  List<T> data;
+  List<T> items;
   dynamic cursor;
   bool reachedEnd;
 
-  PaginationData(this.data, this.cursor, this.reachedEnd);
+  PaginationData({
+    required this.items,
+    required this.cursor,
+    required this.reachedEnd,
+  });
 }
 
 class Paginator<T> {
@@ -30,7 +34,7 @@ class Paginator<T> {
     if (reachedEnd) return;
     loadingMore.value = true;
     final result = await fetcher(page, _cursor);
-    items.addAll(result.data);
+    items.addAll(result.items);
     page++;
     _cursor = result.cursor;
     reachedEnd = result.reachedEnd;

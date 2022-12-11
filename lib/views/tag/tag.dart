@@ -38,25 +38,33 @@ class TagView extends StatelessWidget {
                       ],
                     ),
                   )
-                : RefreshIndicator(
-                    onRefresh: controller.refreshList,
-                    child: ListView.builder(
-                      controller: controller.scrollController,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-                      itemCount: controller.questions.length,
-                      itemBuilder: (context, i) {
-                        final question = controller.questions[i];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: QuestionCard(
-                            question: question,
-                            onPressed: () {
-                              Get.to(() => QuestionView(question: question));
-                            },
-                          ),
-                        );
-                      },
+                : Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    margin: EdgeInsets.fromLTRB(12, 20, 12, 0),
+                    clipBehavior: Clip.antiAlias,
+                    child: RefreshIndicator(
+                      onRefresh: controller.refreshList,
+                      child: ListView.builder(
+                        controller: controller.scrollController,
+                        itemCount: controller.questions.length,
+                        itemBuilder: (context, i) {
+                          final question = controller.questions[i];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: QuestionCard(
+                              question: question,
+                              onPressed: () {
+                                Get.to(() => QuestionView(question: question));
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
           ),

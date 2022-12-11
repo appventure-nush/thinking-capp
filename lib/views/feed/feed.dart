@@ -18,7 +18,7 @@ class FeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FeedController>(
-      // init: FeedController(),
+      // FeedController initialized immediately after signing in
       builder: (controller) {
         return SafeArea(
           child: Padding(

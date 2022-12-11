@@ -32,7 +32,6 @@ class FeedController extends GetxController {
 
   @override
   void onReady() {
-    feedPaginator.refresh();
     scrollController.addListener(() {
       if (scrollController.position.atEdge &&
           scrollController.position.pixels > 0) {

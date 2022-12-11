@@ -3,35 +3,13 @@ import 'package:get/get.dart';
 import 'package:thinking_capp/models/paginator.dart';
 import 'package:thinking_capp/models/question.dart';
 import 'package:thinking_capp/services/auth.dart';
-import 'package:thinking_capp/services/voting.dart';
+import 'package:thinking_capp/services/questions_store.dart';
 
 class QuestionsDbService extends GetxService {
-  final _voting = Get.find<VotingService>();
+  final _questionsStore = Get.find<QuestionsStore>();
   String get _currentUserId => Get.find<AuthService>().currentUser.id;
 
   final _questionsRef = FirebaseFirestore.instance.collection('questions');
-
-  Question _questionFromDoc(DocumentSnapshot<Map> doc) {
-    final data = doc.data()!;
-    bool? myVote;
-    if (data['upvotedBy'].contains(_currentUserId)) {
-      myVote = true;
-    } else if (data['downvotedBy'].contains(_currentUserId)) {
-      myVote = false;
-    }
-    return Question(
-      id: doc.id,
-      title: data['title'],
-      text: data['text'],
-      photoUrls: List<String>.from(data['photoUrls']),
-      tags: List<String>.from(data['tags']),
-      byMe: data['poster'] == _currentUserId,
-      numVotes: data['numVotes'],
-      myVote: _voting.setMyVote(doc.id, myVote),
-      numAnswers: data['numAnswers'],
-      timestamp: data['timestamp'].toDate(),
-    );
-  }
 
   Future<PaginationData<Question>> loadFeed({
     required String sortBy,
@@ -48,13 +26,23 @@ class QuestionsDbService extends GetxService {
     final snapshot = await query.limit(10).get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(_questionFromDoc(doc));
+      questions.add(_questionsStore.getQuestion(
+        doc.id,
+        doc.data(),
+        fromFirebase: true,
+      ));
     }
-    if (questions.isEmpty) return PaginationData([], startAfterDoc, true);
+    if (questions.isEmpty) {
+      return PaginationData(
+        items: [],
+        cursor: startAfterDoc,
+        reachedEnd: true,
+      );
+    }
     return PaginationData(
-      questions,
-      snapshot.docs.last,
-      questions.length < 10,
+      items: questions,
+      cursor: snapshot.docs.last,
+      reachedEnd: questions.length < 10,
     );
   }
 
@@ -62,7 +50,11 @@ class QuestionsDbService extends GetxService {
     final questions = <Question>[];
     for (final id in questionIds) {
       final doc = await _questionsRef.doc(id).get();
-      questions.add(_questionFromDoc(doc));
+      questions.add(_questionsStore.getQuestion(
+        doc.id,
+        doc.data()!,
+        fromFirebase: true,
+      ));
     }
     return questions;
   }
@@ -74,7 +66,11 @@ class QuestionsDbService extends GetxService {
         .get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(_questionFromDoc(doc));
+      questions.add(_questionsStore.getQuestion(
+        doc.id,
+        doc.data(),
+        fromFirebase: true,
+      ));
     }
     return questions;
   }
@@ -86,7 +82,11 @@ class QuestionsDbService extends GetxService {
         .get();
     final questions = <Question>[];
     for (final doc in snapshot.docs) {
-      questions.add(_questionFromDoc(doc));
+      questions.add(_questionsStore.getQuestion(
+        doc.id,
+        doc.data(),
+        fromFirebase: true,
+      ));
     }
     return questions;
   }
@@ -110,18 +110,19 @@ class QuestionsDbService extends GetxService {
       'numAnswers': 0,
       'timestamp': timestamp,
     });
-    return Question(
+    final question = Question(
       id: ref.id,
-      title: title,
-      text: text,
-      photoUrls: photoUrls,
-      tags: tags,
+      title: title.obs,
+      text: text.obs,
+      photoUrls: photoUrls.obs,
+      tags: tags.obs,
       byMe: true,
-      numVotes: 0,
-      myVote: _voting.setMyVote(ref.id, null),
+      myVote: Rx<bool?>(null),
       numAnswers: 0,
       timestamp: timestamp.toDate(),
     );
+    _questionsStore.putQuestion(question);
+    return question;
   }
 
   Future<void> editQuestion(

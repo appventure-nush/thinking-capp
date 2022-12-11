@@ -50,7 +50,7 @@ class TagController extends GetxController {
       sortDescending: sortBy != 'numAnswers',
       tags: [_tag],
     );
-    questions.addAll(page.data);
+    questions.addAll(page.items);
     lastDoc = page.cursor;
     reachedEnd = page.reachedEnd;
   }

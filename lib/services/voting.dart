@@ -7,21 +7,6 @@ class VotingService extends GetxService {
 
   final _questionsRef = FirebaseFirestore.instance.collection('questions');
 
-  // ensure this data remains synced throughout the app
-  // the same questions/answers may be loaded as separate objects in different
-  // pages, resulting in different myVote objects. The following ensures that
-  // all question objects with the same id share the same myVote object.
-  final Map<String, Rx<bool?>> _myVotes = {}; // for both questions and answers
-
-  Rx<bool?> setMyVote(String id, bool? myVote) {
-    if (_myVotes.containsKey(id)) {
-      _myVotes[id]!.value = myVote;
-    } else {
-      _myVotes[id] = Rx<bool?>(myVote);
-    }
-    return _myVotes[id]!;
-  }
-
   Stream<int> numVotesStream(String questionId, {String? answerId}) {
     var ref = _questionsRef.doc(questionId);
     if (answerId != null) {

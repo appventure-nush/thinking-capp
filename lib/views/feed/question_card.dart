@@ -29,77 +29,79 @@ class QuestionCard extends StatelessWidget {
           color: Palette.black1,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(
-                question.title,
-                style: TextStyle(
-                  color: Palette.primary,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
-            if (question.photoUrls.isNotEmpty)
-              // images
-              PhotoCarousel(photoUrls: question.photoUrls),
-            if (question.tags.isNotEmpty) SizedBox(height: 16),
-            if (question.tags.isNotEmpty)
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: question.tags
-                    .map((tag) => QuestionTag(
-                          label: tag,
-                          onPressed: () {
-                            Get.to(TagView(tag: tag));
-                          },
-                        ))
-                    .toList(),
-              ),
-            SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                VotingBox(
-                  myVote: question.myVote,
-                  questionId: question.id,
-                ),
-                SizedBox(width: 12),
-                if (question.numAnswers > 0)
-                  Container(
-                    height: 36,
-                    padding: EdgeInsets.only(left: 14, right: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.chat_bubble_outline,
-                          size: 16,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          '${question.numAnswers}',
-                          style: TextStyle(fontWeight: FontWeight.w700),
-                        ),
-                      ],
-                    ),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  question.title.value,
+                  style: TextStyle(
+                    color: Palette.primary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
                   ),
-                Spacer(),
-                Text(
-                  formatTimeAgo(question.timestamp),
-                  style: TextStyle(color: Colors.white.withOpacity(0.6)),
                 ),
-              ],
-            ),
-          ],
+              ),
+              if (question.photoUrls.isNotEmpty) SizedBox(height: 20),
+              if (question.photoUrls.isNotEmpty)
+                // images
+                PhotoCarousel(photoUrls: question.photoUrls),
+              if (question.tags.isNotEmpty) SizedBox(height: 16),
+              if (question.tags.isNotEmpty)
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: question.tags
+                      .map((tag) => QuestionTag(
+                            label: tag,
+                            onPressed: () {
+                              Get.to(TagView(tag: tag));
+                            },
+                          ))
+                      .toList(),
+                ),
+              SizedBox(height: 24),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  VotingBox(
+                    myVote: question.myVote,
+                    questionId: question.id,
+                  ),
+                  SizedBox(width: 12),
+                  if (question.numAnswers > 0)
+                    Container(
+                      height: 36,
+                      padding: EdgeInsets.only(left: 14, right: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            size: 16,
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            '${question.numAnswers}',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Spacer(),
+                  Text(
+                    formatTimeAgo(question.timestamp),
+                    style: TextStyle(color: Colors.white.withOpacity(0.6)),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
